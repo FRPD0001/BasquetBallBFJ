@@ -3,6 +3,7 @@ package logico;
 import java.util.ArrayList;
 
 public class SerieNacional {
+	
     private ArrayList<Equipo> misEquipos;
     private static int genEquipo;
     private ArrayList<Jugador> misJugadores;
