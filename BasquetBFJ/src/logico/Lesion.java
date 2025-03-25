@@ -1,4 +1,4 @@
-package logico;
+		package logico;
 
 import java.time.LocalDate;
 
@@ -56,7 +56,6 @@ public class Lesion {
 	public void setLesionado(boolean lesionado) {
 		this.lesionado = lesionado;
 	}
-    
     
 
 }
