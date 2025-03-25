@@ -10,6 +10,7 @@ public class Equipo {
     private ArrayList<Jugador> jugadores;
     private int win;
     private int lose;
+    private float nomina;
 
     public Equipo() {
     }
