@@ -1,4 +1,4 @@
-		package logico;
+package logico;
 
 import java.time.LocalDate;
 
