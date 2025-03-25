@@ -38,11 +38,11 @@ public class Juego {
         this.visitante = visitante;
     }
 
-    public ArrayList<Estadistica> getEstadisticas() {
+    public ArrayList<StatsJugador> getEstadisticas() {
         return estadisticas;
     }
 
-    public void setEstadisticas(ArrayList<Estadistica> estadisticas) {
+    public void setEstadisticas(ArrayList<StatsJugador> estadisticas) {
         this.estadisticas = estadisticas;
     }
 
