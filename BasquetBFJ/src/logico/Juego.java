@@ -13,8 +13,7 @@ public class Juego {
     private String winner;
     private LocalDate fechaJuego;
 
-    public Juego() {
-    }
+   
 
     public String getId() {
         return id;
@@ -92,4 +91,6 @@ public class Juego {
 		this.winner = winner;
 		this.fechaJuego = fechaJuego;
 	}
+	
+	
 }
