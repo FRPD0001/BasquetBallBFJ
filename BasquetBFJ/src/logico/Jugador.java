@@ -11,6 +11,8 @@ public class Jugador {
     private ArrayList<Lesion> misLesiones;
     private Equipo equipo;
     private StatsJugador estadistica;
+    private float salario;
+    private static float salarioBase = 500000.00f;
 
     public Jugador() {
     }
@@ -69,5 +71,10 @@ public class Jugador {
 
     public void setEstadistica(StatsJugador estadistica) {
         this.estadistica = estadistica;
+    }
+    
+    public float calcularSalario() {
+    	return getEstadistica().calcularCoeficienteEfectividad()*salarioBase;
+    	
     }
 }

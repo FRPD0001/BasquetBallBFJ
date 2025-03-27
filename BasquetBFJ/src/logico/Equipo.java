@@ -7,7 +7,7 @@ public class Equipo {
     private String id;
     private String nombre;
     private String ciudad;
-    private ArrayList<Integer> juegos;
+    private ArrayList<Juego> juegos;
     private ArrayList<Jugador> jugadores;
     private int win;
     private int lose;
@@ -40,11 +40,11 @@ public class Equipo {
         this.ciudad = ciudad;
     }
 
-    public ArrayList<Integer> getJuegos() {
+    public ArrayList<Juego> getJuegos() {
         return juegos;
     }
 
-    public void setJuegos(ArrayList<Integer> juegos) {
+    public void setJuegos(ArrayList<Juego> juegos) {
         this.juegos = juegos;
     }
 
@@ -70,5 +70,14 @@ public class Equipo {
 
     public void setLose(int lose) {
         this.lose = lose;
+    }
+    
+    public float CalcularNomina() {
+    	float nomina = 0;
+    	
+    	for(Jugador jugador : jugadores) {
+    		nomina+=jugador.calcularSalario();
+    	}
+    	return nomina;
     }
 }
