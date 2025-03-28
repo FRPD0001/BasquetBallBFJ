@@ -94,5 +94,4 @@ public class SerieNacional {
         misJuegos.add(juego);
     }
 
-   //hola mundo
 }
