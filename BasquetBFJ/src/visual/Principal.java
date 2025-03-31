@@ -216,7 +216,6 @@ public class Principal extends JFrame {
         }
     }
     
-    //saludos
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
