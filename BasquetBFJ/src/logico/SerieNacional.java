@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 
 public class SerieNacional {
-	
+    
     private ArrayList<Equipo> misEquipos;
     private static int genEquipo;
     private ArrayList<Jugador> misJugadores;
@@ -82,6 +82,7 @@ public class SerieNacional {
     public static void setGenEstadistica(int genEstadistica) {
         SerieNacional.genEstadistica = genEstadistica;
     }
+
     public void agregarEquipo(Equipo equipo) {
         misEquipos.add(equipo);
     }
@@ -94,4 +95,10 @@ public class SerieNacional {
         misJuegos.add(juego);
     }
 
+    public float Winrate(Equipo equipo) {
+        if (equipo.getWin() + equipo.getLose() == 0) {
+            return 0;
+        }
+        return (float) equipo.getWin() / (equipo.getWin() + equipo.getLose()) * 100;
+    }
 }
