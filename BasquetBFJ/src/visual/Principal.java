@@ -215,6 +215,8 @@ public class Principal extends JFrame {
             lblImagen.setText("Error cargando imagen");
         }
     }
+    
+    //saludos
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
