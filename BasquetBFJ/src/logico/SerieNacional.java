@@ -11,10 +11,13 @@ public class SerieNacional {
     private static int genJugador;
     private ArrayList<Juego> misJuegos;
     private static int genJuego;
-    private static int genEstadistica;
     private static SerieNacional serie;
 
     private SerieNacional() {
+    	genEquipo = 1;
+    	genJugador = 1;
+    	genJuego = 1;
+    	
         misEquipos = new ArrayList<>();
         misJugadores = new ArrayList<>();
         misJuegos = new ArrayList<>();
@@ -75,24 +78,19 @@ public class SerieNacional {
         SerieNacional.genJuego = genJuego;
     }
 
-    public static int getGenEstadistica() {
-        return genEstadistica;
-    }
-
-    public static void setGenEstadistica(int genEstadistica) {
-        SerieNacional.genEstadistica = genEstadistica;
-    }
-
     public void agregarEquipo(Equipo equipo) {
         misEquipos.add(equipo);
+        genEquipo++;
     }
 
     public void agregarJugador(Jugador jugador) {
         misJugadores.add(jugador);
+        genJugador++;
     }
 
     public void agregarJuego(Juego juego) {
         misJuegos.add(juego);
+        genJuego++;
     }
 
     public float Winrate(Equipo equipo) {
