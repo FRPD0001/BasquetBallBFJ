@@ -57,7 +57,7 @@ public class Principal extends JFrame {
         JPanel panelDerecho = new JPanel(new BorderLayout());
 
         try {
-            File imagenFile = new File("media/fondoProyecto.jpg");
+            File imagenFile = new File("media/fondoProyecto.png");
             ImageIcon imagenOriginal = new ImageIcon(imagenFile.getAbsolutePath());
             Image img = imagenOriginal.getImage();
             Image imgEscalada = img.getScaledInstance(-1, -1, Image.SCALE_SMOOTH);
