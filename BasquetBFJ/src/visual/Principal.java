@@ -125,7 +125,13 @@ public class Principal extends JFrame {
             configurarBoton(btn);
         }
 
-        btnAgregarJugador.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Agregar Jugador"));
+        btnAgregarJugador.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		RegJugador RegJug = new RegJugador(null);
+        		RegJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        		RegJug.setVisible(true);
+        	}
+        });
         btnListarJugadores.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Listar Jugadores"));
 
         panelJugadores.add(Box.createVerticalStrut(200));

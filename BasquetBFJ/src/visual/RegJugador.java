@@ -50,7 +50,7 @@ public class RegJugador extends JDialog {
         txtID.setBounds(105, 10, 116, 22);
         contentPanel.add(txtID);
         txtID.setColumns(10);
-        txtID.setText(aux == null ? "J-" + SerieNacional.getGenJugador() : aux.getId());
+        txtID.setText(aux == null ? "J-" + SerieNacional.getInstance().getGenJugador() : aux.getId());
 
         JLabel lblNombre = new JLabel("Nombre:");
         lblNombre.setBounds(12, 42, 56, 16);
