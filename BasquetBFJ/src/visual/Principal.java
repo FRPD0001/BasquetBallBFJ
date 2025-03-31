@@ -8,7 +8,7 @@ import java.io.File;
 public class Principal extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    private JPanel panelAjustes, panelEquipos, panelIzquierdo, panelDerecho, panelBotones;
+    private JPanel panelAjustes, panelEquipos, panelJugadores, panelIzquierdo, panelDerecho, panelBotones;
     private JLabel lblImagen;
     private Color[] coloresOscuros = {new Color(100, 149, 237), Color.RED, Color.GREEN, Color.YELLOW};
     private Color[] coloresClaros = {new Color(200, 220, 255), new Color(255, 200, 200), new Color(200, 255, 200), new Color(255, 255, 200)};
@@ -21,7 +21,7 @@ public class Principal extends JFrame {
     private int colorIndex = 0;
     private int fondoIndex = 0;
     private JPanel panelActual;
-    private JButton btnAgregarEquipo, btnListarEquipos; // Botones de Equipos como variables de clase
+    private JButton btnAgregarEquipo, btnListarEquipos, btnAgregarJugador, btnListarJugadores;
 
     public Principal() {
         setTitle("Basketball Manager");
@@ -108,6 +108,30 @@ public class Principal extends JFrame {
         panelEquipos.add(Box.createVerticalStrut(300));
         panelEquipos.add(btnListarEquipos);
 
+        // Panel de Jugadores (nuevo)
+        panelJugadores = new JPanel();
+        panelJugadores.setLayout(new BoxLayout(panelJugadores, BoxLayout.Y_AXIS));
+        panelJugadores.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+        panelJugadores.setBackground(coloresClaros[colorIndex]);
+        panelJugadores.setPreferredSize(new Dimension(350, getHeight()));
+
+        btnAgregarJugador = new JButton("Agregar Jugador");
+        btnListarJugadores = new JButton("Listar Jugadores");
+
+        JButton[] botonesJugadores = {btnAgregarJugador, btnListarJugadores};
+
+        for (JButton btn : botonesJugadores) {
+            configurarBoton(btn);
+        }
+
+        btnAgregarJugador.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Agregar Jugador"));
+        btnListarJugadores.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Listar Jugadores"));
+
+        panelJugadores.add(Box.createVerticalStrut(200));
+        panelJugadores.add(btnAgregarJugador);
+        panelJugadores.add(Box.createVerticalStrut(300));
+        panelJugadores.add(btnListarJugadores);
+
         // Panel de Ajustes
         panelAjustes = new JPanel();
         panelAjustes.setLayout(new BoxLayout(panelAjustes, BoxLayout.Y_AXIS));
@@ -124,8 +148,7 @@ public class Principal extends JFrame {
             configurarBoton(btn);
         }
 
-        // Modificado para incluir los botones de Equipos
-        btnCambiarColor.addActionListener(e -> cambiarColor(botones, botonesAjustes, botonesEquipos));
+        btnCambiarColor.addActionListener(e -> cambiarColor(botones, botonesAjustes, botonesEquipos, botonesJugadores));
         btnCambiarFondo.addActionListener(e -> cambiarImagenFondo());
 
         panelAjustes.add(Box.createVerticalStrut(200));
@@ -135,6 +158,7 @@ public class Principal extends JFrame {
 
         // Configuración de los botones principales
         btnEquipos.addActionListener(e -> mostrarSubmenu(panelEquipos));
+        btnJugadores.addActionListener(e -> mostrarSubmenu(panelJugadores));
         btnAjustes.addActionListener(e -> mostrarSubmenu(panelAjustes));
 
         // Estructura inicial de los paneles
@@ -175,24 +199,35 @@ public class Principal extends JFrame {
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
-    // Método modificado para incluir botones de Equipos
-    private void cambiarColor(JButton[] botones, JButton[] botonesAjustes, JButton[] botonesEquipos) {
+    private void cambiarColor(JButton[] botones, JButton[] botonesAjustes, JButton[] botonesEquipos, JButton[] botonesJugadores) {
         colorIndex = (colorIndex + 1) % coloresOscuros.length;
         
+        // Actualizar botones principales
         for (JButton btn : botones) {
             btn.setBackground(coloresOscuros[colorIndex]);
         }
+        
+        // Actualizar botones de ajustes
         for (JButton btn : botonesAjustes) {
             btn.setBackground(coloresOscuros[colorIndex]);
         }
+        
+        // Actualizar botones de equipos
         for (JButton btn : botonesEquipos) {
             btn.setBackground(coloresOscuros[colorIndex]);
         }
         
+        // Actualizar botones de jugadores
+        for (JButton btn : botonesJugadores) {
+            btn.setBackground(coloresOscuros[colorIndex]);
+        }
+        
+        // Actualizar fondos de los paneles
         panelIzquierdo.setBackground(coloresClaros[colorIndex]);
         panelBotones.setBackground(coloresClaros[colorIndex]);
         panelAjustes.setBackground(coloresClaros[colorIndex]);
         panelEquipos.setBackground(coloresClaros[colorIndex]);
+        panelJugadores.setBackground(coloresClaros[colorIndex]);
     }
 
     private void cambiarImagenFondo() {
@@ -215,7 +250,6 @@ public class Principal extends JFrame {
             lblImagen.setText("Error cargando imagen");
         }
     }
-    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
