@@ -12,7 +12,8 @@ public class Jugador {
     private Equipo equipo;
     private StatsJugador estadistica;
     private float salario;
-    private static float salarioBase = 500000.00f;
+    private static float salarioMax = 500000.00f;
+    private static float salarioMin = 250000.00f;
 
     public Jugador() {
     }
@@ -74,7 +75,7 @@ public class Jugador {
     }
     
     public float calcularSalario() {
-    	return getEstadistica().calcularCoeficienteEfectividad()*salarioBase;
+    	return Math.max(getEstadistica().calcularCoeficienteEfectividad()*salarioMax, salarioMin);
     	
     }
 }
