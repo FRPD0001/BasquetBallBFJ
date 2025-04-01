@@ -54,7 +54,7 @@ public class Principal extends JFrame {
             btn.setMaximumSize(buttonSize);
             btn.setBackground(coloresOscuros[colorIndex]);
             btn.setForeground(Color.WHITE);
-            btn.setFont(new Font("Arial", Font.BOLD, 14));
+            btn.setFont(new Font("Times new roman", Font.BOLD, 14));
             btn.setFocusPainted(false);
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
         }

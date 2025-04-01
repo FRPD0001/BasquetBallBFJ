@@ -13,15 +13,16 @@ public class ListEquipo extends JDialog {
     private JTable tableEquipos;
     private DefaultTableModel tableModel;
 
-    public ListEquipo() {
-        setTitle("Listado de todos Equipos");
+    public ListEquipo(Color colorOscuro, Color colorClaro) {
+        setTitle("Listado de Equipos");
         setBounds(100, 100, 900, 500);
         setLocationRelativeTo(null);
         setModal(true);
         getContentPane().setLayout(new BorderLayout());
-        
+
+        // Aplicando colores recibidos de Principal
         contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        contentPanel.setBackground(new Color(230, 240, 250));
+        contentPanel.setBackground(colorClaro);
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout());
 
@@ -37,7 +38,7 @@ public class ListEquipo extends JDialog {
         tableEquipos.setRowHeight(25);
         tableEquipos.setFont(new Font("Arial", Font.PLAIN, 14));
         tableEquipos.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
-        tableEquipos.getTableHeader().setBackground(new Color(100, 149, 237));
+        tableEquipos.getTableHeader().setBackground(colorOscuro);
         tableEquipos.getTableHeader().setForeground(Color.WHITE);
 
         // Alineación de celdas
@@ -46,29 +47,23 @@ public class ListEquipo extends JDialog {
         for (int i = 0; i < tableEquipos.getColumnCount(); i++) {
             tableEquipos.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
-        
+
         JScrollPane scrollPane = new JScrollPane(tableEquipos);
         contentPanel.add(scrollPane, BorderLayout.CENTER);
 
         cargarEquipos();
-        
+
         // Panel de botones
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        buttonPane.setBackground(new Color(200, 220, 240));
+        buttonPane.setBackground(colorClaro);
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-        JButton okButton = new JButton("OK");
-        okButton.setFont(new Font("Arial", Font.BOLD, 12));
-        okButton.setBackground(new Color(34, 139, 34));
-        okButton.setForeground(Color.WHITE);
+        JButton okButton = crearBoton("OK", new Color(34, 139, 34));
         okButton.addActionListener(e -> dispose());
         buttonPane.add(okButton);
 
-        JButton cancelButton = new JButton("Cancelar");
-        cancelButton.setFont(new Font("Arial", Font.BOLD, 12));
-        cancelButton.setBackground(new Color(178, 34, 34));
-        cancelButton.setForeground(Color.WHITE);
+        JButton cancelButton = crearBoton("Cancelar", new Color(178, 34, 34));
         cancelButton.addActionListener(e -> dispose());
         buttonPane.add(cancelButton);
     }
@@ -90,9 +85,22 @@ public class ListEquipo extends JDialog {
         }
     }
 
+    private JButton crearBoton(String texto, Color colorFondo) {
+        JButton boton = new JButton(texto);
+        boton.setFont(new Font("Arial", Font.BOLD, 12));
+        boton.setBackground(colorFondo);
+        boton.setForeground(Color.WHITE);
+        boton.setFocusPainted(false);
+        return boton;
+    }
+
     public static void main(String[] args) {
+        // Simulación de llamada con colores de Principal (Ejemplo de integración)
+        Color colorOscuro = new Color(100, 149, 237); // Color por defecto
+        Color colorClaro = new Color(200, 220, 255);  // Color claro por defecto
+
         try {
-            ListEquipo dialog = new ListEquipo();
+            ListEquipo dialog = new ListEquipo(colorOscuro, colorClaro);
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         } catch (Exception e) {
