@@ -36,7 +36,7 @@ public class Jugadores extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        JButton btnAgregar = new JButton("Agregar otro");
+        JButton btnAgregar = new JButton("Agregar");
         btnAgregar.setBounds(23, 54, 159, 73);
         btnAgregar.setFont(new Font("Arial", Font.BOLD, 12));
         btnAgregar.setBackground(new Color(100, 149, 237));
