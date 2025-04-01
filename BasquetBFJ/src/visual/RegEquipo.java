@@ -5,73 +5,52 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.Dialog.ModalityType;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 
-public class RegEquipo extends JDialog {
+import logico.Equipo;
+import logico.SerieNacional;
 
+public class RegEquipo extends JDialog {
     private final JPanel contentPanel = new JPanel();
-    private JTextField textField;
-    private JTextField textField_1;
+    private JTextField txtNombre;
     private JLabel lblColorSeleccionado;
     private Color colorSeleccionado;
+    private JLabel lblId;
+    private Equipo aux; // Para edición
 
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-            SwingUtilities.updateComponentTreeUI(new RegEquipo());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            RegEquipo dialog = new RegEquipo();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Create the dialog.
-     */
-    public RegEquipo() {
-    	setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        setTitle("Agregar Equipo");
+    public RegEquipo(Equipo aux) {
+        this.aux = aux;
+        setTitle(aux == null ? "Registrar Equipo" : "Modificar Equipo");
         setBounds(100, 100, 500, 250);
+        setLocationRelativeTo(null);
+        setModal(true);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
         contentPanel.setBackground(new Color(230, 240, 250));
 
-        JLabel lblNewLabel = new JLabel("ID:");
-        lblNewLabel.setBounds(30, 20, 50, 20);
-        lblNewLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        contentPanel.add(lblNewLabel);
+        // Configuración de componentes
+        lblId = new JLabel("ID:");
+        lblId.setBounds(30, 20, 50, 20);
+        lblId.setFont(new Font("Arial", Font.BOLD, 12));
+        contentPanel.add(lblId);
 
-        JLabel lblNewLabel_1 = new JLabel("Nombre:");
-        lblNewLabel_1.setBounds(250, 20, 60, 20);
-        lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 12));
-        contentPanel.add(lblNewLabel_1);
+        JLabel lblIdValue = new JLabel();
+        lblIdValue.setBounds(70, 20, 150, 20);
+        lblIdValue.setFont(new Font("Arial", Font.PLAIN, 12));
+        lblIdValue.setText(aux == null ? "E-" + SerieNacional.getInstance().getGenEquipo() : aux.getId());
+        contentPanel.add(lblIdValue);
 
-        textField = new JTextField();
-        textField.setBounds(70, 20, 150, 25);
-        contentPanel.add(textField);
-        textField.setColumns(10);
+        JLabel lblNombre = new JLabel("Nombre:");
+        lblNombre.setBounds(250, 20, 60, 20);
+        lblNombre.setFont(new Font("Arial", Font.BOLD, 12));
+        contentPanel.add(lblNombre);
 
-        textField_1 = new JTextField();
-        textField_1.setColumns(10);
-        textField_1.setBounds(310, 20, 150, 25);
-        contentPanel.add(textField_1);
+        txtNombre = new JTextField();
+        txtNombre.setBounds(310, 20, 150, 25);
+        contentPanel.add(txtNombre);
+        txtNombre.setColumns(10);
 
         JButton btnSeleccionarColor = new JButton("Seleccionar Color");
         btnSeleccionarColor.setBounds(50, 80, 170, 30);
@@ -84,15 +63,20 @@ public class RegEquipo extends JDialog {
         lblColorSeleccionado.setBounds(250, 80, 60, 30);
         lblColorSeleccionado.setOpaque(true);
         lblColorSeleccionado.setBackground(Color.WHITE);
-        lblColorSeleccionado.setBorder(new LineBorder(Color.WHITE));
+        lblColorSeleccionado.setBorder(new LineBorder(Color.BLACK));
         contentPanel.add(lblColorSeleccionado);
 
-        btnSeleccionarColor.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                colorSeleccionado = JColorChooser.showDialog(null, "Elige un color", Color.WHITE);
-                if (colorSeleccionado != null) {
-                    lblColorSeleccionado.setBackground(colorSeleccionado);
-                }
+        // Cargar datos si estamos editando
+        if (aux != null) {
+            txtNombre.setText(aux.getNombre());
+            lblColorSeleccionado.setBackground(aux.getColor());
+            colorSeleccionado = aux.getColor();
+        }
+
+        btnSeleccionarColor.addActionListener(e -> {
+            colorSeleccionado = JColorChooser.showDialog(null, "Elige un color", Color.WHITE);
+            if (colorSeleccionado != null) {
+                lblColorSeleccionado.setBackground(colorSeleccionado);
             }
         });
 
@@ -101,11 +85,19 @@ public class RegEquipo extends JDialog {
         buttonPane.setBackground(new Color(200, 220, 240));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-        JButton okButton = new JButton("OK");
+        JButton okButton = new JButton(aux == null ? "Registrar" : "Modificar");
         okButton.setFont(new Font("Arial", Font.BOLD, 12));
         okButton.setBackground(new Color(34, 139, 34));
         okButton.setForeground(Color.WHITE);
-        okButton.setActionCommand("OK");
+        okButton.addActionListener(e -> {
+            if (validarCampos()) {
+                if (aux == null) {
+                    registrarEquipo(lblIdValue.getText());
+                } else {
+                    modificarEquipo();
+                }
+            }
+        });
         buttonPane.add(okButton);
         getRootPane().setDefaultButton(okButton);
 
@@ -113,7 +105,51 @@ public class RegEquipo extends JDialog {
         cancelButton.setFont(new Font("Arial", Font.BOLD, 12));
         cancelButton.setBackground(new Color(178, 34, 34));
         cancelButton.setForeground(Color.WHITE);
-        cancelButton.setActionCommand("Cancel");
+        cancelButton.addActionListener(e -> dispose());
         buttonPane.add(cancelButton);
+    }
+
+    private boolean validarCampos() {
+        if (txtNombre.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (colorSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un color", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private void registrarEquipo(String id) {
+        try {
+            Equipo nuevoEquipo = new Equipo(id, txtNombre.getText().trim(), colorSeleccionado);
+            SerieNacional.getInstance().agregarEquipo(nuevoEquipo);
+            
+            JOptionPane.showMessageDialog(this, 
+                "Equipo registrado exitosamente!\nID: " + id, 
+                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al registrar equipo: " + e.getMessage(), 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void modificarEquipo() {
+        try {
+            aux.setNombre(txtNombre.getText().trim());
+            aux.setColor(colorSeleccionado);
+            
+            JOptionPane.showMessageDialog(this, 
+                "Equipo modificado exitosamente!", 
+                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al modificar equipo: " + e.getMessage(), 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

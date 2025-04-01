@@ -2,7 +2,6 @@ package logico;
 
 public class StatsJugador {
 	
-    private int anio;
     private String jugador;
     private float puntosPorPartido;
     private float rebotesPorPartido;
@@ -15,11 +14,10 @@ public class StatsJugador {
     public StatsJugador() {
     }
 
-    public StatsJugador(int anio, String jugador, float puntosPorPartido, float rebotesPorPartido, 
+    public StatsJugador(String jugador, float puntosPorPartido, float rebotesPorPartido, 
                        float asistenciasPorPartido, float porcentajeTirosLibres, 
                        float porcentajeTirosCampo, float porcentajeTriples) {
     	
-        this.anio = anio;
         this.jugador = jugador;
         this.puntosPorPartido = puntosPorPartido;
         this.rebotesPorPartido = rebotesPorPartido;
@@ -27,14 +25,6 @@ public class StatsJugador {
         this.porcentajeTirosLibres = porcentajeTirosLibres;
         this.porcentajeTirosCampo = porcentajeTirosCampo;
         this.porcentajeTriples = porcentajeTriples;
-    }
-
-    public int getAnio() {
-        return anio;
-    }
-
-    public void setAnio(int anio) {
-        this.anio = anio;
     }
 
     public String getJugador() {

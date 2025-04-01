@@ -101,8 +101,17 @@ public class Principal extends JFrame {
             configurarBoton(btn);
         }
 
-        btnAgregarEquipo.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Agregar Equipo"));
-        btnListarEquipos.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Listar Equipos"));
+        btnAgregarEquipo.addActionListener(e -> {
+            RegEquipo regEquipo = new RegEquipo(null);
+            regEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            regEquipo.setVisible(true);
+        });
+
+        btnListarEquipos.addActionListener(e -> {
+            ListEquipo listEquipo = new ListEquipo();
+            listEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            listEquipo.setVisible(true);
+        });
 
         panelEquipos.add(Box.createVerticalStrut(200));
         panelEquipos.add(btnAgregarEquipo);

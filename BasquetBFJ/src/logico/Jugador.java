@@ -11,6 +11,7 @@ public class Jugador {
     private ArrayList<Lesion> misLesiones;
     private Equipo equipo;
     private StatsJugador estadistica;
+    private boolean lesionado;
     private float salario;
     private static float salarioMax = 500000.00f;
     private static float salarioMin = 250000.00f;
@@ -77,5 +78,25 @@ public class Jugador {
     public float calcularSalario() {
     	return Math.max(getEstadistica().calcularCoeficienteEfectividad()*salarioMax, salarioMin);
     	
+    }
+
+    public Jugador(String id, String nombre, float peso, float altura, Equipo equipo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.peso = peso;
+        this.altura = altura;
+        this.equipo = equipo;
+        this.lesionado = false;
+        this.misLesiones = new ArrayList<>(); // Inicializa lista vacía
+        this.estadistica = new StatsJugador(
+            nombre,                // jugador
+            0.0f,                  // puntosPorPartido
+            0.0f,                  // rebotesPorPartido
+            0.0f,                  // asistenciasPorPartido
+            0.0f,                  // porcentajeTirosLibres
+            0.0f,                  // porcentajeTirosCampo
+            0.0f                   // porcentajeTriples
+        );
+        this.salario = salarioMin; // Calcula salario inicial basado en stats
     }
 }
