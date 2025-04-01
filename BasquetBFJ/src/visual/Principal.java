@@ -132,7 +132,13 @@ public class Principal extends JFrame {
         		RegJug.setVisible(true);
         	}
         });
-        btnListarJugadores.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Listar Jugadores"));
+        btnListarJugadores.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		ListJugador Listjugador = new ListJugador();
+        		Listjugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        		Listjugador.setVisible(true);
+        	}
+        });
 
         panelJugadores.add(Box.createVerticalStrut(200));
         panelJugadores.add(btnAgregarJugador);
