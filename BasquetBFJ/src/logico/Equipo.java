@@ -1,10 +1,9 @@
 package logico;
-
+import java.awt.Color;
 import java.util.ArrayList;
-
 public class Equipo {
-	
-    private String id;
+
+	private String id;
     private String nombre;
     private String ciudad;
     private ArrayList<Juego> juegos;
@@ -12,9 +11,21 @@ public class Equipo {
     private int win;
     private int lose;
     private float nomina;
+    private Color color;
+    //aqui esta el color
 
-    public Equipo() {
+    public Equipo(String id, String nombre, Color color) {
+        this.id = id;
+        this.nombre = nombre;
+        this.color = color;
+        this.ciudad = "";
+        this.juegos = new ArrayList<>();
+        this.jugadores = new ArrayList<>();
+        this.win = 0;
+        this.lose = 0;
+        this.nomina = 0.0f;
     }
+
 
     public String getId() {
         return id;
@@ -72,7 +83,23 @@ public class Equipo {
         this.lose = lose;
     }
     
-    public float CalcularNomina() {
+    public float getNomina() {
+		return nomina;
+	}
+
+	public void setNomina(float nomina) {
+		this.nomina = nomina;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+	public float CalcularNomina() {
     	float nomina = 0;
     	
     	for(Jugador jugador : jugadores) {
