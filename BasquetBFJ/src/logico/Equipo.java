@@ -12,7 +12,6 @@ public class Equipo {
     private int lose;
     private float nomina;
     private Color color;
-    //aqui esta el color
 
     public Equipo(String id, String nombre, Color color) {
         this.id = id;
