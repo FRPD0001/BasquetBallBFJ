@@ -42,9 +42,9 @@ public class ListJugador extends JDialog {
         buttonPane.setBackground(colorClaro);
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-        JButton closeButton = new JButton("Cerrar");
+        JButton closeButton = new JButton("OK");
         closeButton.setFont(new Font("Arial", Font.BOLD, 12));
-        closeButton.setBackground(new Color(178, 34, 34));
+        closeButton.setBackground(new Color(34, 139, 34));
         closeButton.setForeground(Color.WHITE);
         closeButton.addActionListener(e -> dispose());
         buttonPane.add(closeButton);

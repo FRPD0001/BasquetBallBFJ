@@ -65,10 +65,6 @@ public class ListEquipo extends JDialog {
         JButton okButton = crearBoton("OK", new Color(34, 139, 34));
         okButton.addActionListener(e -> dispose());
         buttonPane.add(okButton);
-
-        JButton cancelButton = crearBoton("Cancelar", new Color(178, 34, 34));
-        cancelButton.addActionListener(e -> dispose());
-        buttonPane.add(cancelButton);
     }
 
     private void cargarEquipos() {
