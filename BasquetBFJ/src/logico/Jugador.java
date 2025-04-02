@@ -86,7 +86,7 @@ public class Jugador {
         this.peso = peso;
         this.altura = altura;
         this.equipo = equipo;
-        this.lesionado = false;
+        this.setLesionado(false);
         this.misLesiones = new ArrayList<>(); // Inicializa lista vacía
         this.estadistica = new StatsJugador(
             nombre,                // jugador
@@ -97,6 +97,27 @@ public class Jugador {
             0.0f,                  // porcentajeTirosCampo
             0.0f                   // porcentajeTriples
         );
-        this.salario = salarioMin; // Calcula salario inicial basado en stats
+        this.setSalario(salarioMin); // Calcula salario inicial basado en stats
     }
+
+	public boolean isLesionado() {
+		return lesionado;
+	}
+
+	public void setLesionado(boolean lesionado) {
+		this.lesionado = lesionado;
+	}
+
+	public float getSalario() {
+		return salario;
+	}
+
+	public void setSalario(float salario) {
+		this.salario = salario;
+	}
+	
+	 public void agregarLesion(Lesion lesion) {
+	        misLesiones.add(lesion);
+	    }
+	
 }

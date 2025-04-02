@@ -11,7 +11,7 @@ public class Lesion {
     private String lesion;
     private boolean lesionado;
     
-	private Lesion(String id, Jugador jugador, LocalDate fecRec, LocalDate fecLes, String lesion, boolean lesionado) {
+	public Lesion(String id, Jugador jugador, LocalDate fecRec, LocalDate fecLes, String lesion, boolean lesionado) {
 		super();
 		this.id = id;
 		this.jugador = jugador;
