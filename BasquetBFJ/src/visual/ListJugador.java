@@ -35,6 +35,9 @@ public class ListJugador extends JDialog {
 
         JScrollPane scrollPane = new JScrollPane(tableJugadores);
         contentPanel.add(scrollPane, BorderLayout.CENTER);
+        
+        tableJugadores.getTableHeader().setBackground(colorOscuro);
+        tableJugadores.getTableHeader().setForeground(Color.WHITE);
 
         // Panel de botones con color dinámico
         JPanel buttonPane = new JPanel();
