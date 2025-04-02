@@ -33,7 +33,6 @@ public class RegJugador extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // Aplicar colores a la interfaz
         contentPanel.setBackground(colorSecundario);
         
         JLabel lblID = new JLabel("ID:");
