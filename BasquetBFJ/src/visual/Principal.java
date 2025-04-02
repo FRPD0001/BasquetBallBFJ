@@ -1,6 +1,7 @@
 package visual;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -10,19 +11,41 @@ public class Principal extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel panelAjustes, panelEquipos, panelJugadores, panelCalendario, panelIzquierdo, panelDerecho, panelBotones;
     private JLabel lblImagen;
-    private Color[] coloresOscuros = {new Color(100, 149, 237), Color.RED, Color.GREEN, Color.YELLOW};
-    private Color[] coloresClaros = {new Color(200, 220, 255), new Color(255, 200, 200), new Color(200, 255, 200), new Color(255, 255, 200)};
+    private Color[] coloresOscuros = {new Color(147, 112, 219), Color.RED, new Color(17, 115, 68), new Color(100, 149, 237)};
+    private Color[] coloresClaros = {new Color(216, 191, 216), new Color(255, 200, 200), new Color(200, 255, 200), new Color(200, 220, 255)};
     private String[] imagenesFondo = {
+        "media/fondoProyecto5.jpeg",
         "media/fondoProyecto1.jpg",
         "media/fondoProyecto2.jpg",
         "media/fondoProyecto3.jpg",
-        "media/fondoProyecto4.jpg"
+        "media/fondoProyecto4.jpg",
     };
     private int colorIndex = 0;
     private int fondoIndex = 0;
     private JPanel panelActual;
     private JButton btnAgregarEquipo, btnListarEquipos, btnAgregarJugador, btnListarJugadores;
     private JButton btnGenerarCalendario, btnVerCalendario, btnEmpezarJuegos;
+
+    // Clase para bordes redondeados
+    class RoundedBorder implements Border {
+        private int radius;
+        
+        RoundedBorder(int radius) {
+            this.radius = radius;
+        }
+        
+        public Insets getBorderInsets(Component c) {
+            return new Insets(this.radius+1, this.radius+1, this.radius+2, this.radius);
+        }
+        
+        public boolean isBorderOpaque() {
+            return true;
+        }
+        
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            g.drawRoundRect(x, y, width-1, height-1, radius, radius);
+        }
+    }
 
     public Principal() {
         setTitle("Basketball Manager");
@@ -41,23 +64,12 @@ public class Principal extends JFrame {
         panelBotones.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
         panelBotones.setBackground(coloresClaros[colorIndex]);
 
-        JButton btnEquipos = new JButton("Equipos");
-        JButton btnJugadores = new JButton("Jugadores");
-        JButton btnCalendario = new JButton("Calendario");
-        JButton btnAjustes = new JButton("Ajustes");
+        JButton btnEquipos = crearBotonModerno("Equipos");
+        JButton btnJugadores = crearBotonModerno("Jugadores");
+        JButton btnCalendario = crearBotonModerno("Calendario");
+        JButton btnAjustes = crearBotonModerno("Ajustes");
 
-        Dimension buttonSize = new Dimension(280, 80);
         JButton[] botones = {btnEquipos, btnJugadores, btnCalendario, btnAjustes};
-
-        for (JButton btn : botones) {
-            btn.setPreferredSize(buttonSize);
-            btn.setMaximumSize(buttonSize);
-            btn.setBackground(coloresOscuros[colorIndex]);
-            btn.setForeground(Color.WHITE);
-            btn.setFont(new Font("Times new roman", Font.BOLD, 18));
-            btn.setFocusPainted(false);
-            btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        }
 
         panelBotones.add(Box.createVerticalStrut(50));
         panelBotones.add(btnEquipos);
@@ -85,30 +97,26 @@ public class Principal extends JFrame {
             }
         });
 
-        // Panel de Equipos
+        // Panel de Equipos (submenú)
         panelEquipos = new JPanel();
         panelEquipos.setLayout(new BoxLayout(panelEquipos, BoxLayout.Y_AXIS));
         panelEquipos.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
-        panelEquipos.setBackground(coloresClaros[colorIndex]);
+        panelEquipos.setBackground(coloresOscuros[colorIndex]);
         panelEquipos.setPreferredSize(new Dimension(350, getHeight()));
 
-        btnAgregarEquipo = new JButton("Agregar Equipo");
-        btnListarEquipos = new JButton("Listar Equipos");
+        btnAgregarEquipo = crearBotonSubmenuModerno("Agregar Equipo");
+        btnListarEquipos = crearBotonSubmenuModerno("Listar Equipos");
 
         JButton[] botonesEquipos = {btnAgregarEquipo, btnListarEquipos};
 
-        for (JButton btn : botonesEquipos) {
-            configurarBoton(btn);
-        }
-
         btnAgregarEquipo.addActionListener(e -> {
-            RegEquipo regEquipo = new RegEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+            RegEquipo regEquipo = new RegEquipo(coloresClaros[colorIndex], coloresOscuros[colorIndex]);
             regEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             regEquipo.setVisible(true);
         });
 
         btnListarEquipos.addActionListener(e -> {
-            ListEquipo listEquipo = new ListEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+            ListEquipo listEquipo = new ListEquipo(coloresClaros[colorIndex], coloresOscuros[colorIndex]);
             listEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             listEquipo.setVisible(true);
         });
@@ -118,58 +126,33 @@ public class Principal extends JFrame {
         panelEquipos.add(Box.createVerticalStrut(300));
         panelEquipos.add(btnListarEquipos);
 
+        // Panel de Jugadores (submenú)
         panelJugadores = new JPanel();
         panelJugadores.setLayout(new BoxLayout(panelJugadores, BoxLayout.Y_AXIS));
         panelJugadores.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
-        panelJugadores.setBackground(coloresClaros[colorIndex]);
+        panelJugadores.setBackground(coloresOscuros[colorIndex]);
         panelJugadores.setPreferredSize(new Dimension(350, getHeight()));
 
-        btnAgregarJugador = new JButton("Agregar Jugador");
-        btnListarJugadores = new JButton("Listar Jugadores");
+        btnAgregarJugador = crearBotonSubmenuModerno("Agregar Jugador");
+        btnListarJugadores = crearBotonSubmenuModerno("Listar Jugadores");
 
-        // NUEVOS BOTONES PARA LESIONES
-        JButton btnAgregarLesion = new JButton("Agregar Lesión");
-        JButton btnListarLesiones = new JButton("Listar Lesiones");
+        JButton btnAgregarLesion = crearBotonSubmenuModerno("Agregar Lesión");
+        JButton btnListarLesiones = crearBotonSubmenuModerno("Listar Lesiones");
 
         JButton[] botonesJugadores = {btnAgregarJugador, btnListarJugadores, btnAgregarLesion, btnListarLesiones};
 
-        for (JButton btn : botonesJugadores) {
-            configurarBoton(btn);
-        }
-
-        btnAgregarJugador.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                RegJugador regJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-                regJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                regJug.setVisible(true);
-            }
+        btnAgregarJugador.addActionListener(e -> {
+            RegJugador regJug = new RegJugador(coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+            regJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            regJug.setVisible(true);
         });
 
-        btnListarJugadores.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ListJugador listJugador = new ListJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-                listJugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                listJugador.setVisible(true);
-            }
+        btnListarJugadores.addActionListener(e -> {
+            ListJugador listJugador = new ListJugador(coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+            listJugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            listJugador.setVisible(true);
         });
 
-        btnAgregarLesion.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              /*  RegLesion regLesion = new RegLesion(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-                regLesion.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                regLesion.setVisible(true); */
-            }
-        });
-
-        btnListarLesiones.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              /*  ListLesion listLesion = new ListLesion(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-                listLesion.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                listLesion.setVisible(true); */
-            }
-        });
-
-        // Agregar los botones al submenú de jugadores
         panelJugadores.add(Box.createVerticalStrut(50));
         panelJugadores.add(btnAgregarJugador);
         panelJugadores.add(Box.createVerticalStrut(150));
@@ -179,22 +162,18 @@ public class Principal extends JFrame {
         panelJugadores.add(Box.createVerticalStrut(150));
         panelJugadores.add(btnListarLesiones);
 
-        // Panel de Calendario (nuevo)
+        // Panel de Calendario (submenú)
         panelCalendario = new JPanel();
         panelCalendario.setLayout(new BoxLayout(panelCalendario, BoxLayout.Y_AXIS));
         panelCalendario.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
-        panelCalendario.setBackground(coloresClaros[colorIndex]);
+        panelCalendario.setBackground(coloresOscuros[colorIndex]);
         panelCalendario.setPreferredSize(new Dimension(350, getHeight()));
 
-        btnGenerarCalendario = new JButton("Generar Calendario");
-        btnVerCalendario = new JButton("Ver Calendario");
-        btnEmpezarJuegos = new JButton("Empezar Juegos");
+        btnGenerarCalendario = crearBotonSubmenuModerno("Generar Calendario");
+        btnVerCalendario = crearBotonSubmenuModerno("Ver Calendario");
+        btnEmpezarJuegos = crearBotonSubmenuModerno("Empezar Juegos");
 
         JButton[] botonesCalendario = {btnGenerarCalendario, btnVerCalendario, btnEmpezarJuegos};
-
-        for (JButton btn : botonesCalendario) {
-            configurarBoton(btn);
-        }
 
         btnGenerarCalendario.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Generar Calendario"));
         btnVerCalendario.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Ver Calendario"));
@@ -207,21 +186,17 @@ public class Principal extends JFrame {
         panelCalendario.add(Box.createVerticalStrut(150));
         panelCalendario.add(btnEmpezarJuegos);
 
-        // Panel de Ajustes
+        // Panel de Ajustes (submenú)
         panelAjustes = new JPanel();
         panelAjustes.setLayout(new BoxLayout(panelAjustes, BoxLayout.Y_AXIS));
         panelAjustes.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
-        panelAjustes.setBackground(coloresClaros[colorIndex]);
+        panelAjustes.setBackground(coloresOscuros[colorIndex]);
         panelAjustes.setPreferredSize(new Dimension(350, getHeight()));
 
-        JButton btnCambiarColor = new JButton("Cambiar Color");
-        JButton btnCambiarFondo = new JButton("Cambiar Fondo");
+        JButton btnCambiarColor = crearBotonSubmenuModerno("Cambiar Color");
+        JButton btnCambiarFondo = crearBotonSubmenuModerno("Cambiar Fondo");
 
         JButton[] botonesAjustes = {btnCambiarColor, btnCambiarFondo};
-
-        for (JButton btn : botonesAjustes) {
-            configurarBoton(btn);
-        }
 
         btnCambiarColor.addActionListener(e -> cambiarColor(botones, botonesAjustes, botonesEquipos, botonesJugadores, botonesCalendario));
         btnCambiarFondo.addActionListener(e -> cambiarImagenFondo());
@@ -249,6 +224,107 @@ public class Principal extends JFrame {
         getContentPane().add(mainSplitPane);
     }
 
+    // Método para crear botones principales modernos
+    private JButton crearBotonModerno(String texto) {
+        JButton boton = new JButton(texto) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                
+                // Suavizado de bordes
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Sombra
+                g2.setColor(new Color(0, 0, 0, 255));
+                g2.fillRoundRect(1, 3, getWidth()-2, getHeight()-2, 15, 15);
+                
+                // Fondo del botón
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth()-2, getHeight()-2, 15, 15);
+                
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        
+        boton.setContentAreaFilled(false);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        boton.setOpaque(false);
+        
+        boton.setPreferredSize(new Dimension(280, 60));
+        boton.setMaximumSize(new Dimension(280, 60));
+        boton.setBackground(coloresOscuros[colorIndex]);
+        boton.setForeground(Color.WHITE);
+        boton.setFont(new Font("Arial", Font.BOLD, 16));
+        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // Efecto hover
+        boton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                boton.setBackground(coloresOscuros[colorIndex].darker());
+                boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                boton.setBackground(coloresOscuros[colorIndex]);
+            }
+        });
+        
+        return boton;
+    }
+
+    // Método para crear botones de submenú modernos
+    private JButton crearBotonSubmenuModerno(String texto) {
+        JButton boton = new JButton(texto) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                
+                // Suavizado de bordes
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Fondo del botón
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+                
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        
+        boton.setContentAreaFilled(false);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        boton.setOpaque(false);
+        
+        boton.setPreferredSize(new Dimension(260, 50));
+        boton.setMaximumSize(new Dimension(260, 50));
+        boton.setBackground(coloresClaros[colorIndex]);
+        boton.setForeground(Color.BLACK);
+        boton.setFont(new Font("Arial", Font.BOLD, 14));
+        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        boton.setBorder(new RoundedBorder(10));
+        
+        // Efecto hover
+        boton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                boton.setBackground(coloresClaros[colorIndex].brighter());
+                boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                boton.setBackground(coloresClaros[colorIndex]);
+            }
+        });
+        
+        return boton;
+    }
+
     private void mostrarSubmenu(JPanel panel) {
         JSplitPane splitPane = (JSplitPane) panelIzquierdo.getParent();
         
@@ -265,51 +341,43 @@ public class Principal extends JFrame {
         splitPane.repaint();
     }
 
-    private void configurarBoton(JButton boton) {
-        boton.setPreferredSize(new Dimension(280, 80));
-        boton.setMaximumSize(new Dimension(280, 80));
-        boton.setBackground(coloresOscuros[colorIndex]);
-        boton.setForeground(Color.WHITE);
-        boton.setFont(new Font("Arial", Font.BOLD, 14));
-        boton.setFocusPainted(false);
-        boton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    }
-
     private void cambiarColor(JButton[] botones, JButton[] botonesAjustes, JButton[] botonesEquipos, JButton[] botonesJugadores, JButton[] botonesCalendario) {
         colorIndex = (colorIndex + 1) % coloresOscuros.length;
         
         // Actualizar botones principales
         for (JButton btn : botones) {
             btn.setBackground(coloresOscuros[colorIndex]);
+            btn.setForeground(Color.WHITE);
         }
         
-        // Actualizar botones de ajustes
+        // Actualizar botones de submenú
         for (JButton btn : botonesAjustes) {
-            btn.setBackground(coloresOscuros[colorIndex]);
+            btn.setBackground(coloresClaros[colorIndex]);
+            btn.setForeground(Color.BLACK);
         }
         
-        // Actualizar botones de equipos
         for (JButton btn : botonesEquipos) {
-            btn.setBackground(coloresOscuros[colorIndex]);
+            btn.setBackground(coloresClaros[colorIndex]);
+            btn.setForeground(Color.BLACK);
         }
         
-        // Actualizar botones de jugadores
         for (JButton btn : botonesJugadores) {
-            btn.setBackground(coloresOscuros[colorIndex]);
+            btn.setBackground(coloresClaros[colorIndex]);
+            btn.setForeground(Color.BLACK);
         }
         
-        // Actualizar botones de calendario
         for (JButton btn : botonesCalendario) {
-            btn.setBackground(coloresOscuros[colorIndex]);
+            btn.setBackground(coloresClaros[colorIndex]);
+            btn.setForeground(Color.BLACK);
         }
         
         // Actualizar fondos de los paneles
         panelIzquierdo.setBackground(coloresClaros[colorIndex]);
         panelBotones.setBackground(coloresClaros[colorIndex]);
-        panelAjustes.setBackground(coloresClaros[colorIndex]);
-        panelEquipos.setBackground(coloresClaros[colorIndex]);
-        panelJugadores.setBackground(coloresClaros[colorIndex]);
-        panelCalendario.setBackground(coloresClaros[colorIndex]);
+        panelAjustes.setBackground(coloresOscuros[colorIndex]);
+        panelEquipos.setBackground(coloresOscuros[colorIndex]);
+        panelJugadores.setBackground(coloresOscuros[colorIndex]);
+        panelCalendario.setBackground(coloresOscuros[colorIndex]);
     }
 
     private void cambiarImagenFondo() {
