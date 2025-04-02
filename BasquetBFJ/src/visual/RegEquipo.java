@@ -1,5 +1,6 @@
 package visual;
 
+import java.awt.event.*;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -14,13 +15,20 @@ public class RegEquipo extends JDialog {
     private JLabel lblColorSeleccionado;
     private Color colorSeleccionado;
     private JLabel lblId;
+    private JComboBox<String> cmbCiudad;
     private Equipo aux; // Para edición
 
-    public RegEquipo( Color colorOscuro, Color colorClaro) {
+    // Lista de países/ciudades disponibles
+   private final String[] CIUDADES = {
+    		"Estados Unidos", "Canada", "Mexico","Republica Dominicana",
+    		"Puerto Rico","Cuba","Argentina","Venezuela","Chile", "Brazil"
+    		};
+
+    public RegEquipo(Color colorOscuro, Color colorClaro) {
         setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
         this.aux = aux;
         setTitle(aux == null ? "Registrar Equipo" : "Modificar Equipo");
-        setBounds(100, 100, 500, 250);
+        setBounds(100, 100, 500, 300);
         setLocationRelativeTo(null);
         setModal(true);
         getContentPane().setLayout(new BorderLayout());
@@ -43,6 +51,15 @@ public class RegEquipo extends JDialog {
         lblIdValue.setText(aux == null ? "E-" + SerieNacional.getInstance().getGenEquipo() : aux.getId());
         contentPanel.add(lblIdValue);
 
+        JLabel lblCiudad = new JLabel("Ciudad:");
+        lblCiudad.setBounds(30, 50, 60, 20);
+        lblCiudad.setFont(new Font("Arial", Font.BOLD, 12));
+        contentPanel.add(lblCiudad);
+
+        cmbCiudad = new JComboBox<>(CIUDADES);
+        cmbCiudad.setBounds(90, 50, 150, 25);
+        contentPanel.add(cmbCiudad);
+
         JLabel lblNombre = new JLabel("Nombre:");
         lblNombre.setBounds(250, 20, 60, 20);
         lblNombre.setFont(new Font("Arial", Font.BOLD, 12));
@@ -54,30 +71,36 @@ public class RegEquipo extends JDialog {
         txtNombre.setColumns(10);
 
         JButton btnSeleccionarColor = new JButton("Seleccionar Color");
-        btnSeleccionarColor.setBounds(50, 80, 170, 30);
+        btnSeleccionarColor.setBounds(50, 110, 170, 30); 
         btnSeleccionarColor.setFont(new Font("Arial", Font.BOLD, 12));
         btnSeleccionarColor.setBackground(colorOscuro);
         btnSeleccionarColor.setForeground(Color.WHITE);
         contentPanel.add(btnSeleccionarColor);
 
         lblColorSeleccionado = new JLabel(" ");
-        lblColorSeleccionado.setBounds(250, 80, 60, 30);
+        lblColorSeleccionado.setBounds(250, 110, 60, 30);
         lblColorSeleccionado.setOpaque(true);
         lblColorSeleccionado.setBackground(Color.WHITE);
         lblColorSeleccionado.setBorder(new LineBorder(Color.BLACK));
         contentPanel.add(lblColorSeleccionado);
 
-        // Cargar datos si estamos editando
+        
         if (aux != null) {
             txtNombre.setText(aux.getNombre());
             lblColorSeleccionado.setBackground(aux.getColor());
             colorSeleccionado = aux.getColor();
+            if (aux.getCiudad() != null && !aux.getCiudad().isEmpty()) {
+                cmbCiudad.setSelectedItem(aux.getCiudad());
+            }
         }
 
-        btnSeleccionarColor.addActionListener(e -> {
-            colorSeleccionado = JColorChooser.showDialog(null, "Elige un color", Color.WHITE);
-            if (colorSeleccionado != null) {
-                lblColorSeleccionado.setBackground(colorSeleccionado);
+        btnSeleccionarColor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                colorSeleccionado = JColorChooser.showDialog(null, "Elige un color", Color.WHITE);
+                if (colorSeleccionado != null) {
+                    lblColorSeleccionado.setBackground(colorSeleccionado);
+                }
             }
         });
 
@@ -90,12 +113,15 @@ public class RegEquipo extends JDialog {
         okButton.setFont(new Font("Arial", Font.BOLD, 12));
         okButton.setBackground(new Color(34, 139, 34));
         okButton.setForeground(Color.WHITE);
-        okButton.addActionListener(e -> {
-            if (validarCampos()) {
-                if (aux == null) {
-                    registrarEquipo(lblIdValue.getText());
-                } else {
-                    modificarEquipo();
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (validarCampos()) {
+                    if (aux == null) {
+                        registrarEquipo(lblIdValue.getText());
+                    } else {
+                        modificarEquipo();
+                    }
                 }
             }
         });
@@ -106,7 +132,12 @@ public class RegEquipo extends JDialog {
         cancelButton.setFont(new Font("Arial", Font.BOLD, 12));
         cancelButton.setBackground(new Color(178, 34, 34));
         cancelButton.setForeground(Color.WHITE);
-        cancelButton.addActionListener(e -> dispose());
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
         buttonPane.add(cancelButton);
     }
 
@@ -125,6 +156,7 @@ public class RegEquipo extends JDialog {
     private void registrarEquipo(String id) {
         try {
             Equipo nuevoEquipo = new Equipo(id, txtNombre.getText().trim(), colorSeleccionado);
+            nuevoEquipo.setCiudad((String) cmbCiudad.getSelectedItem());
             SerieNacional.getInstance().agregarEquipo(nuevoEquipo);
 
             JOptionPane.showMessageDialog(this,
@@ -142,6 +174,7 @@ public class RegEquipo extends JDialog {
         try {
             aux.setNombre(txtNombre.getText().trim());
             aux.setColor(colorSeleccionado);
+            aux.setCiudad((String) cmbCiudad.getSelectedItem());
 
             JOptionPane.showMessageDialog(this,
                     "Equipo modificado exitosamente!",
