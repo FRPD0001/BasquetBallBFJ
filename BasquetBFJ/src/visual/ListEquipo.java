@@ -37,13 +37,22 @@ public class ListEquipo extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout());
 
-        String[] columnNames = {"ID", "Nombre", "Color Principal", "Cant. Jugadores", "J. Ganados", "J. Perdidos"};
+        String[] columnNames = {"ID", "Nombre", "Pais", "Color", "Cant. Jugadores", "Winrate %"};
         tableModel = new DefaultTableModel(null, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
+            
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 3) { // Columna de Color
+                    return Color.class;
+                }
+                return super.getColumnClass(columnIndex);
+            }
         };
+        
         tableEquipos = new JTable(tableModel);
         tableEquipos.setRowHeight(25);
         tableEquipos.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -51,35 +60,37 @@ public class ListEquipo extends JDialog {
         tableEquipos.getTableHeader().setBackground(colorOscuro);
         tableEquipos.getTableHeader().setForeground(Color.WHITE);
 
-        JScrollPane scrollPane = new JScrollPane(tableEquipos);
-        contentPanel.add(scrollPane, BorderLayout.CENTER);
-
-        listaEquipos = new ArrayList<>(SerieNacional.getInstance().getMisEquipos());
-        listaOriginal = new ArrayList<>(listaEquipos);
-        cargarEquipos();
-
-        JPanel buttonPane = new JPanel();
-        buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        buttonPane.setBackground(colorClaro);
-        getContentPane().add(buttonPane, BorderLayout.SOUTH);
-
-        cbFiltro = new JComboBox<>(new String[]{"Filtrar", "Nombre (A-Z)", "Cant. Jugadores (Mayor-Menor)", "J. Ganados (Mayor-Menor)", "J. Perdidos (Mayor-Menor)"});
-        cbFiltro.addActionListener(new ActionListener() {
+        // Renderer personalizado para Winrate y Cant. Jugadores
+        DefaultTableCellRenderer customRenderer = new DefaultTableCellRenderer() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                ordenarTabla((String) cbFiltro.getSelectedItem());
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                // Para la columna de Winrate (columna 5)
+                if (column == 5) {
+                    if (value instanceof Float) {
+                        float winrate = (Float) value;
+                        if (winrate == 0.0f) {
+                            value = "N/A";
+                        } else {
+                            value = String.format("%.2f%%", winrate);
+                        }
+                    }
+                }
+                // Para la columna de Cant. Jugadores (columna 4)
+                else if (column == 4) {
+                    if (value instanceof Integer && (Integer) value == 0) {
+                        value = "N/A";
+                    }
+                }
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             }
-        });
-        buttonPane.add(cbFiltro);
+        };
 
-        JButton okButton = crearBoton("OK", new Color(34, 139, 34));
-        okButton.addActionListener(e -> dispose());
-        buttonPane.add(okButton);
-    }
+        // Aplicar el renderer personalizado a las columnas correspondientes
+        tableEquipos.getColumnModel().getColumn(4).setCellRenderer(customRenderer);
+        tableEquipos.getColumnModel().getColumn(5).setCellRenderer(customRenderer);
 
-    private void cargarEquipos() {
-        tableModel.setRowCount(0);
-        tableEquipos.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
+        // Renderer para la columna de Color
+        tableEquipos.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 if (value instanceof Color) {
@@ -94,14 +105,53 @@ public class ListEquipo extends JDialog {
             }
         });
 
+        JScrollPane scrollPane = new JScrollPane(tableEquipos);
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
+
+        listaEquipos = new ArrayList<>(SerieNacional.getInstance().getMisEquipos());
+        listaOriginal = new ArrayList<>(listaEquipos);
+        cargarEquipos();
+
+        JPanel buttonPane = new JPanel();
+        buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPane.setBackground(colorClaro);
+        getContentPane().add(buttonPane, BorderLayout.SOUTH);
+
+        cbFiltro = new JComboBox<>(new String[]{"Filtrar", "Nombre (A-Z)", "Cant. Jugadores (Mayor-Menor)", "Winrate (Mayor-Menor)"});
+        cbFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ordenarTabla((String) cbFiltro.getSelectedItem());
+            }
+        });
+        buttonPane.add(cbFiltro);
+
+        JButton okButton = crearBoton("OK", new Color(34, 139, 34));
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+        buttonPane.add(okButton);
+    }
+
+    private void cargarEquipos() {
+        tableModel.setRowCount(0);
+
         for (Equipo equipo : listaEquipos) {
+            // Calcular valores
+            String cantJugadores = equipo.getJugadores().size() == 0 ? "N/A" : String.valueOf(equipo.getJugadores().size());
+            float winrate = SerieNacional.getInstance().Winrate(equipo);
+            String winrateStr = winrate == 0.0f ? "N/A" : String.valueOf(winrate);
+            
             tableModel.addRow(new Object[]{
                 equipo.getId(),
                 equipo.getNombre(),
+                equipo.getCiudad(),
                 equipo.getColor(),
-                equipo.getJugadores().size(),
-                equipo.getWin(),
-                equipo.getLose()
+                equipo.getJugadores().size(), // El renderer se encargará de mostrarlo como "N/A" si es 0
+                winrate // El renderer se encargará de mostrarlo como "N/A" si es 0.0
             });
         }
     }
@@ -123,18 +173,14 @@ public class ListEquipo extends JDialog {
                     return Integer.compare(e2.getJugadores().size(), e1.getJugadores().size());
                 }
             });
-        } else if (criterio.equals("J. Ganados (Mayor-Menor)")) {
+        } else if (criterio.equals("Winrate (Mayor-Menor)")) {
             Collections.sort(listaEquipos, new Comparator<Equipo>() {
                 @Override
                 public int compare(Equipo e1, Equipo e2) {
-                    return Integer.compare(e2.getWin(), e1.getWin());
-                }
-            });
-        } else if (criterio.equals("J. Perdidos (Mayor-Menor)")) {
-            Collections.sort(listaEquipos, new Comparator<Equipo>() {
-                @Override
-                public int compare(Equipo e1, Equipo e2) {
-                    return Integer.compare(e2.getLose(), e1.getLose());
+                    return Float.compare(
+                        SerieNacional.getInstance().Winrate(e2),
+                        SerieNacional.getInstance().Winrate(e1)
+                    );
                 }
             });
         }
