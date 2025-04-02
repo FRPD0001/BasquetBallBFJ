@@ -156,9 +156,9 @@ public class Principal extends JFrame {
         
         btnAgregarLesion.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              /*  RegLesion regLesion = new RegLesion(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                RegLesion regLesion = new RegLesion(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
                 regLesion.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                regLesion.setVisible(true); */
+                regLesion.setVisible(true);
             }
         });
 
