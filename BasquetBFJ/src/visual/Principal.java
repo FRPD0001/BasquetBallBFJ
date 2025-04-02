@@ -110,13 +110,13 @@ public class Principal extends JFrame {
         JButton[] botonesEquipos = {btnAgregarEquipo, btnListarEquipos};
 
         btnAgregarEquipo.addActionListener(e -> {
-            RegEquipo regEquipo = new RegEquipo(coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+            RegEquipo regEquipo = new RegEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
             regEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             regEquipo.setVisible(true);
         });
 
         btnListarEquipos.addActionListener(e -> {
-            ListEquipo listEquipo = new ListEquipo(coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+            ListEquipo listEquipo = new ListEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
             listEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             listEquipo.setVisible(true);
         });
@@ -142,24 +142,24 @@ public class Principal extends JFrame {
         JButton[] botonesJugadores = {btnAgregarJugador, btnListarJugadores, btnAgregarLesion, btnListarLesiones};
 
         btnAgregarJugador.addActionListener(e -> {
-            RegJugador regJug = new RegJugador(coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+            RegJugador regJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
             regJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             regJug.setVisible(true);
         });
 
         btnListarJugadores.addActionListener(e -> {
-            ListJugador listJugador = new ListJugador(coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+            ListJugador listJugador = new ListJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
             listJugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             listJugador.setVisible(true);
         });
 
-        panelJugadores.add(Box.createVerticalStrut(50));
+        panelJugadores.add(Box.createVerticalStrut(60));
         panelJugadores.add(btnAgregarJugador);
-        panelJugadores.add(Box.createVerticalStrut(150));
+        panelJugadores.add(Box.createVerticalStrut(160));
         panelJugadores.add(btnListarJugadores);
-        panelJugadores.add(Box.createVerticalStrut(150));
+        panelJugadores.add(Box.createVerticalStrut(160));
         panelJugadores.add(btnAgregarLesion);
-        panelJugadores.add(Box.createVerticalStrut(150));
+        panelJugadores.add(Box.createVerticalStrut(160));
         panelJugadores.add(btnListarLesiones);
 
         // Panel de Calendario (submenú)
