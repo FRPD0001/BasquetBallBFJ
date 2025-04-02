@@ -44,7 +44,7 @@ public class ListJugador extends JDialog {
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPane.setBackground(colorClaro);
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
-
+  
         JButton closeButton = new JButton("OK");
         closeButton.setFont(new Font("Arial", Font.BOLD, 12));
         closeButton.setBackground(new Color(34, 139, 34));
