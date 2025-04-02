@@ -5,6 +5,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import logico.SerieNacional;
 import logico.Equipo;
 
@@ -14,6 +20,9 @@ public class ListEquipo extends JDialog {
     private final JPanel contentPanel = new JPanel();
     private JTable tableEquipos;
     private DefaultTableModel tableModel;
+    private JComboBox<String> cbFiltro;
+    private List<Equipo> listaEquipos;
+    private List<Equipo> listaOriginal;
 
     public ListEquipo(Color colorOscuro, Color colorClaro) {
         setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
@@ -23,13 +32,11 @@ public class ListEquipo extends JDialog {
         setModal(true);
         getContentPane().setLayout(new BorderLayout());
 
-        // Aplicando colores recibidos de Principal
         contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         contentPanel.setBackground(colorClaro);
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout());
 
-        // Modelo de la tabla
         String[] columnNames = {"ID", "Nombre", "Color Principal", "Cant. Jugadores", "J. Ganados", "J. Perdidos"};
         tableModel = new DefaultTableModel(null, columnNames) {
             @Override
@@ -44,23 +51,26 @@ public class ListEquipo extends JDialog {
         tableEquipos.getTableHeader().setBackground(colorOscuro);
         tableEquipos.getTableHeader().setForeground(Color.WHITE);
 
-        // Alineación de celdas
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        for (int i = 0; i < tableEquipos.getColumnCount(); i++) {
-            tableEquipos.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-
         JScrollPane scrollPane = new JScrollPane(tableEquipos);
         contentPanel.add(scrollPane, BorderLayout.CENTER);
 
+        listaEquipos = new ArrayList<>(SerieNacional.getInstance().getMisEquipos());
+        listaOriginal = new ArrayList<>(listaEquipos);
         cargarEquipos();
 
-        // Panel de botones
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPane.setBackground(colorClaro);
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
+
+        cbFiltro = new JComboBox<>(new String[]{"Filtrar", "Nombre (A-Z)", "Cant. Jugadores (Mayor-Menor)", "J. Ganados (Mayor-Menor)", "J. Perdidos (Mayor-Menor)"});
+        cbFiltro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ordenarTabla((String) cbFiltro.getSelectedItem());
+            }
+        });
+        buttonPane.add(cbFiltro);
 
         JButton okButton = crearBoton("OK", new Color(34, 139, 34));
         okButton.addActionListener(e -> dispose());
@@ -69,19 +79,66 @@ public class ListEquipo extends JDialog {
 
     private void cargarEquipos() {
         tableModel.setRowCount(0);
-        for (Equipo equipo : SerieNacional.getInstance().getMisEquipos()) {
-            String id = equipo.getId();
-            String nombre = equipo.getNombre();
-            String colorPrincipal = String.format("RGB(%d, %d, %d)",
-                    equipo.getColor().getRed(),
-                    equipo.getColor().getGreen(),
-                    equipo.getColor().getBlue());
-            String cantJugadores = String.valueOf(equipo.getJugadores().size());
-            String juegosGanados = String.valueOf(equipo.getWin());
-            String juegosPerdidos = String.valueOf(equipo.getLose());
+        tableEquipos.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                if (value instanceof Color) {
+                    JLabel lblColor = new JLabel();
+                    lblColor.setOpaque(true);
+                    lblColor.setBackground((Color) value);
+                    lblColor.setPreferredSize(new Dimension(30, 20));
+                    lblColor.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+                    return lblColor;
+                }
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        });
 
-            tableModel.addRow(new Object[]{id, nombre, colorPrincipal, cantJugadores, juegosGanados, juegosPerdidos});
+        for (Equipo equipo : listaEquipos) {
+            tableModel.addRow(new Object[]{
+                equipo.getId(),
+                equipo.getNombre(),
+                equipo.getColor(),
+                equipo.getJugadores().size(),
+                equipo.getWin(),
+                equipo.getLose()
+            });
         }
+    }
+
+    private void ordenarTabla(String criterio) {
+        if (criterio.equals("Filtrar")) {
+            listaEquipos = new ArrayList<>(listaOriginal);
+        } else if (criterio.equals("Nombre (A-Z)")) {
+            Collections.sort(listaEquipos, new Comparator<Equipo>() {
+                @Override
+                public int compare(Equipo e1, Equipo e2) {
+                    return e1.getNombre().compareTo(e2.getNombre());
+                }
+            });
+        } else if (criterio.equals("Cant. Jugadores (Mayor-Menor)")) {
+            Collections.sort(listaEquipos, new Comparator<Equipo>() {
+                @Override
+                public int compare(Equipo e1, Equipo e2) {
+                    return Integer.compare(e2.getJugadores().size(), e1.getJugadores().size());
+                }
+            });
+        } else if (criterio.equals("J. Ganados (Mayor-Menor)")) {
+            Collections.sort(listaEquipos, new Comparator<Equipo>() {
+                @Override
+                public int compare(Equipo e1, Equipo e2) {
+                    return Integer.compare(e2.getWin(), e1.getWin());
+                }
+            });
+        } else if (criterio.equals("J. Perdidos (Mayor-Menor)")) {
+            Collections.sort(listaEquipos, new Comparator<Equipo>() {
+                @Override
+                public int compare(Equipo e1, Equipo e2) {
+                    return Integer.compare(e2.getLose(), e1.getLose());
+                }
+            });
+        }
+        cargarEquipos();
     }
 
     private JButton crearBoton(String texto, Color colorFondo) {
