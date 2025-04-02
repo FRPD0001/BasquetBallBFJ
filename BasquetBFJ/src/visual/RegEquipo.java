@@ -1,8 +1,6 @@
 package visual;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -18,17 +16,20 @@ public class RegEquipo extends JDialog {
     private JLabel lblId;
     private Equipo aux; // Para edición
 
-    public RegEquipo(Equipo aux) {
+    public RegEquipo( Color colorOscuro, Color colorClaro) {
+        setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
         this.aux = aux;
         setTitle(aux == null ? "Registrar Equipo" : "Modificar Equipo");
         setBounds(100, 100, 500, 250);
         setLocationRelativeTo(null);
         setModal(true);
         getContentPane().setLayout(new BorderLayout());
+
+        // Aplicando colores personalizados
         contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        contentPanel.setBackground(colorClaro);
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
-        contentPanel.setBackground(new Color(230, 240, 250));
 
         // Configuración de componentes
         lblId = new JLabel("ID:");
@@ -55,7 +56,7 @@ public class RegEquipo extends JDialog {
         JButton btnSeleccionarColor = new JButton("Seleccionar Color");
         btnSeleccionarColor.setBounds(50, 80, 170, 30);
         btnSeleccionarColor.setFont(new Font("Arial", Font.BOLD, 12));
-        btnSeleccionarColor.setBackground(new Color(100, 149, 237));
+        btnSeleccionarColor.setBackground(colorOscuro);
         btnSeleccionarColor.setForeground(Color.WHITE);
         contentPanel.add(btnSeleccionarColor);
 
@@ -82,7 +83,7 @@ public class RegEquipo extends JDialog {
 
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        buttonPane.setBackground(new Color(200, 220, 240));
+        buttonPane.setBackground(colorClaro);
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
         JButton okButton = new JButton(aux == null ? "Registrar" : "Modificar");
@@ -125,15 +126,15 @@ public class RegEquipo extends JDialog {
         try {
             Equipo nuevoEquipo = new Equipo(id, txtNombre.getText().trim(), colorSeleccionado);
             SerieNacional.getInstance().agregarEquipo(nuevoEquipo);
-            
-            JOptionPane.showMessageDialog(this, 
-                "Equipo registrado exitosamente!\nID: " + id, 
-                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+            JOptionPane.showMessageDialog(this,
+                    "Equipo registrado exitosamente!\nID: " + id,
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
             dispose();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, 
-                "Error al registrar equipo: " + e.getMessage(), 
-                "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Error al registrar equipo: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -141,15 +142,15 @@ public class RegEquipo extends JDialog {
         try {
             aux.setNombre(txtNombre.getText().trim());
             aux.setColor(colorSeleccionado);
-            
-            JOptionPane.showMessageDialog(this, 
-                "Equipo modificado exitosamente!", 
-                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+            JOptionPane.showMessageDialog(this,
+                    "Equipo modificado exitosamente!",
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
             dispose();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, 
-                "Error al modificar equipo: " + e.getMessage(), 
-                "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Error al modificar equipo: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

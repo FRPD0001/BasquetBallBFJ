@@ -102,13 +102,13 @@ public class Principal extends JFrame {
         }
 
         btnAgregarEquipo.addActionListener(e -> {
-            RegEquipo regEquipo = new RegEquipo(null);
+            RegEquipo regEquipo = new RegEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
             regEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             regEquipo.setVisible(true);
         });
 
         btnListarEquipos.addActionListener(e -> {
-            ListEquipo listEquipo = new ListEquipo();
+            ListEquipo listEquipo = new ListEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
             listEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             listEquipo.setVisible(true);
         });
@@ -136,14 +136,14 @@ public class Principal extends JFrame {
 
         btnAgregarJugador.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		RegJugador RegJug = new RegJugador(null);
+        		RegJugador RegJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
         		RegJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         		RegJug.setVisible(true);
         	}
         });
         btnListarJugadores.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		ListJugador Listjugador = new ListJugador();
+        		ListJugador Listjugador = new ListJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
         		Listjugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         		Listjugador.setVisible(true);
         	}

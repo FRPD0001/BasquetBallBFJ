@@ -19,19 +19,11 @@ public class RegJugador extends JDialog {
     private JTextField txtAltura;
     private JComboBox<Equipo> cbxEquipos;
     private Jugador aux; // Para saber si estamos modificando o registrando
-    
-    public static void main(String[] args) {
-        try {
-            RegJugador dialog = new RegJugador(null);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    public RegJugador(Jugador aux) {
-        this.aux = aux;
+    public RegJugador(Color colorPrincipal, Color colorSecundario) {
+
+        setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
+
         setTitle(aux == null ? "Registrar Jugador" : "Modificar Jugador");
         setModal(true);
         setBounds(100, 100, 480, 300);
@@ -41,6 +33,9 @@ public class RegJugador extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
+        // Aplicar colores a la interfaz
+        contentPanel.setBackground(colorSecundario);
+        
         JLabel lblID = new JLabel("ID:");
         lblID.setBounds(12, 13, 56, 16);
         contentPanel.add(lblID);
@@ -93,20 +88,22 @@ public class RegJugador extends JDialog {
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
+        // Botón "Registrar" o "Modificar" (Verde fijo)
         JButton okButton = new JButton(aux == null ? "Registrar" : "Modificar");
+        okButton.setFont(new Font("Arial", Font.BOLD, 12));
+        okButton.setBackground(new Color(34, 139, 34));
+        okButton.setForeground(Color.WHITE);
         okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (aux == null) {
-                    registrarJugador();
-                } else {
-                    modificarJugador();
-                }
-            }
+            public void actionPerformed(ActionEvent e) {registrarJugador();}
         });
         buttonPane.add(okButton);
         getRootPane().setDefaultButton(okButton);
 
+        // Botón "Cancelar" (Rojo fijo)
         JButton cancelButton = new JButton("Cancelar");
+        cancelButton.setFont(new Font("Arial", Font.BOLD, 12));
+        cancelButton.setBackground(new Color(178, 34, 34)); // Rojo
+        cancelButton.setForeground(Color.WHITE);
         cancelButton.addActionListener(e -> dispose());
         buttonPane.add(cancelButton);
 
@@ -171,71 +168,10 @@ public class RegJugador extends JDialog {
         }
     }
 
-    private void modificarJugador() {
-        if (!validarCampos()) return;
-
-        try {
-            aux.setNombre(txtNombre.getText().trim());
-            aux.setPeso(Float.parseFloat(txtPeso.getText().trim()));
-            aux.setAltura(Float.parseFloat(txtAltura.getText().trim()));
-            aux.setEquipo((Equipo) cbxEquipos.getSelectedItem());
-
-            JOptionPane.showMessageDialog(null, 
-                "Jugador modificado exitosamente.", 
-                "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
-            dispose();
-            // Aquí deberías actualizar la lista de jugadores si es necesario
-            // ListadoJugador.loadJugadores();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Por favor ingrese valores numéricos válidos para peso y altura.", 
-                "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error al modificar jugador: " + e.getMessage(), 
-                "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     private boolean validarCampos() {
-        String nombre = txtNombre.getText().trim();
-        String peso = txtPeso.getText().trim();
-        String altura = txtAltura.getText().trim();
-
-        if (nombre.isEmpty() || peso.isEmpty() || altura.isEmpty()) {
-            JOptionPane.showMessageDialog(null, 
-                "Por favor, complete todos los campos.", 
-                "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        try {
-            float pesoVal = Float.parseFloat(peso);
-            float alturaVal = Float.parseFloat(altura);
-            
-            if (pesoVal <= 0 || pesoVal > 300) {
-                JOptionPane.showMessageDialog(null, 
-                    "El peso debe estar entre 0 y 300 kg.", 
-                    "Error", JOptionPane.ERROR_MESSAGE);
-                return false;
-            }
-            
-            if (alturaVal <= 0 || alturaVal > 3) {
-                JOptionPane.showMessageDialog(null, 
-                    "La altura debe estar entre 0 y 3 metros.", 
-                    "Error", JOptionPane.ERROR_MESSAGE);
-                return false;
-            }
-            
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Peso y altura deben ser valores numéricos.", 
-                "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        return true;
+        return !txtNombre.getText().trim().isEmpty() &&
+               !txtPeso.getText().trim().isEmpty() &&
+               !txtAltura.getText().trim().isEmpty();
     }
 
     private void clean() {

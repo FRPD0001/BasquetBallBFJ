@@ -9,11 +9,14 @@ import logico.SerieNacional;
 import logico.Equipo;
 
 public class ListEquipo extends JDialog {
+
+    private static final long serialVersionUID = 1L;
     private final JPanel contentPanel = new JPanel();
     private JTable tableEquipos;
     private DefaultTableModel tableModel;
 
     public ListEquipo(Color colorOscuro, Color colorClaro) {
+        setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
         setTitle("Listado de Equipos");
         setBounds(100, 100, 900, 500);
         setLocationRelativeTo(null);
@@ -92,19 +95,5 @@ public class ListEquipo extends JDialog {
         boton.setForeground(Color.WHITE);
         boton.setFocusPainted(false);
         return boton;
-    }
-
-    public static void main(String[] args) {
-        // Simulación de llamada con colores de Principal (Ejemplo de integración)
-        Color colorOscuro = new Color(100, 149, 237); // Color por defecto
-        Color colorClaro = new Color(200, 220, 255);  // Color claro por defecto
-
-        try {
-            ListEquipo dialog = new ListEquipo(colorOscuro, colorClaro);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
