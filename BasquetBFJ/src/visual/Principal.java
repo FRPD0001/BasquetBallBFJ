@@ -54,7 +54,7 @@ public class Principal extends JFrame {
             btn.setMaximumSize(buttonSize);
             btn.setBackground(coloresOscuros[colorIndex]);
             btn.setForeground(Color.WHITE);
-            btn.setFont(new Font("Times new roman", Font.BOLD, 14));
+            btn.setFont(new Font("Times new roman", Font.BOLD, 18));
             btn.setFocusPainted(false);
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
         }
@@ -118,7 +118,6 @@ public class Principal extends JFrame {
         panelEquipos.add(Box.createVerticalStrut(300));
         panelEquipos.add(btnListarEquipos);
 
-        // Panel de Jugadores
         panelJugadores = new JPanel();
         panelJugadores.setLayout(new BoxLayout(panelJugadores, BoxLayout.Y_AXIS));
         panelJugadores.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
@@ -128,31 +127,57 @@ public class Principal extends JFrame {
         btnAgregarJugador = new JButton("Agregar Jugador");
         btnListarJugadores = new JButton("Listar Jugadores");
 
-        JButton[] botonesJugadores = {btnAgregarJugador, btnListarJugadores};
+        // NUEVOS BOTONES PARA LESIONES
+        JButton btnAgregarLesion = new JButton("Agregar Lesión");
+        JButton btnListarLesiones = new JButton("Listar Lesiones");
+
+        JButton[] botonesJugadores = {btnAgregarJugador, btnListarJugadores, btnAgregarLesion, btnListarLesiones};
 
         for (JButton btn : botonesJugadores) {
             configurarBoton(btn);
         }
 
         btnAgregarJugador.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		RegJugador RegJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-        		RegJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        		RegJug.setVisible(true);
-        	}
-        });
-        btnListarJugadores.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		ListJugador Listjugador = new ListJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-        		Listjugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        		Listjugador.setVisible(true);
-        	}
+            public void actionPerformed(ActionEvent e) {
+                RegJugador regJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                regJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                regJug.setVisible(true);
+            }
         });
 
-        panelJugadores.add(Box.createVerticalStrut(200));
+        btnListarJugadores.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ListJugador listJugador = new ListJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                listJugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                listJugador.setVisible(true);
+            }
+        });
+
+        btnAgregarLesion.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              /*  RegLesion regLesion = new RegLesion(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                regLesion.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                regLesion.setVisible(true); */
+            }
+        });
+
+        btnListarLesiones.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              /*  ListLesion listLesion = new ListLesion(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                listLesion.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                listLesion.setVisible(true); */
+            }
+        });
+
+        // Agregar los botones al submenú de jugadores
+        panelJugadores.add(Box.createVerticalStrut(50));
         panelJugadores.add(btnAgregarJugador);
-        panelJugadores.add(Box.createVerticalStrut(300));
+        panelJugadores.add(Box.createVerticalStrut(150));
         panelJugadores.add(btnListarJugadores);
+        panelJugadores.add(Box.createVerticalStrut(150));
+        panelJugadores.add(btnAgregarLesion);
+        panelJugadores.add(Box.createVerticalStrut(150));
+        panelJugadores.add(btnListarLesiones);
 
         // Panel de Calendario (nuevo)
         panelCalendario = new JPanel();
