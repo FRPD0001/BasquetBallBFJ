@@ -152,6 +152,22 @@ public class Principal extends JFrame {
             listJugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             listJugador.setVisible(true);
         });
+        
+        btnAgregarLesion.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              /*  RegLesion regLesion = new RegLesion(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                regLesion.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                regLesion.setVisible(true); */
+            }
+        });
+
+        btnListarLesiones.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              /*  ListLesion listLesion = new ListLesion(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                listLesion.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                listLesion.setVisible(true); */
+            }
+        });
 
         panelJugadores.add(Box.createVerticalStrut(60));
         panelJugadores.add(btnAgregarJugador);
