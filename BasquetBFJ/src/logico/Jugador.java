@@ -87,7 +87,7 @@ public class Jugador {
         this.altura = altura;
         this.equipo = equipo;
         this.setLesionado(false);
-        this.misLesiones = new ArrayList<>(); // Inicializa lista vacía
+        this.misLesiones = new ArrayList<Lesion>(); // Inicializa lista vacía
         this.estadistica = new StatsJugador(
             nombre,                // jugador
             0.0f,                  // puntosPorPartido
@@ -116,8 +116,11 @@ public class Jugador {
 		this.salario = salario;
 	}
 	
-	 public void agregarLesion(Lesion lesion) {
-	        misLesiones.add(lesion);
+	public void agregarLesion(Lesion lesion) {
+	    if (misLesiones == null) {
+	        misLesiones = new ArrayList<>();
 	    }
+	    misLesiones.add(lesion);
+	}
 	
 }

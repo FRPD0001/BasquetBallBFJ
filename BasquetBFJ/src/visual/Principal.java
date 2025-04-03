@@ -160,9 +160,9 @@ public class Principal extends JFrame {
 
         btnListarLesiones.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              /*  ListLesion listLesion = new ListLesion(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                ListLesion listLesion = new ListLesion(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
                 listLesion.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                listLesion.setVisible(true); */
+                listLesion.setVisible(true); 
             }
         });
 
