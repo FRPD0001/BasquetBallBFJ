@@ -21,7 +21,7 @@ public class ListJugador extends JDialog {
         getContentPane().setLayout(new BorderLayout());
 
         contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        contentPanel.setBackground(colorClaro); // Color de fondo dinámico
+        contentPanel.setBackground(colorClaro); 
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout(0, 0));
 
@@ -39,7 +39,6 @@ public class ListJugador extends JDialog {
         tableJugadores.getTableHeader().setBackground(colorOscuro);
         tableJugadores.getTableHeader().setForeground(Color.WHITE);
 
-        // Panel de botones con color dinámico
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPane.setBackground(colorClaro);

@@ -27,7 +27,6 @@ public class Principal extends JFrame {
     private JButton btnAgregarEquipo, btnListarEquipos, btnAgregarJugador, btnListarJugadores;
     private JButton btnGenerarCalendario, btnVerCalendario, btnEmpezarJuegos;
 
-    // Clase para bordes redondeados
     class RoundedBorder implements Border {
         private int radius;
         
@@ -55,7 +54,6 @@ public class Principal extends JFrame {
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
 
-        // Panel izquierdo (Menú principal)
         panelIzquierdo = new JPanel(new BorderLayout());
         panelIzquierdo.setBackground(coloresClaros[colorIndex]);
         panelIzquierdo.setPreferredSize(new Dimension(350, getHeight()));
@@ -82,7 +80,6 @@ public class Principal extends JFrame {
         panelBotones.add(btnAjustes);
         panelIzquierdo.add(panelBotones, BorderLayout.CENTER);
 
-        // Panel derecho (Imagen de fondo)
         panelDerecho = new JPanel(new BorderLayout());
         lblImagen = new JLabel();
         lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
@@ -127,7 +124,6 @@ public class Principal extends JFrame {
         panelEquipos.add(Box.createVerticalStrut(300));
         panelEquipos.add(btnListarEquipos);
 
-        // Panel de Jugadores (submenú)
         panelJugadores = new JPanel();
         panelJugadores.setLayout(new BoxLayout(panelJugadores, BoxLayout.Y_AXIS));
         panelJugadores.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
@@ -179,7 +175,6 @@ public class Principal extends JFrame {
         panelJugadores.add(Box.createVerticalStrut(160));
         panelJugadores.add(btnListarLesiones);
 
-        // Panel de Calendario (submenú)
         panelCalendario = new JPanel();
         panelCalendario.setLayout(new BoxLayout(panelCalendario, BoxLayout.Y_AXIS));
         panelCalendario.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
@@ -203,7 +198,6 @@ public class Principal extends JFrame {
         panelCalendario.add(Box.createVerticalStrut(150));
         panelCalendario.add(btnEmpezarJuegos);
 
-        // Panel de Ajustes (submenú)
         panelAjustes = new JPanel();
         panelAjustes.setLayout(new BoxLayout(panelAjustes, BoxLayout.Y_AXIS));
         panelAjustes.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
@@ -223,7 +217,6 @@ public class Principal extends JFrame {
         panelAjustes.add(Box.createVerticalStrut(300));
         panelAjustes.add(btnCambiarFondo);
 
-        // Configuración de los botones principales
         btnEquipos.addActionListener(e -> mostrarSubmenu(panelEquipos));
         btnJugadores.addActionListener(e -> mostrarSubmenu(panelJugadores));
         btnCalendario.addActionListener(e -> mostrarSubmenu(panelCalendario));

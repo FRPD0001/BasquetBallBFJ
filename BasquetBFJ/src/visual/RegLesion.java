@@ -38,7 +38,6 @@ public class RegLesion extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new GridLayout(6, 2, 10, 15));
         
-        // ID de la lesión
         JLabel lblId = new JLabel("ID Lesión:");
         lblId.setFont(new Font("Arial", Font.BOLD, 12));
         contentPanel.add(lblId);
@@ -48,7 +47,6 @@ public class RegLesion extends JDialog {
         txtId.setText("LES-" + SerieNacional.getInstance().getGenJugador());
         contentPanel.add(txtId);
         
-        // Jugador afectado
         JLabel lblJugador = new JLabel("Jugador:");
         lblJugador.setFont(new Font("Arial", Font.BOLD, 12));
         contentPanel.add(lblJugador);
@@ -57,7 +55,6 @@ public class RegLesion extends JDialog {
         cargarJugadores();
         contentPanel.add(cmbJugador);
         
-        // Tipo de lesión
         JLabel lblLesion = new JLabel("Tipo de Lesión:");
         lblLesion.setFont(new Font("Arial", Font.BOLD, 12));
         contentPanel.add(lblLesion);
@@ -72,7 +69,6 @@ public class RegLesion extends JDialog {
         txtFechaLesion = new JTextField();
         contentPanel.add(txtFechaLesion);
         
-        // Fecha de recuperación
         JLabel lblFechaRecuperacion = new JLabel("Fecha Recuperación (DD/MM/YYYY):");
         lblFechaRecuperacion.setFont(new Font("Arial", Font.BOLD, 12));
         contentPanel.add(lblFechaRecuperacion);
@@ -80,7 +76,6 @@ public class RegLesion extends JDialog {
         txtFechaRecuperacion = new JTextField();
         contentPanel.add(txtFechaRecuperacion);
         
-        // Estado de lesión
         JLabel lblLesionado = new JLabel("Actualmente Lesionado:");
         lblLesionado.setFont(new Font("Arial", Font.BOLD, 12));
         contentPanel.add(lblLesionado);
@@ -88,7 +83,6 @@ public class RegLesion extends JDialog {
         chkLesionado = new JCheckBox();
         contentPanel.add(chkLesionado);
         
-        // Panel de botones
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setBackground(colorClaro);
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
@@ -115,7 +109,7 @@ public class RegLesion extends JDialog {
     
     private void guardarLesion() {
         try {
-            // Validar campos obligatorios
+        	
             if (cmbJugador.getSelectedItem() == null || txtLesion.getText().trim().isEmpty() ||
                 txtFechaLesion.getText().trim().isEmpty() || txtFechaRecuperacion.getText().trim().isEmpty()) {
                 throw new Exception("Todos los campos son obligatorios");
@@ -124,11 +118,9 @@ public class RegLesion extends JDialog {
             Jugador jugador = (Jugador) cmbJugador.getSelectedItem();
             String tipoLesion = txtLesion.getText().trim();
             
-            // Parsear fechas con formato DD/MM/YYYY
             LocalDate fechaLesion = LocalDate.parse(txtFechaLesion.getText().trim(), dateFormatter);
             LocalDate fechaRecuperacion = LocalDate.parse(txtFechaRecuperacion.getText().trim(), dateFormatter);
             
-            // Validar que la fecha de recuperación sea posterior a la de lesión
             if (fechaRecuperacion.isBefore(fechaLesion)) {
                 throw new Exception("La fecha de recuperación debe ser posterior a la fecha de lesión");
             }

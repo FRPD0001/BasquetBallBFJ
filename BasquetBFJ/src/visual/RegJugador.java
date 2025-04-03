@@ -18,7 +18,7 @@ public class RegJugador extends JDialog {
     private JTextField txtPeso;
     private JTextField txtAltura;
     private JComboBox<Equipo> cbxEquipos;
-    private Jugador aux; // Para saber si estamos modificando o registrando
+    private Jugador aux;
 
     public RegJugador(Color colorPrincipal, Color colorSecundario) {
 

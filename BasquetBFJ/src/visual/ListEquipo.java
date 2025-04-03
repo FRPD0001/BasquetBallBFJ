@@ -60,11 +60,10 @@ public class ListEquipo extends JDialog {
         tableEquipos.getTableHeader().setBackground(colorOscuro);
         tableEquipos.getTableHeader().setForeground(Color.WHITE);
 
-        // Renderer personalizado para Winrate y Cant. Jugadores
         DefaultTableCellRenderer customRenderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                // Para la columna de Winrate (columna 5)
+
                 if (column == 5) {
                     if (value instanceof Float) {
                         float winrate = (Float) value;
@@ -75,7 +74,7 @@ public class ListEquipo extends JDialog {
                         }
                     }
                 }
-                // Para la columna de Cant. Jugadores (columna 4)
+
                 else if (column == 4) {
                     if (value instanceof Integer && (Integer) value == 0) {
                         value = "N/A";
@@ -85,11 +84,9 @@ public class ListEquipo extends JDialog {
             }
         };
 
-        // Aplicar el renderer personalizado a las columnas correspondientes
         tableEquipos.getColumnModel().getColumn(4).setCellRenderer(customRenderer);
         tableEquipos.getColumnModel().getColumn(5).setCellRenderer(customRenderer);
 
-        // Renderer para la columna de Color
         tableEquipos.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -150,8 +147,8 @@ public class ListEquipo extends JDialog {
                 equipo.getNombre(),
                 equipo.getCiudad(),
                 equipo.getColor(),
-                equipo.getJugadores().size(), // El renderer se encargará de mostrarlo como "N/A" si es 0
-                winrate // El renderer se encargará de mostrarlo como "N/A" si es 0.0
+                equipo.getJugadores().size(),
+                winrate 
             });
         }
     }
