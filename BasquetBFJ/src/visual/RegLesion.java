@@ -40,11 +40,9 @@ public class RegLesion extends JDialog {
         contentPanel.setLayout(new GridLayout(7, 2, 10, 15));
         
         try {
-            // Configurar máscaras para las fechas
             MaskFormatter dateMask = new MaskFormatter("##/##/####");
-            dateMask.setPlaceholderCharacter('_');
+            dateMask.setPlaceholderCharacter(' ');
             
-            // ID de la lesión
             JLabel lblId = new JLabel("ID Lesión:");
             lblId.setFont(new Font("Arial", Font.BOLD, 14));
             contentPanel.add(lblId);
@@ -55,7 +53,6 @@ public class RegLesion extends JDialog {
             txtId.setFont(new Font("Arial", Font.PLAIN, 14));
             contentPanel.add(txtId);
             
-            // Jugador afectado
             JLabel lblJugador = new JLabel("Jugador:");
             lblJugador.setFont(new Font("Arial", Font.BOLD, 14));
             contentPanel.add(lblJugador);
@@ -65,7 +62,6 @@ public class RegLesion extends JDialog {
             cargarJugadores();
             contentPanel.add(cmbJugador);
             
-            // Tipo de lesión
             JLabel lblLesion = new JLabel("Tipo de Lesión:");
             lblLesion.setFont(new Font("Arial", Font.BOLD, 14));
             contentPanel.add(lblLesion);
@@ -148,20 +144,17 @@ public class RegLesion extends JDialog {
     
     private void guardarLesion() {
         try {
-            // Validar jugador seleccionado
             if (cmbJugador.getSelectedItem() == null) {
                 throw new Exception("Debe seleccionar un jugador");
             }
             
             Jugador jugador = (Jugador) cmbJugador.getSelectedItem();
             
-            // Validar tipo de lesión
             String tipoLesion = txtLesion.getText().trim();
             if (tipoLesion.isEmpty()) {
                 throw new Exception("Debe especificar el tipo de lesión");
             }
             
-            // Validar y parsear fechas
             LocalDate fechaLesion = parseFecha(txtFechaLesion.getText().trim());
             LocalDate fechaRecuperacion = parseFecha(txtFechaRecuperacion.getText().trim());
             
@@ -171,7 +164,6 @@ public class RegLesion extends JDialog {
             
             boolean lesionado = chkLesionado.isSelected();
             
-            // Crear y registrar la lesión
             Lesion lesion = new Lesion(
                 txtId.getText(),
                 jugador,
@@ -200,10 +192,8 @@ public class RegLesion extends JDialog {
     
     private LocalDate parseFecha(String fechaStr) throws Exception {
         try {
-            // Eliminar caracteres no numéricos y espacios
             String cleaned = fechaStr.replaceAll("[^0-9/]", "").trim();
             
-            // Verificar formato básico
             if (!cleaned.matches("\\d{2}/\\d{2}/\\d{4}")) {
                 throw new DateTimeParseException("Formato inválido", fechaStr, 0);
             }

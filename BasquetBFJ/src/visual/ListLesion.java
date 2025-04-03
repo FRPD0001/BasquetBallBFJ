@@ -40,7 +40,6 @@ public class ListLesion extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout());
 
-        // Panel superior para selección de jugador
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelSuperior.setBackground(colorClaro);
         
@@ -56,7 +55,6 @@ public class ListLesion extends JDialog {
         
         contentPanel.add(panelSuperior, BorderLayout.NORTH);
 
-        // Configuración de la tabla
         String[] columnNames = {"ID", "Tipo de Lesión", "Fecha Lesión", "Fecha Recuperación", "Actualmente Lesionado"};
         tableModel = new DefaultTableModel(null, columnNames) {
             @Override
@@ -66,7 +64,7 @@ public class ListLesion extends JDialog {
             
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 4) { // Columna de estado
+                if (columnIndex == 4) { 
                     return Boolean.class;
                 }
                 return super.getColumnClass(columnIndex);
@@ -83,17 +81,15 @@ public class ListLesion extends JDialog {
         JScrollPane scrollPane = new JScrollPane(tableLesiones);
         contentPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Panel inferior con botones
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPane.setBackground(colorClaro);
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-        // Botón para deslesionar
         btnDeslesionar = new JButton("Deslesionar Jugador");
         btnDeslesionar.setFont(new Font("Arial", Font.BOLD, 12));
-        btnDeslesionar.setBackground(new Color(220, 220, 220)); // Gris claro
-        btnDeslesionar.setEnabled(false); // Inicialmente deshabilitado
+        btnDeslesionar.setBackground(new Color(220, 220, 220)); 
+        btnDeslesionar.setEnabled(false); 
         btnDeslesionar.addActionListener(e -> deslesionarJugador());
         buttonPane.add(btnDeslesionar);
 
@@ -108,14 +104,12 @@ public class ListLesion extends JDialog {
     private void cargarJugadores() {
         cbJugadores.removeAllItems();
         
-        // Añadir item de selección inicial
-        cbJugadores.addItem(null); // Item nulo para "Seleccione"
+        cbJugadores.addItem(null); 
         
         for (Jugador jugador : SerieNacional.getInstance().getMisJugadores()) {
             cbJugadores.addItem(jugador);
         }
         
-        // Renderer personalizado para mostrar nombre y ID
         cbJugadores.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, 
@@ -170,7 +164,6 @@ public class ListLesion extends JDialog {
         if (confirm == JOptionPane.YES_OPTION) {
             jugador.setLesionado(false);
             
-            // Actualizar todas sus lesiones como no activas
             for (Lesion lesion : jugador.getMisLesiones()) {
                 lesion.setLesionado(false);
             }
@@ -180,7 +173,6 @@ public class ListLesion extends JDialog {
                 "Éxito",
                 JOptionPane.INFORMATION_MESSAGE);
             
-            // Actualizar la tabla y deshabilitar el botón
             cargarLesiones();
         }
     }
