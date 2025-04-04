@@ -27,7 +27,7 @@ public class ListEquipo extends JDialog {
     public ListEquipo(Color colorOscuro, Color colorClaro) {
         setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
         setTitle("Listado de Equipos");
-        setBounds(100, 100, 900, 500);
+        setBounds(100, 100, 1000, 500);
         setLocationRelativeTo(null);
         setModal(true);
         getContentPane().setLayout(new BorderLayout());

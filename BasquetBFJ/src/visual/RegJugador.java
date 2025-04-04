@@ -17,7 +17,7 @@ public class RegJugador extends JDialog {
     private JTextField txtNombre;
     private JTextField txtPeso;
     private JTextField txtAltura;
-    private JComboBox<Equipo> cbxEquipos;
+    private JComboBox<String> cbxEquipos;
     private Jugador aux;
 
     public RegJugador(Color colorPrincipal, Color colorSecundario) {
@@ -110,7 +110,7 @@ public class RegJugador extends JDialog {
         cbxEquipos.addItem(null); // Opción vacía
         
         for (Equipo equipo : equipos) {
-            cbxEquipos.addItem(equipo);
+            cbxEquipos.addItem(equipo.getNombre());
         }
         
         // Configurar el renderer personalizado para mostrar nombre e ID

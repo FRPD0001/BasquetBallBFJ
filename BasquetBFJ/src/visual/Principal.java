@@ -234,21 +234,17 @@ public class Principal extends JFrame {
         getContentPane().add(mainSplitPane);
     }
 
-    // Método para crear botones principales modernos
     private JButton crearBotonModerno(String texto) {
         JButton boton = new JButton(texto) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 
-                // Suavizado de bordes
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                // Sombra
                 g2.setColor(new Color(0, 0, 0, 255));
                 g2.fillRoundRect(1, 3, getWidth()-2, getHeight()-2, 15, 15);
                 
-                // Fondo del botón
                 g2.setColor(getBackground());
                 g2.fillRoundRect(0, 0, getWidth()-2, getHeight()-2, 15, 15);
                 
@@ -269,7 +265,6 @@ public class Principal extends JFrame {
         boton.setFont(new Font("Arial", Font.BOLD, 16));
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        // Efecto hover
         boton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -286,17 +281,14 @@ public class Principal extends JFrame {
         return boton;
     }
 
-    // Método para crear botones de submenú modernos
     private JButton crearBotonSubmenuModerno(String texto) {
         JButton boton = new JButton(texto) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 
-                // Suavizado de bordes
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                // Fondo del botón
                 g2.setColor(getBackground());
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
                 
@@ -318,7 +310,6 @@ public class Principal extends JFrame {
         boton.setAlignmentX(Component.CENTER_ALIGNMENT);
         boton.setBorder(new RoundedBorder(10));
         
-        // Efecto hover
         boton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -354,13 +345,11 @@ public class Principal extends JFrame {
     private void cambiarColor(JButton[] botones, JButton[] botonesAjustes, JButton[] botonesEquipos, JButton[] botonesJugadores, JButton[] botonesCalendario) {
         colorIndex = (colorIndex + 1) % coloresOscuros.length;
         
-        // Actualizar botones principales
         for (JButton btn : botones) {
             btn.setBackground(coloresOscuros[colorIndex]);
             btn.setForeground(Color.WHITE);
         }
         
-        // Actualizar botones de submenú
         for (JButton btn : botonesAjustes) {
             btn.setBackground(coloresClaros[colorIndex]);
             btn.setForeground(Color.BLACK);

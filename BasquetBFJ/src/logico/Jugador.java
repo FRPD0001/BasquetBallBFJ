@@ -133,4 +133,12 @@ public class Jugador {
 		Jugador.genLesion = genLesion;
 	}
 	
+	public Lesion buscarLesionPorId(String id) {
+	    for (Lesion lesion : misLesiones) {
+	        if (lesion.getId().equals(id)) {
+	            return lesion;
+	        }
+	    }
+	    return null;
+	}
 }
