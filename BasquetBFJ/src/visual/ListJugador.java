@@ -31,7 +31,9 @@ public class ListJugador extends JDialog {
         getContentPane().setLayout(new BorderLayout());
 
         contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        contentPanel.setBackground(colorClaro);
+
+        contentPanel.setBackground(colorClaro); 
+
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout(0, 0));
 

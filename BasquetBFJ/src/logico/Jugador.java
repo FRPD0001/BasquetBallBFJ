@@ -13,6 +13,7 @@ public class Jugador {
     private StatsJugador estadistica;
     private boolean lesionado;
     private float salario;
+    private static int genLesion = 1;
     private static float salarioMax = 500000.00f;
     private static float salarioMin = 250000.00f;
 
@@ -87,7 +88,7 @@ public class Jugador {
         this.altura = altura;
         this.equipo = equipo;
         this.setLesionado(false);
-        this.misLesiones = new ArrayList<>(); // Inicializa lista vacía
+        this.misLesiones = new ArrayList<Lesion>(); 
         this.estadistica = new StatsJugador(
             nombre,                // jugador
             0.0f,                  // puntosPorPartido
@@ -116,8 +117,20 @@ public class Jugador {
 		this.salario = salario;
 	}
 	
-	 public void agregarLesion(Lesion lesion) {
-	        misLesiones.add(lesion);
+	public void agregarLesion(Lesion lesion) {
+	    if (misLesiones == null) {
+	        misLesiones = new ArrayList<>();
 	    }
+	    misLesiones.add(lesion);
+	    setGenLesion(getGenLesion() + 1);
+	}
+
+	public static int getGenLesion() {
+		return genLesion;
+	}
+
+	public static void setGenLesion(int genLesion) {
+		Jugador.genLesion = genLesion;
+	}
 	
 }

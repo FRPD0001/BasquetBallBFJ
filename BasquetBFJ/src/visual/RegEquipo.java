@@ -16,7 +16,8 @@ public class RegEquipo extends JDialog {
     private Color colorSeleccionado;
     private JLabel lblId;
     private JComboBox<String> cmbCiudad;
-    private Equipo aux; // Para edición
+    private Equipo aux;
+
 
     // Lista de países/ciudades disponibles
    private final String[] CIUDADES = {"Seleccionar Pais",
@@ -33,13 +34,11 @@ public class RegEquipo extends JDialog {
         setModal(true);
         getContentPane().setLayout(new BorderLayout());
 
-        // Aplicando colores personalizados
         contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         contentPanel.setBackground(colorClaro);
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        // Configuración de componentes
         lblId = new JLabel("ID:");
         lblId.setBounds(30, 20, 50, 20);
         lblId.setFont(new Font("Arial", Font.BOLD, 12));

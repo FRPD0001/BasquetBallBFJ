@@ -18,12 +18,10 @@ public class RegJugador extends JDialog {
     private JTextField txtPeso;
     private JTextField txtAltura;
     private JComboBox<Equipo> cbxEquipos;
-    private Jugador aux; // Para saber si estamos modificando o registrando
+    private Jugador aux;
 
     public RegJugador(Color colorPrincipal, Color colorSecundario) {
-
         setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
-
         setTitle(aux == null ? "Registrar Jugador" : "Modificar Jugador");
         setModal(true);
         setBounds(100, 100, 480, 300);
@@ -87,7 +85,6 @@ public class RegJugador extends JDialog {
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-        // Botón "Registrar" o "Modificar" (Verde fijo)
         JButton okButton = new JButton(aux == null ? "Registrar" : "Modificar");
         okButton.setFont(new Font("Arial", Font.BOLD, 12));
         okButton.setBackground(new Color(34, 139, 34));
@@ -98,10 +95,9 @@ public class RegJugador extends JDialog {
         buttonPane.add(okButton);
         getRootPane().setDefaultButton(okButton);
 
-        // Botón "Cancelar" (Rojo fijo)
         JButton cancelButton = new JButton("Cancelar");
         cancelButton.setFont(new Font("Arial", Font.BOLD, 12));
-        cancelButton.setBackground(new Color(178, 34, 34)); // Rojo
+        cancelButton.setBackground(new Color(178, 34, 34));
         cancelButton.setForeground(Color.WHITE);
         cancelButton.addActionListener(e -> dispose());
         buttonPane.add(cancelButton);
@@ -112,9 +108,26 @@ public class RegJugador extends JDialog {
     private void cargarEquipos() {
         ArrayList<Equipo> equipos = SerieNacional.getInstance().getMisEquipos();
         cbxEquipos.addItem(null); // Opción vacía
+        
         for (Equipo equipo : equipos) {
             cbxEquipos.addItem(equipo);
         }
+        
+        // Configurar el renderer personalizado para mostrar nombre e ID
+        cbxEquipos.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, 
+                    int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value == null) {
+                    setText("<Seleccione equipo>");
+                } else if (value instanceof Equipo) {
+                    Equipo e = (Equipo) value;
+                    setText(e.getNombre() + " (" + e.getId() + ")");
+                }
+                return this;
+            }
+        });
     }
 
     private void loadJugador(Jugador aux) {
@@ -123,7 +136,6 @@ public class RegJugador extends JDialog {
             txtPeso.setText(String.valueOf(aux.getPeso()));
             txtAltura.setText(String.valueOf(aux.getAltura()));
             
-            // Seleccionar el equipo actual del jugador
             if (aux.getEquipo() != null) {
                 cbxEquipos.setSelectedItem(aux.getEquipo());
             }
@@ -168,9 +180,19 @@ public class RegJugador extends JDialog {
     }
 
     private boolean validarCampos() {
-        return !txtNombre.getText().trim().isEmpty() &&
-               !txtPeso.getText().trim().isEmpty() &&
-               !txtAltura.getText().trim().isEmpty();
+        if (txtNombre.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe ingresar un nombre", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (txtPeso.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe ingresar un peso", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (txtAltura.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe ingresar una altura", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 
     private void clean() {
@@ -178,6 +200,6 @@ public class RegJugador extends JDialog {
         txtPeso.setText("");
         txtAltura.setText("");
         cbxEquipos.setSelectedIndex(0);
-        txtID.setText("J-" + SerieNacional.getGenJugador());
+        txtID.setText("J-" + SerieNacional.getInstance().getGenJugador());
     }
 }
