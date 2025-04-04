@@ -19,7 +19,7 @@ public class RegEquipo extends JDialog {
     private Equipo aux; // Para edición
 
     // Lista de países/ciudades disponibles
-   private final String[] CIUDADES = {
+   private final String[] CIUDADES = {"Seleccionar Pais",
     		"Estados Unidos", "Canada", "Mexico","Republica Dominicana",
     		"Puerto Rico","Cuba","Argentina","Venezuela","Chile", "Brazil"
     		};
@@ -51,7 +51,7 @@ public class RegEquipo extends JDialog {
         lblIdValue.setText(aux == null ? "E-" + SerieNacional.getInstance().getGenEquipo() : aux.getId());
         contentPanel.add(lblIdValue);
 
-        JLabel lblCiudad = new JLabel("Ciudad:");
+        JLabel lblCiudad = new JLabel("Pais:");
         lblCiudad.setBounds(30, 50, 60, 20);
         lblCiudad.setFont(new Font("Arial", Font.BOLD, 12));
         contentPanel.add(lblCiudad);
@@ -148,6 +148,10 @@ public class RegEquipo extends JDialog {
         }
         if (colorSeleccionado == null) {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un color", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (cmbCiudad.getSelectedItem().equals("Seleccionar Pais")) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un Pais", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;

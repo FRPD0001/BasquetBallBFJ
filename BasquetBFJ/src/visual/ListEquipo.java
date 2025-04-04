@@ -150,7 +150,7 @@ public class ListEquipo extends JDialog {
                 equipo.getNombre(),
                 equipo.getCiudad(),
                 equipo.getColor(),
-                equipo.getJugadores().size(), // El renderer se encargará de mostrarlo como "N/A" si es 0
+                String.valueOf(equipo.getJugadores().size()), // El renderer se encargará de mostrarlo como "N/A" si es 0
                 winrate // El renderer se encargará de mostrarlo como "N/A" si es 0.0
             });
         }
