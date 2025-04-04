@@ -20,7 +20,7 @@ public class RegEquipo extends JDialog {
 
 
     // Lista de países/ciudades disponibles
-   private final String[] CIUDADES = {"Seleccionar Pais",
+   private String[] CIUDADES = {"Seleccionar Pais",
     		"Estados Unidos", "Canada", "Mexico","Republica Dominicana",
     		"Puerto Rico","Cuba","Argentina","Venezuela","Chile", "Brazil"
     		};
@@ -45,43 +45,49 @@ public class RegEquipo extends JDialog {
         contentPanel.add(lblId);
 
         JLabel lblIdValue = new JLabel();
-        lblIdValue.setBounds(70, 20, 150, 20);
+        lblIdValue.setBounds(92, 20, 150, 20);
         lblIdValue.setFont(new Font("Arial", Font.PLAIN, 12));
         lblIdValue.setText(aux == null ? "E-" + SerieNacional.getInstance().getGenEquipo() : aux.getId());
         contentPanel.add(lblIdValue);
 
         JLabel lblCiudad = new JLabel("Pais:");
-        lblCiudad.setBounds(30, 50, 60, 20);
+        lblCiudad.setBounds(30, 84, 60, 20);
         lblCiudad.setFont(new Font("Arial", Font.BOLD, 12));
         contentPanel.add(lblCiudad);
 
-        cmbCiudad = new JComboBox<>(CIUDADES);
-        cmbCiudad.setBounds(90, 50, 150, 25);
+        cmbCiudad = new JComboBox(new DefaultComboBoxModel(CIUDADES));
+
+        cmbCiudad.setBounds(92, 82, 150, 25); 
         contentPanel.add(cmbCiudad);
 
         JLabel lblNombre = new JLabel("Nombre:");
-        lblNombre.setBounds(250, 20, 60, 20);
+        lblNombre.setBounds(30, 52, 60, 20);
         lblNombre.setFont(new Font("Arial", Font.BOLD, 12));
         contentPanel.add(lblNombre);
 
         txtNombre = new JTextField();
-        txtNombre.setBounds(310, 20, 150, 25);
+        txtNombre.setBounds(92, 49, 150, 25);
         contentPanel.add(txtNombre);
         txtNombre.setColumns(10);
 
         JButton btnSeleccionarColor = new JButton("Seleccionar Color");
-        btnSeleccionarColor.setBounds(50, 110, 170, 30); 
+        btnSeleccionarColor.setBounds(92, 116, 170, 30); 
         btnSeleccionarColor.setFont(new Font("Arial", Font.BOLD, 12));
         btnSeleccionarColor.setBackground(colorOscuro);
         btnSeleccionarColor.setForeground(Color.WHITE);
         contentPanel.add(btnSeleccionarColor);
 
         lblColorSeleccionado = new JLabel(" ");
-        lblColorSeleccionado.setBounds(250, 110, 60, 30);
+        lblColorSeleccionado.setBounds(92, 158, 103, 20);
         lblColorSeleccionado.setOpaque(true);
         lblColorSeleccionado.setBackground(Color.WHITE);
         lblColorSeleccionado.setBorder(new LineBorder(Color.BLACK));
         contentPanel.add(lblColorSeleccionado);
+        
+        JLabel lblColor = new JLabel("Color:");
+        lblColor.setFont(new Font("Arial", Font.BOLD, 12));
+        lblColor.setBounds(30, 116, 60, 20);
+        contentPanel.add(lblColor);
 
         
         if (aux != null) {
