@@ -6,6 +6,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,6 +23,7 @@ public class ListJugador extends JDialog {
     private JComboBox<String> cbFiltro;
     private List<Jugador> listaJugadores;
     private List<Jugador> listaOriginal;
+    private JButton btnDetalles;
 
     public ListJugador(Color colorOscuro, Color colorClaro) {
         setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
@@ -31,9 +34,7 @@ public class ListJugador extends JDialog {
         getContentPane().setLayout(new BorderLayout());
 
         contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-
         contentPanel.setBackground(colorClaro); 
-
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout(0, 0));
 
@@ -51,13 +52,17 @@ public class ListJugador extends JDialog {
         contentPanel.add(scrollPane, BorderLayout.CENTER);
 
         tableJugadores.getTableHeader().setBackground(colorOscuro);
-        tableJugadores.getTableHeader().setForeground(Color.WHITE);
+        tableJugadores.getTableHeader().setForeground(colorClaro);
+
+        // Add selection listener to table
+        tableJugadores.getSelectionModel().addListSelectionListener(e -> {
+            btnDetalles.setEnabled(tableJugadores.getSelectedRow() != -1);
+        });
 
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPane.setBackground(colorClaro);
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
-
         cbFiltro = new JComboBox<>(new String[]{"Filtrar", "Nombre (A-Z)", "Equipo (A-Z)"});
         cbFiltro.addActionListener(new ActionListener() {
             @Override
@@ -67,6 +72,24 @@ public class ListJugador extends JDialog {
         });
         buttonPane.add(cbFiltro);
 
+        btnDetalles = new JButton("Ver detalles");
+        btnDetalles.setEnabled(false);// Initially disabled
+        btnDetalles.setBackground(colorOscuro);
+        btnDetalles.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tableJugadores.getSelectedRow();
+                if (selectedRow != -1) {
+                    String id = (String) tableModel.getValueAt(selectedRow, 0);
+                    Jugador jugador = SerieNacional.getInstance().buscarJugadorPorId(id);
+                    if (jugador != null) {
+                        Estadisticas estadisticas = new Estadisticas(jugador, colorOscuro, colorClaro);
+                        estadisticas.setVisible(true);
+                    }
+                }
+            }
+        });
+        buttonPane.add(btnDetalles);
+        
         JButton closeButton = new JButton("OK");
         closeButton.setFont(new Font("Arial", Font.BOLD, 12));
         closeButton.setBackground(new Color(34, 139, 34));
@@ -78,7 +101,7 @@ public class ListJugador extends JDialog {
     private void cargarJugadores() {
         tableModel.setRowCount(0);
         for (Jugador jugador : listaJugadores) {
-            String id = String.valueOf(jugador.getId());
+            String id = jugador.getId();
             String nombre = jugador.getNombre();
             String equipo = jugador.getEquipo() != null ? jugador.getEquipo().getNombre() : "Sin equipo";
             tableModel.addRow(new Object[]{id, nombre, equipo});
@@ -107,5 +130,4 @@ public class ListJugador extends JDialog {
         }
         cargarJugadores();
     }
-
 }
