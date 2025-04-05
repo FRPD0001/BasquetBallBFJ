@@ -131,11 +131,10 @@ public class Principal extends JFrame {
 
         btnAgregarJugador = crearBotonSubmenuModerno("Agregar Jugador");
         btnListarJugadores = crearBotonSubmenuModerno("Listar Jugadores");
-        JButton btnEstadisticas = crearBotonSubmenuModerno("Estadísticas");
         JButton btnAgregarLesion = crearBotonSubmenuModerno("Agregar Lesión");
         JButton btnListarLesiones = crearBotonSubmenuModerno("Listar Lesiones");
 
-        JButton[] botonesJugadores = {btnAgregarJugador, btnListarJugadores, btnEstadisticas, btnAgregarLesion, btnListarLesiones};
+        JButton[] botonesJugadores = {btnAgregarJugador, btnListarJugadores, btnAgregarLesion, btnListarLesiones};
 
         btnAgregarJugador.addActionListener(e -> {
             RegJugador regJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
@@ -147,12 +146,6 @@ public class Principal extends JFrame {
             ListJugador listJugador = new ListJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
             listJugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             listJugador.setVisible(true);
-        });
-        
-        btnEstadisticas.addActionListener(e -> {
-            Estadisticas estadisticas = new Estadisticas(coloresClaros[colorIndex], coloresOscuros[colorIndex]);
-            estadisticas.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            estadisticas.setVisible(true);
         });
         
         btnAgregarLesion.addActionListener(new ActionListener() {
@@ -176,8 +169,6 @@ public class Principal extends JFrame {
         panelJugadores.add(Box.createVerticalStrut(160));
         panelJugadores.add(btnListarJugadores);
         panelJugadores.add(Box.createVerticalStrut(160));
-        panelJugadores.add(btnEstadisticas);
-        panelJugadores.add(Box.createVerticalStrut(160));
         panelJugadores.add(btnAgregarLesion);
         panelJugadores.add(Box.createVerticalStrut(160));
         panelJugadores.add(btnListarLesiones);
@@ -194,9 +185,28 @@ public class Principal extends JFrame {
 
         JButton[] botonesCalendario = {btnGenerarCalendario, btnVerCalendario, btnEmpezarJuegos};
 
-        btnGenerarCalendario.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Generar Calendario"));
-        btnVerCalendario.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Ver Calendario"));
-        btnEmpezarJuegos.addActionListener(e -> JOptionPane.showMessageDialog(this, "Funcionalidad de Empezar Juegos"));
+        btnGenerarCalendario.addActionListener(e -> {
+            GenCalendario genCalendario = new GenCalendario(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+            
+            JDialog dialog = new JDialog(this, "Generar Calendario", true);
+            dialog.getContentPane().add(genCalendario); // Cambiado de setContentPane a add
+            dialog.pack();
+            dialog.setSize(900, 700); // Tamaño adecuado para el contenido
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+        });
+
+        btnVerCalendario.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, 
+                "Funcionalidad de Ver Calendario - Mostrará los juegos programados", 
+                "Calendario", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        btnEmpezarJuegos.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, 
+                "Funcionalidad de Empezar Juegos - Iniciará la temporada", 
+                "Iniciar Juegos", JOptionPane.INFORMATION_MESSAGE);
+        });
 
         panelCalendario.add(Box.createVerticalStrut(150));
         panelCalendario.add(btnGenerarCalendario);

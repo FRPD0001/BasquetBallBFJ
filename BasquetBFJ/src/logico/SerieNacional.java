@@ -2,6 +2,8 @@ package logico;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
+import java.util.Collections;
+import logico.Juego;
 
 public class SerieNacional {
     
@@ -14,10 +16,10 @@ public class SerieNacional {
     private static SerieNacional serie;
 
     private SerieNacional() {
-    	genEquipo = 1;
-    	genJugador = 1;
-    	genJuego = 1;
-    	
+        genEquipo = 1;
+        genJugador = 1;
+        genJuego = 1;
+        
         misEquipos = new ArrayList<>();
         misJugadores = new ArrayList<>();
         misJuegos = new ArrayList<>();
@@ -107,5 +109,47 @@ public class SerieNacional {
             }
         }
         return null;
+    }
+    
+    // Nuevos métodos para el calendario
+    public boolean esNumeroEquiposPar() {
+        return misEquipos.size() % 2 == 0;
+    }
+
+    public ArrayList<ArrayList<Equipo>> generarRoundRobin() {
+        if (!esNumeroEquiposPar()) {
+            return new ArrayList<>(); // Retorna lista vacía si no es par
+        }
+        
+        ArrayList<Equipo> equipos = new ArrayList<>(misEquipos);
+        ArrayList<ArrayList<Equipo>> todasJornadas = new ArrayList<>();
+        int numEquipos = equipos.size();
+        int numJornadas = numEquipos - 1;
+        int partidosPorJornada = numEquipos / 2;
+        
+        for (int jornada = 0; jornada < numJornadas; jornada++) {
+            ArrayList<Equipo> jornadaActual = new ArrayList<>();
+            
+            for (int i = 0; i < partidosPorJornada; i++) {
+                Equipo local = equipos.get(i);
+                Equipo visitante = equipos.get(numEquipos - 1 - i);
+                jornadaActual.add(local);
+                jornadaActual.add(visitante);
+            }
+            
+            todasJornadas.add(jornadaActual);
+            
+            // Rotar equipos (excepto el primero)
+            Equipo ultimo = equipos.remove(numEquipos - 1);
+            equipos.add(1, ultimo);
+        }
+        
+        return todasJornadas;
+    }
+    
+    public ArrayList<ArrayList<Equipo>> generarRoundRobinAleatorio() {
+        ArrayList<Equipo> equipos = new ArrayList<>(misEquipos);
+        Collections.shuffle(equipos);
+        return generarRoundRobin();
     }
 }
