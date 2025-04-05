@@ -1,10 +1,11 @@
 package visual;
 
-import java.awt.event.*;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
 
 import logico.Equipo;
 import logico.SerieNacional;
@@ -18,12 +19,11 @@ public class RegEquipo extends JDialog {
     private JComboBox<String> cmbCiudad;
     private Equipo aux;
 
-
     // Lista de países/ciudades disponibles
-   private String[] CIUDADES = {"Seleccionar Pais",
-    		"Estados Unidos", "Canada", "Mexico","Republica Dominicana",
-    		"Puerto Rico","Cuba","Argentina","Venezuela","Chile", "Brazil"
-    		};
+    private String[] CIUDADES = {
+        "Seleccionar Pais", "Estados Unidos", "Canada", "Mexico", "Republica Dominicana",
+        "Puerto Rico", "Cuba", "Argentina", "Venezuela", "Chile", "Brazil"
+    };
 
     public RegEquipo(Color colorOscuro, Color colorClaro) {
         setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
@@ -55,9 +55,8 @@ public class RegEquipo extends JDialog {
         lblCiudad.setFont(new Font("Arial", Font.BOLD, 12));
         contentPanel.add(lblCiudad);
 
-        cmbCiudad = new JComboBox(new DefaultComboBoxModel(CIUDADES));
-
-        cmbCiudad.setBounds(92, 82, 150, 25); 
+        cmbCiudad = new JComboBox<>(new DefaultComboBoxModel<>(CIUDADES));
+        cmbCiudad.setBounds(92, 82, 150, 25);
         contentPanel.add(cmbCiudad);
 
         JLabel lblNombre = new JLabel("Nombre:");
@@ -71,7 +70,7 @@ public class RegEquipo extends JDialog {
         txtNombre.setColumns(10);
 
         JButton btnSeleccionarColor = new JButton("Seleccionar Color");
-        btnSeleccionarColor.setBounds(92, 116, 170, 30); 
+        btnSeleccionarColor.setBounds(92, 116, 170, 30);
         btnSeleccionarColor.setFont(new Font("Arial", Font.BOLD, 12));
         btnSeleccionarColor.setBackground(colorOscuro);
         btnSeleccionarColor.setForeground(Color.WHITE);
@@ -83,13 +82,12 @@ public class RegEquipo extends JDialog {
         lblColorSeleccionado.setBackground(Color.WHITE);
         lblColorSeleccionado.setBorder(new LineBorder(Color.BLACK));
         contentPanel.add(lblColorSeleccionado);
-        
+
         JLabel lblColor = new JLabel("Color:");
         lblColor.setFont(new Font("Arial", Font.BOLD, 12));
         lblColor.setBounds(30, 116, 60, 20);
         contentPanel.add(lblColor);
 
-        
         if (aux != null) {
             txtNombre.setText(aux.getNombre());
             lblColorSeleccionado.setBackground(aux.getColor());
@@ -102,10 +100,7 @@ public class RegEquipo extends JDialog {
         btnSeleccionarColor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                colorSeleccionado = JColorChooser.showDialog(null, "Elige un color", Color.WHITE);
-                if (colorSeleccionado != null) {
-                    lblColorSeleccionado.setBackground(colorSeleccionado);
-                }
+                mostrarSelectorSimpleDeColor();
             }
         });
 
@@ -194,5 +189,32 @@ public class RegEquipo extends JDialog {
                     "Error al modificar equipo: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void mostrarSelectorSimpleDeColor() {
+        JColorChooser chooser = new JColorChooser();
+
+        // Mantener solo la pestaña "Swatches"
+        AbstractColorChooserPanel[] panels = chooser.getChooserPanels();
+        for (AbstractColorChooserPanel accp : panels) {
+            if (!accp.getDisplayName().equals("Swatches")) {
+                chooser.removeChooserPanel(accp);
+            }
+        }
+
+        // Crear y mostrar el diálogo personalizado
+        JDialog dialog = JColorChooser.createDialog(
+                this,
+                "Selecciona un color",
+                true,
+                chooser,
+                e -> {
+                    colorSeleccionado = chooser.getColor();
+                    lblColorSeleccionado.setBackground(colorSeleccionado);
+                },
+                null
+        );
+
+        dialog.setVisible(true);
     }
 }

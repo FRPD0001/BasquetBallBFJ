@@ -199,7 +199,7 @@ public class Principal extends JFrame {
             JDialog dialog = new JDialog(this, "Generar Calendario", true);
             dialog.getContentPane().add(genCalendario); // Cambiado de setContentPane a add
             dialog.pack();
-            dialog.setSize(900, 700); // Tamaño adecuado para el contenido
+            dialog.setSize(915, 700); // Tamaño adecuado para el contenido
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
         });

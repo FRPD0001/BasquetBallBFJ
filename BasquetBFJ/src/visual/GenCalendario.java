@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -18,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import logico.Equipo;
 import logico.Juego;
 import logico.SerieNacional;
@@ -30,10 +32,12 @@ public class GenCalendario extends JPanel {
     private ArrayList<ArrayList<Equipo>> emparejamientosActuales;
     private Color colorFondo;
     private Color colorBoton;
+    private ArrayList<Equipo> equiposOriginales;
 
     public GenCalendario(Color colorFondo, Color colorBoton) {
         this.colorFondo = colorBoton;
         this.colorBoton = colorFondo;
+        this.equiposOriginales = new ArrayList<>(SerieNacional.getInstance().getMisEquipos());
         initComponents();
     }
 
@@ -42,23 +46,23 @@ public class GenCalendario extends JPanel {
         setBackground(colorFondo);
         setPreferredSize(new Dimension(900, 700));
 
-        // Botón "Aleatorizar Orden"
         btnGenerarAleatorio = new JButton("Aleatorizar Orden");
-        btnGenerarAleatorio.setBounds(120, 20, 220, 35);
+        btnGenerarAleatorio.setBounds(220, 20, 220, 35);
         btnGenerarAleatorio.setBackground(colorBoton);
         btnGenerarAleatorio.setForeground(Color.BLACK);
         btnGenerarAleatorio.setFont(new Font("Arial", Font.BOLD, 12));
         btnGenerarAleatorio.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                generarEmparejamientosAleatorios();
+                Collections.shuffle(equiposOriginales);
+                generarRoundRobin();
+                actualizarTablaEmparejamientos();
             }
         });
         add(btnGenerarAleatorio);
 
-        // Botón "Confirmar Calendario"
         btnConfirmar = new JButton("Confirmar Calendario");
-        btnConfirmar.setBounds(360, 20, 220, 35);
+        btnConfirmar.setBounds(460, 20, 220, 35);
         btnConfirmar.setBackground(new Color(34, 139, 34));
         btnConfirmar.setForeground(Color.WHITE);
         btnConfirmar.setFont(new Font("Arial", Font.BOLD, 12));
@@ -70,7 +74,6 @@ public class GenCalendario extends JPanel {
         });
         add(btnConfirmar);
 
-        // Configuración de la tabla
         modelEmparejamientos = new DefaultTableModel(
             new Object[]{"Jornada", "Local", "VS", "Visitante"}, 0) {
             @Override
@@ -84,12 +87,15 @@ public class GenCalendario extends JPanel {
         tablaEmparejamientos.setRowHeight(40);
         tablaEmparejamientos.setFont(new Font("Arial", Font.PLAIN, 12));
         
-        // Renderizadores personalizados
+        JTableHeader header = tablaEmparejamientos.getTableHeader();
+        header.setBackground(colorBoton);
+        header.setForeground(Color.WHITE);
+        header.setFont(new Font("Arial", Font.BOLD, 12));
+        
         tablaEmparejamientos.getColumnModel().getColumn(1).setCellRenderer(new EquipoColorRenderer());
         tablaEmparejamientos.getColumnModel().getColumn(2).setCellRenderer(new VSRenderer());
         tablaEmparejamientos.getColumnModel().getColumn(3).setCellRenderer(new EquipoColorRenderer());
         
-        // Ajuste de ancho de columnas
         tablaEmparejamientos.getColumnModel().getColumn(0).setPreferredWidth(100);
         tablaEmparejamientos.getColumnModel().getColumn(1).setPreferredWidth(250);
         tablaEmparejamientos.getColumnModel().getColumn(2).setPreferredWidth(50);
@@ -99,9 +105,9 @@ public class GenCalendario extends JPanel {
         scrollPane.setBounds(50, 70, 800, 550);
         add(scrollPane);
 
-        // Generar el round robin inicial
         if (SerieNacional.getInstance().esNumeroEquiposPar()) {
-            generarEmparejamientosAleatorios();
+            generarRoundRobin();
+            actualizarTablaEmparejamientos();
         } else {
             JOptionPane.showMessageDialog(this, 
                 "El número de equipos debe ser par para generar un calendario.", 
@@ -111,56 +117,28 @@ public class GenCalendario extends JPanel {
         }
     }
 
-    // Renderizador para equipos con color
-    private class EquipoColorRenderer extends DefaultTableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, 
-                boolean isSelected, boolean hasFocus, int row, int column) {
-            
-            if (value instanceof Equipo) {
-                Equipo equipo = (Equipo) value;
-                JPanel panel = new JPanel() {
-                    @Override
-                    protected void paintComponent(Graphics g) {
-                        super.paintComponent(g);
-                        g.setColor(equipo.getColor());
-                        g.fillRect(5, 10, 20, 20);
-                        g.setColor(Color.BLACK);
-                        g.drawRect(5, 10, 20, 20);
-                    }
-                };
-                panel.setBackground(table.getBackground());
-                panel.setLayout(null);
-                
-                JLabel nombreLabel = new JLabel(equipo.getNombre());
-                nombreLabel.setBounds(30, 0, 200, 40);
-                nombreLabel.setFont(new Font("Arial", Font.BOLD, 12));
-                panel.add(nombreLabel);
-                
-                return panel;
-            }
-            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        }
-    }
-
-    // Renderizador para "VS"
-    private class VSRenderer extends DefaultTableCellRenderer {
-        public VSRenderer() {
-            setHorizontalAlignment(JLabel.CENTER);
-            setFont(new Font("Arial", Font.BOLD, 12));
-        }
+    private void generarRoundRobin() {
+        ArrayList<Equipo> equipos = new ArrayList<>(equiposOriginales);
+        emparejamientosActuales = new ArrayList<>();
+        int numEquipos = equipos.size();
+        int numJornadas = numEquipos - 1;
+        int partidosPorJornada = numEquipos / 2;
         
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, 
-                boolean isSelected, boolean hasFocus, int row, int column) {
-            super.getTableCellRendererComponent(table, "VS", isSelected, hasFocus, row, column);
-            return this;
+        for (int jornada = 0; jornada < numJornadas; jornada++) {
+            ArrayList<Equipo> jornadaActual = new ArrayList<>();
+            
+            for (int i = 0; i < partidosPorJornada; i++) {
+                Equipo local = equipos.get(i);
+                Equipo visitante = equipos.get(numEquipos - 1 - i);
+                jornadaActual.add(local);
+                jornadaActual.add(visitante);
+            }
+            
+            emparejamientosActuales.add(jornadaActual);
+            
+            Equipo ultimo = equipos.remove(numEquipos - 1);
+            equipos.add(1, ultimo);
         }
-    }
-
-    private void generarEmparejamientosAleatorios() {
-        emparejamientosActuales = SerieNacional.getInstance().generarRoundRobinAleatorio();
-        actualizarTablaEmparejamientos();
     }
 
     private void actualizarTablaEmparejamientos() {
@@ -192,8 +170,59 @@ public class GenCalendario extends JPanel {
                 }
             }
             
-            // Añadir fila vacía como separador
-            modelEmparejamientos.addRow(new Object[]{"", "", "", ""});
+            modelEmparejamientos.addRow(new Object[]{null, null, null, null});
+        }
+    }
+
+    private class EquipoColorRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, 
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            
+            if (value == null) {
+                return new JPanel();
+            }
+            
+            if (value instanceof Equipo) {
+                Equipo equipo = (Equipo) value;
+                JPanel panel = new JPanel() {
+                    @Override
+                    protected void paintComponent(Graphics g) {
+                        super.paintComponent(g);
+                        g.setColor(equipo.getColor());
+                        g.fillRect(5, 10, 20, 20);
+                        g.setColor(Color.BLACK);
+                        g.drawRect(5, 10, 20, 20);
+                    }
+                };
+                panel.setBackground(table.getBackground());
+                panel.setLayout(null);
+                
+                JLabel nombreLabel = new JLabel(equipo.getNombre());
+                nombreLabel.setBounds(30, 0, 200, 40);
+                nombreLabel.setFont(new Font("Arial", Font.BOLD, 12));
+                panel.add(nombreLabel);
+                
+                return panel;
+            }
+            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        }
+    }
+
+    private class VSRenderer extends DefaultTableCellRenderer {
+        public VSRenderer() {
+            setHorizontalAlignment(JLabel.CENTER);
+            setFont(new Font("Arial", Font.BOLD, 12));
+        }
+        
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, 
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            if (value == null) {
+                return new JPanel();
+            }
+            super.getTableCellRendererComponent(table, "VS", isSelected, hasFocus, row, column);
+            return this;
         }
     }
 
@@ -206,11 +235,10 @@ public class GenCalendario extends JPanel {
         }
 
         ArrayList<Juego> juegos = new ArrayList<>();
-        int diasEntreJornadas = 7;
+        LocalDate fechaBase = LocalDate.now();
         
         for (int i = 0; i < emparejamientosActuales.size(); i++) {
             ArrayList<Equipo> jornada = emparejamientosActuales.get(i);
-            LocalDate fechaBase = LocalDate.now().plusDays(i * diasEntreJornadas);
             
             for (int j = 0; j < jornada.size(); j += 2) {
                 Equipo local = jornada.get(j);
@@ -218,9 +246,7 @@ public class GenCalendario extends JPanel {
                 
                 String fechaStr = JOptionPane.showInputDialog(this,
                     "Fecha para el partido:\n" + 
-                    "Jornada " + (i + 1) + " - " + local.getNombre() + " vs " + visitante.getNombre() + 
-                    "\n(Formato YYYY-MM-DD, sugerido: " + fechaBase + "):",
-                    fechaBase.toString());
+                    local.getNombre() + " vs " + visitante.getNombre());
                 
                 try {
                     LocalDate fecha = LocalDate.parse(fechaStr);
@@ -235,16 +261,16 @@ public class GenCalendario extends JPanel {
                         fecha
                     );
                     juegos.add(juego);
+                    fechaBase = fecha.plusDays(1);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this, 
-                        "Formato de fecha inválido. Use YYYY-MM-DD.", 
+                        "Formato de fecha inválido. Use YYYY-MM-DD. " + e.getMessage(),
                         "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
         }
         
-        // Agregar todos los juegos
         for (Juego juego : juegos) {
             SerieNacional.getInstance().agregarJuego(juego);
             juego.getLocal().getJuegos().add(juego);
@@ -253,8 +279,7 @@ public class GenCalendario extends JPanel {
         
         JOptionPane.showMessageDialog(this, 
             "Calendario Round Robin generado exitosamente!\n" +
-            "Total de partidos: " + juegos.size() + "\n" +
-            "Jornadas programadas: " + emparejamientosActuales.size(), 
+            "Total de partidos: " + juegos.size(), 
             "Éxito", JOptionPane.INFORMATION_MESSAGE);
             
         if (this.getTopLevelAncestor() instanceof JDialog) {
