@@ -99,4 +99,13 @@ public class SerieNacional {
         }
         return (float) equipo.getWin() / (equipo.getWin() + equipo.getLose()) * 100;
     }
+    
+    public Jugador buscarJugadorPorId(String id) {
+        for (Jugador jugador : misJugadores) {
+            if (jugador.getId().equals(id)) {
+                return jugador;
+            }
+        }
+        return null;
+    }
 }

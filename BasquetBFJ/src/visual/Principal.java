@@ -2,7 +2,6 @@ package visual;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -132,11 +131,11 @@ public class Principal extends JFrame {
 
         btnAgregarJugador = crearBotonSubmenuModerno("Agregar Jugador");
         btnListarJugadores = crearBotonSubmenuModerno("Listar Jugadores");
-
+        JButton btnEstadisticas = crearBotonSubmenuModerno("Estadísticas");
         JButton btnAgregarLesion = crearBotonSubmenuModerno("Agregar Lesión");
         JButton btnListarLesiones = crearBotonSubmenuModerno("Listar Lesiones");
 
-        JButton[] botonesJugadores = {btnAgregarJugador, btnListarJugadores, btnAgregarLesion, btnListarLesiones};
+        JButton[] botonesJugadores = {btnAgregarJugador, btnListarJugadores, btnEstadisticas, btnAgregarLesion, btnListarLesiones};
 
         btnAgregarJugador.addActionListener(e -> {
             RegJugador regJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
@@ -148,6 +147,12 @@ public class Principal extends JFrame {
             ListJugador listJugador = new ListJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
             listJugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             listJugador.setVisible(true);
+        });
+        
+        btnEstadisticas.addActionListener(e -> {
+            Estadisticas estadisticas = new Estadisticas(coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+            estadisticas.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            estadisticas.setVisible(true);
         });
         
         btnAgregarLesion.addActionListener(new ActionListener() {
@@ -170,6 +175,8 @@ public class Principal extends JFrame {
         panelJugadores.add(btnAgregarJugador);
         panelJugadores.add(Box.createVerticalStrut(160));
         panelJugadores.add(btnListarJugadores);
+        panelJugadores.add(Box.createVerticalStrut(160));
+        panelJugadores.add(btnEstadisticas);
         panelJugadores.add(Box.createVerticalStrut(160));
         panelJugadores.add(btnAgregarLesion);
         panelJugadores.add(Box.createVerticalStrut(160));
