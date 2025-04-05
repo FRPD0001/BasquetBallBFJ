@@ -106,16 +106,20 @@ public class Principal extends JFrame {
 
         JButton[] botonesEquipos = {btnAgregarEquipo, btnListarEquipos};
 
-        btnAgregarEquipo.addActionListener(e -> {
-            RegEquipo regEquipo = new RegEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-            regEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            regEquipo.setVisible(true);
+        btnAgregarEquipo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	RegEquipo regEquipo = new RegEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+            	regEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            	regEquipo.setVisible(true);
+            }
         });
 
-        btnListarEquipos.addActionListener(e -> {
-            ListEquipo listEquipo = new ListEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-            listEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            listEquipo.setVisible(true);
+        btnListarEquipos.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	ListEquipo listEquipo = new ListEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+            	listEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            	listEquipo.setVisible(true);
+            }
         });
 
         panelEquipos.add(Box.createVerticalStrut(200));
@@ -136,16 +140,20 @@ public class Principal extends JFrame {
 
         JButton[] botonesJugadores = {btnAgregarJugador, btnListarJugadores, btnAgregarLesion, btnListarLesiones};
 
-        btnAgregarJugador.addActionListener(e -> {
-            RegJugador regJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-            regJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            regJug.setVisible(true);
+        btnAgregarJugador.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	RegJugador regJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+            	regJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            	regJug.setVisible(true);
+            }
         });
 
-        btnListarJugadores.addActionListener(e -> {
-            ListJugador listJugador = new ListJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-            listJugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            listJugador.setVisible(true);
+        btnListarJugadores.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	ListJugador listJugador = new ListJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+            	listJugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            	listJugador.setVisible(true);
+            }
         });
         
         btnAgregarLesion.addActionListener(new ActionListener() {

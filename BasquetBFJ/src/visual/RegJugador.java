@@ -17,7 +17,7 @@ public class RegJugador extends JDialog {
     private JTextField txtNombre;
     private JTextField txtPeso;
     private JTextField txtAltura;
-    private JComboBox<String> cbxEquipos;
+    private JComboBox<Equipo> cbxEquipos;
     private Jugador aux;
 
     public RegJugador(Color colorPrincipal, Color colorSecundario) {
@@ -110,7 +110,7 @@ public class RegJugador extends JDialog {
         cbxEquipos.addItem(null); // Opción vacía
         
         for (Equipo equipo : equipos) {
-            cbxEquipos.addItem(equipo.getNombre());
+            cbxEquipos.addItem(equipo);
         }
         
         // Configurar el renderer personalizado para mostrar nombre e ID
@@ -152,12 +152,8 @@ public class RegJugador extends JDialog {
             float altura = Float.parseFloat(txtAltura.getText().trim());
             Equipo equipo = (Equipo) cbxEquipos.getSelectedItem();
 
-            Jugador nuevoJugador = new Jugador();
-            nuevoJugador.setId(id);
-            nuevoJugador.setNombre(nombre);
-            nuevoJugador.setPeso(peso);
-            nuevoJugador.setAltura(altura);
-            nuevoJugador.setEquipo(equipo);
+            // Usar el constructor de Jugador en lugar de crear objeto vacío
+            Jugador nuevoJugador = new Jugador(id, nombre, peso, altura, equipo);
 
             SerieNacional.getInstance().agregarJugador(nuevoJugador);
 
