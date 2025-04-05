@@ -149,11 +149,11 @@ public class Principal extends JFrame {
             listJugador.setVisible(true);
         });
         
-        btnEstadisticas.addActionListener(e -> {
+        /*btnEstadisticas.addActionListener(e -> {
             Estadisticas estadisticas = new Estadisticas(coloresClaros[colorIndex], coloresOscuros[colorIndex]);
             estadisticas.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             estadisticas.setVisible(true);
-        });
+        });*/
         
         btnAgregarLesion.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

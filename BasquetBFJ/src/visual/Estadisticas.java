@@ -8,7 +8,6 @@ import logico.StatsJugador;
 import logico.SerieNacional;
 
 public class Estadisticas extends JDialog {
-    private JTextField txtId;
     private JTextField txtNombre, txtPeso, txtAltura, txtEquipo, txtLesionado;
     private JTextField txtPuntos, txtRebotes, txtAsistencias, txtTirosLibres, txtTirosCampo, txtTriples;
     private JTextField txtCoefEficiencia, txtSalario;
@@ -18,10 +17,12 @@ public class Estadisticas extends JDialog {
     private Jugador jugadorActual;
     private boolean modoEdicion = false;
 
-    public Estadisticas(Color colorOscuro, Color colorClaro) {
+    public Estadisticas(Jugador jugador, Color colorClaro, Color colorOscuro) {
         this.colorOscuro = colorOscuro;
         this.colorClaro = colorClaro;
+        this.jugadorActual = jugador;
         initialize();
+        cargarDatosJugador();
     }
 
     private void initialize() {
@@ -33,10 +34,6 @@ public class Estadisticas extends JDialog {
         getContentPane().setBackground(colorOscuro);
         getContentPane().setLayout(new BorderLayout(5, 5));
 
-        // Panel superior con búsqueda
-        JPanel panelSuperior = crearPanelBusqueda();
-        add(panelSuperior, BorderLayout.NORTH);
-
         // Panel central con datos
         JPanel panelDatos = crearPanelDatos();
         add(new JScrollPane(panelDatos), BorderLayout.CENTER);
@@ -46,35 +43,38 @@ public class Estadisticas extends JDialog {
         add(panelInferior, BorderLayout.SOUTH);
     }
 
-    private JPanel crearPanelBusqueda() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 10));
-        panel.setBackground(colorOscuro);
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    private void cargarDatosJugador() {
+        if (jugadorActual == null) {
+            limpiarCampos();
+            return;
+        }
 
-        JLabel lblTitulo = new JLabel("Ingrese el ID del jugador:");
-        lblTitulo.setFont(new Font("Times New Roman", Font.BOLD, 16));
-        lblTitulo.setForeground(Color.BLACK);
-        panel.add(lblTitulo);
+        // Mostrar datos
+        txtNombre.setText(jugadorActual.getNombre());
+        txtPeso.setText(String.format("%.1f", jugadorActual.getPeso()));
+        txtAltura.setText(String.format("%.2f", jugadorActual.getAltura()));
+        txtEquipo.setText(jugadorActual.getEquipo() != null ? jugadorActual.getEquipo().getNombre() : "Sin equipo");
+        txtLesionado.setText(jugadorActual.isLesionado() ? "Lesionado" : "Activo");
+        txtSalario.setText(String.format("%.2f", jugadorActual.getSalario()));
 
-        txtId = new JTextField(10);
-        txtId.setFont(new Font("Arial", Font.PLAIN, 14));
-        txtId.setText("J-");
-        txtId.setHorizontalAlignment(JTextField.CENTER);
-        txtId.addActionListener(e -> buscarJugador());
+        // Mostrar estadísticas
+        StatsJugador stats = jugadorActual.getEstadistica();
+        if (stats != null) {
+            txtPuntos.setText(String.format("%.1f", stats.getPuntosPorPartido()));
+            txtRebotes.setText(String.format("%.1f", stats.getRebotesPorPartido()));
+            txtAsistencias.setText(String.format("%.1f", stats.getAsistenciasPorPartido()));
+            txtTirosLibres.setText(String.format("%.1f", stats.getPorcentajeTirosLibres()));
+            txtTirosCampo.setText(String.format("%.1f", stats.getPorcentajeTirosCampo()));
+            txtTriples.setText(String.format("%.1f", stats.getPorcentajeTriples()));
+            txtCoefEficiencia.setText(String.format("%.2f", stats.calcularCoeficienteEfectividad()));
+        } else {
+            limpiarEstadisticas();
+        }
         
-        txtId.addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                if (txtId.getCaretPosition() < 2 && e.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
-                    e.consume();
-                }
-            }
-        });
-        
-        panel.add(txtId);
-
-        return panel;
+        btnModificar.setEnabled(true);
     }
 
+    // Rest of the methods remain the same...
     private JPanel crearPanelDatos() {
         JPanel panel = new JPanel();
         panel.setBackground(colorOscuro);
@@ -166,46 +166,6 @@ public class Estadisticas extends JDialog {
         
         campo.setMargin(new Insets(2, 2, 2, 2));
         panel.add(campo);
-    }
-
-    private void buscarJugador() {
-        String idCompleto = txtId.getText().trim();
-        if (idCompleto.length() <= 2) {
-            JOptionPane.showMessageDialog(this, "Ingrese un ID válido (Formato: J-XXX)", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        jugadorActual = SerieNacional.getInstance().buscarJugadorPorId(idCompleto);
-        
-        if (jugadorActual == null) {
-            JOptionPane.showMessageDialog(this, "No se encontró un jugador con ID " + idCompleto, "Error", JOptionPane.ERROR_MESSAGE);
-            limpiarCampos();
-            return;
-        }
-
-        // Mostrar datos
-        txtNombre.setText(jugadorActual.getNombre());
-        txtPeso.setText(String.format("%.1f", jugadorActual.getPeso()));
-        txtAltura.setText(String.format("%.2f", jugadorActual.getAltura()));
-        txtEquipo.setText(jugadorActual.getEquipo() != null ? jugadorActual.getEquipo().getNombre() : "Sin equipo");
-        txtLesionado.setText(jugadorActual.isLesionado() ? "Lesionado" : "Activo");
-        txtSalario.setText(String.format("%.2f", jugadorActual.getSalario()));
-
-        // Mostrar estadísticas
-        StatsJugador stats = jugadorActual.getEstadistica();
-        if (stats != null) {
-            txtPuntos.setText(String.format("%.1f", stats.getPuntosPorPartido()));
-            txtRebotes.setText(String.format("%.1f", stats.getRebotesPorPartido()));
-            txtAsistencias.setText(String.format("%.1f", stats.getAsistenciasPorPartido()));
-            txtTirosLibres.setText(String.format("%.1f", stats.getPorcentajeTirosLibres()));
-            txtTirosCampo.setText(String.format("%.1f", stats.getPorcentajeTirosCampo()));
-            txtTriples.setText(String.format("%.1f", stats.getPorcentajeTriples()));
-            txtCoefEficiencia.setText(String.format("%.2f", stats.calcularCoeficienteEfectividad()));
-        } else {
-            limpiarEstadisticas();
-        }
-        
-        btnModificar.setEnabled(true);
     }
 
     private void toggleModoEdicion() {
