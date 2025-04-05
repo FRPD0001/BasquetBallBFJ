@@ -79,7 +79,7 @@ public class Estadisticas extends JDialog {
         JPanel panel = new JPanel();
         panel.setBackground(colorOscuro);
         panel.setLayout(new GridLayout(14, 2, 5, 3));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 125, 15, 100));
 
         // Crear campos de texto
         txtNombre = crearCampoTexto(false);
