@@ -81,6 +81,64 @@ public class Principal extends JFrame {
         panelBotones.add(btnAjustes);
         panelIzquierdo.add(panelBotones, BorderLayout.CENTER);
 
+        // Botón de guardar con el mismo estilo moderno
+        JButton btnGuardar = new JButton("\uD83D\uDCBE") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                g2.setColor(new Color(0, 0, 0, 255));
+                g2.fillRoundRect(1, 3, getWidth()-2, getHeight()-2, 15, 15);
+                
+                g2.setColor(getBackground());
+                g2.fillRoundRect(0, 0, getWidth()-2, getHeight()-2, 15, 15);
+                
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
+        
+        btnGuardar.setContentAreaFilled(false);
+        btnGuardar.setBorderPainted(false);
+        btnGuardar.setFocusPainted(false);
+        btnGuardar.setOpaque(false);
+        btnGuardar.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 24));
+        btnGuardar.setBackground(coloresOscuros[colorIndex]);
+        btnGuardar.setForeground(Color.WHITE);
+        btnGuardar.setPreferredSize(new Dimension(60, 60));
+        btnGuardar.setMaximumSize(new Dimension(60, 60));
+        btnGuardar.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        btnGuardar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                btnGuardar.setBackground(coloresOscuros[colorIndex].darker());
+                btnGuardar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                btnGuardar.setBackground(coloresOscuros[colorIndex]);
+            }
+        });
+        
+        btnGuardar.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, 
+                "Funcionalidad de guardar implementada aquí", 
+                "Guardar", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        JPanel panelGuardar = new JPanel();
+        panelGuardar.setLayout(new BoxLayout(panelGuardar, BoxLayout.X_AXIS));
+        panelGuardar.setBackground(coloresClaros[colorIndex]); // Usar el color claro actual
+        panelGuardar.setBorder(BorderFactory.createEmptyBorder(0, 40, 40, 0));
+        panelGuardar.add(btnGuardar);
+        panelGuardar.add(Box.createHorizontalGlue());
+        
+        panelIzquierdo.add(panelGuardar, BorderLayout.SOUTH);
+
         panelDerecho = new JPanel(new BorderLayout());
         lblImagen = new JLabel();
         lblImagen.setHorizontalAlignment(SwingConstants.CENTER);
@@ -96,7 +154,7 @@ public class Principal extends JFrame {
             }
         });
 
-        // Panel de Equipos (submenú)
+        // Resto del código de la clase Principal...
         panelEquipos = new JPanel();
         panelEquipos.setLayout(new BoxLayout(panelEquipos, BoxLayout.Y_AXIS));
         panelEquipos.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
@@ -110,17 +168,17 @@ public class Principal extends JFrame {
 
         btnAgregarEquipo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	RegEquipo regEquipo = new RegEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-            	regEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            	regEquipo.setVisible(true);
+                RegEquipo regEquipo = new RegEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                regEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                regEquipo.setVisible(true);
             }
         });
 
         btnListarEquipos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	ListEquipo listEquipo = new ListEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-            	listEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            	listEquipo.setVisible(true);
+                ListEquipo listEquipo = new ListEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                listEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                listEquipo.setVisible(true);
             }
         });
 
@@ -144,17 +202,17 @@ public class Principal extends JFrame {
 
         btnAgregarJugador.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	RegJugador regJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-            	regJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            	regJug.setVisible(true);
+                RegJugador regJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                regJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                regJug.setVisible(true);
             }
         });
 
         btnListarJugadores.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	ListJugador listJugador = new ListJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-            	listJugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            	listJugador.setVisible(true);
+                ListJugador listJugador = new ListJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                listJugador.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                listJugador.setVisible(true);
             }
         });
         
@@ -408,6 +466,13 @@ public class Principal extends JFrame {
         panelEquipos.setBackground(coloresOscuros[colorIndex]);
         panelJugadores.setBackground(coloresOscuros[colorIndex]);
         panelCalendario.setBackground(coloresOscuros[colorIndex]);
+        
+        JPanel panelGuardar = (JPanel) panelIzquierdo.getComponent(1); // Obtener el panel sur
+        panelGuardar.setBackground(coloresClaros[colorIndex]);
+        
+        // Actualizar el botón guardar
+        JButton btnGuardar = (JButton) panelGuardar.getComponent(0);
+        btnGuardar.setBackground(coloresOscuros[colorIndex]);
     }
 
     private void cambiarImagenFondo() {
