@@ -14,14 +14,13 @@ public class Principal extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel panelAjustes, panelEquipos, panelJugadores, panelCalendario, panelIzquierdo, panelDerecho, panelBotones;
     private JLabel lblImagen;
-    private Color[] coloresOscuros = {new Color(147, 112, 219), Color.RED, new Color(17, 115, 68), new Color(100, 149, 237)};
-    private Color[] coloresClaros = {new Color(216, 191, 216), new Color(255, 200, 200), new Color(200, 255, 200), new Color(200, 220, 255)};
+    private Color[] coloresOscuros = {new Color(147, 112, 219), new Color(100, 149, 237), Color.RED, new Color(17, 115, 68)};
+    private Color[] coloresClaros = {new Color(216, 191, 216), new Color(200, 220, 255), new Color(255, 200, 200), new Color(200, 255, 200)};
     private String[] imagenesFondo = {
         "media/fondoProyecto5.jpeg",
         "media/fondoProyecto1.jpg",
         "media/fondoProyecto2.jpg",
         "media/fondoProyecto3.jpg",
-        "media/fondoProyecto4.jpg",
     };
     private int colorIndex = 0;
     private int fondoIndex = 0;

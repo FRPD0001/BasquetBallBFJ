@@ -1,112 +1,93 @@
 package visual;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+import javax.swing.border.BevelBorder;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
-
 import logico.Equipo;
 import logico.SerieNacional;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class RegEquipo extends JDialog {
+
     private final JPanel contentPanel = new JPanel();
     private JTextField txtNombre;
     private JLabel lblColorSeleccionado;
     private Color colorSeleccionado;
-    private JLabel lblId;
-    private JComboBox<String> cmbCiudad;
+    private JTextField txtID;
+    private JComboBox<String> cbxCiudad;
     private Equipo aux;
+    private ImageIcon appIcon;
 
-    // Lista de países/ciudades disponibles
     private String[] CIUDADES = {
         "Seleccionar Pais", "Estados Unidos", "Canada", "Mexico", "Republica Dominicana",
         "Puerto Rico", "Cuba", "Argentina", "Venezuela", "Chile", "Brazil"
     };
 
-    public RegEquipo(Color colorOscuro, Color colorClaro) {
-        setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
-        this.aux = aux;
+    public RegEquipo(Color colorPrincipal, Color colorSecundario) {
+        appIcon = new ImageIcon("media/LogoProyecto.png");
+        setIconImage(appIcon.getImage());
         setTitle(aux == null ? "Registrar Equipo" : "Modificar Equipo");
-        setBounds(100, 100, 500, 300);
-        setLocationRelativeTo(null);
         setModal(true);
+        setBounds(100, 100, 480, 300);
+        setLocationRelativeTo(null);
         getContentPane().setLayout(new BorderLayout());
-
-        contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        contentPanel.setBackground(colorClaro);
+        contentPanel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(null);
 
-        lblId = new JLabel("ID:");
-        lblId.setBounds(30, 20, 50, 20);
-        lblId.setFont(new Font("Arial", Font.BOLD, 12));
-        contentPanel.add(lblId);
+        contentPanel.setBackground(colorSecundario);
+        
+        JLabel lblID = new JLabel("ID:");
+        lblID.setBounds(12, 13, 56, 16);
+        contentPanel.add(lblID);
 
-        JLabel lblIdValue = new JLabel();
-        lblIdValue.setBounds(92, 20, 150, 20);
-        lblIdValue.setFont(new Font("Arial", Font.PLAIN, 12));
-        lblIdValue.setText(aux == null ? "E-" + SerieNacional.getInstance().getGenEquipo() : aux.getId());
-        contentPanel.add(lblIdValue);
-
-        JLabel lblCiudad = new JLabel("Pais:");
-        lblCiudad.setBounds(30, 84, 60, 20);
-        lblCiudad.setFont(new Font("Arial", Font.BOLD, 12));
-        contentPanel.add(lblCiudad);
-
-        cmbCiudad = new JComboBox<>(new DefaultComboBoxModel<>(CIUDADES));
-        cmbCiudad.setBounds(92, 82, 150, 25);
-        contentPanel.add(cmbCiudad);
+        txtID = new JTextField();
+        txtID.setEditable(false);
+        txtID.setBounds(105, 10, 116, 22);
+        contentPanel.add(txtID);
+        txtID.setColumns(10);
+        txtID.setText(aux == null ? "E-" + SerieNacional.getInstance().getGenEquipo() : aux.getId());
 
         JLabel lblNombre = new JLabel("Nombre:");
-        lblNombre.setBounds(30, 52, 60, 20);
-        lblNombre.setFont(new Font("Arial", Font.BOLD, 12));
+        lblNombre.setBounds(12, 42, 56, 16);
         contentPanel.add(lblNombre);
 
         txtNombre = new JTextField();
-        txtNombre.setBounds(92, 49, 150, 25);
+        txtNombre.setBounds(105, 39, 197, 22);
         contentPanel.add(txtNombre);
         txtNombre.setColumns(10);
 
-        JButton btnSeleccionarColor = new JButton("Seleccionar Color");
-        btnSeleccionarColor.setBounds(92, 116, 170, 30);
-        btnSeleccionarColor.setFont(new Font("Arial", Font.BOLD, 12));
-        btnSeleccionarColor.setBackground(colorOscuro);
-        btnSeleccionarColor.setForeground(Color.WHITE);
-        contentPanel.add(btnSeleccionarColor);
+        JLabel lblCiudad = new JLabel("País:");
+        lblCiudad.setBounds(12, 71, 70, 16);
+        contentPanel.add(lblCiudad);
 
-        lblColorSeleccionado = new JLabel(" ");
-        lblColorSeleccionado.setBounds(92, 158, 103, 20);
-        lblColorSeleccionado.setOpaque(true);
-        lblColorSeleccionado.setBackground(Color.WHITE);
-        lblColorSeleccionado.setBorder(new LineBorder(Color.BLACK));
-        contentPanel.add(lblColorSeleccionado);
+        cbxCiudad = new JComboBox<>(CIUDADES);
+        cbxCiudad.setBounds(105, 68, 197, 22);
+        contentPanel.add(cbxCiudad);
 
         JLabel lblColor = new JLabel("Color:");
-        lblColor.setFont(new Font("Arial", Font.BOLD, 12));
-        lblColor.setBounds(30, 116, 60, 20);
+        lblColor.setBounds(12, 100, 70, 16);
         contentPanel.add(lblColor);
 
-        if (aux != null) {
-            txtNombre.setText(aux.getNombre());
-            lblColorSeleccionado.setBackground(aux.getColor());
-            colorSeleccionado = aux.getColor();
-            if (aux.getCiudad() != null && !aux.getCiudad().isEmpty()) {
-                cmbCiudad.setSelectedItem(aux.getCiudad());
-            }
-        }
+        JButton btnColor = new JButton("Seleccionar");
+        btnColor.setBounds(105, 97, 116, 22);
+        btnColor.setBackground(colorPrincipal);
+        btnColor.setForeground(Color.WHITE);
+        btnColor.addActionListener(e -> mostrarSelectorColor());
+        contentPanel.add(btnColor);
 
-        btnSeleccionarColor.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mostrarSelectorSimpleDeColor();
-            }
-        });
+        lblColorSeleccionado = new JLabel(" ");
+        lblColorSeleccionado.setBounds(233, 97, 22, 22);
+        lblColorSeleccionado.setOpaque(true);
+        lblColorSeleccionado.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        lblColorSeleccionado.setBackground(Color.WHITE);
+        contentPanel.add(lblColorSeleccionado);
 
         JPanel buttonPane = new JPanel();
+        buttonPane.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        buttonPane.setBackground(colorClaro);
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
         JButton okButton = new JButton(aux == null ? "Registrar" : "Modificar");
@@ -114,14 +95,11 @@ public class RegEquipo extends JDialog {
         okButton.setBackground(new Color(34, 139, 34));
         okButton.setForeground(Color.WHITE);
         okButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
-                if (validarCampos()) {
-                    if (aux == null) {
-                        registrarEquipo(lblIdValue.getText());
-                    } else {
-                        modificarEquipo();
-                    }
+                if (aux == null) {
+                    registrarEquipo();
+                } else {
+                    modificarEquipo();
                 }
             }
         });
@@ -132,89 +110,179 @@ public class RegEquipo extends JDialog {
         cancelButton.setFont(new Font("Arial", Font.BOLD, 12));
         cancelButton.setBackground(new Color(178, 34, 34));
         cancelButton.setForeground(Color.WHITE);
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        cancelButton.addActionListener(e -> dispose());
         buttonPane.add(cancelButton);
+
+        if (aux != null) {
+            cargarDatosEquipo();
+        }
+    }
+
+    private void cargarDatosEquipo() {
+        txtNombre.setText(aux.getNombre());
+        colorSeleccionado = aux.getColor();
+        lblColorSeleccionado.setBackground(colorSeleccionado);
+        
+        for (int i = 0; i < CIUDADES.length; i++) {
+            if (CIUDADES[i].equals(aux.getCiudad())) {
+                cbxCiudad.setSelectedIndex(i);
+                break;
+            }
+        }
+    }
+
+    private void mostrarSelectorColor() {
+        JColorChooser colorChooser = new JColorChooser(colorSeleccionado != null ? colorSeleccionado : Color.WHITE);
+        
+        // Mantener solo la pestaña "Swatches"
+        AbstractColorChooserPanel[] panels = colorChooser.getChooserPanels();
+        for (AbstractColorChooserPanel accp : panels) {
+            if (!accp.getDisplayName().equals("Swatches")) {
+                colorChooser.removeChooserPanel(accp);
+            }
+        }
+
+        // Configurar el diálogo del selector de color
+        JDialog dialog = JColorChooser.createDialog(
+            this, 
+            "Seleccionar Color del Equipo", 
+            true, 
+            colorChooser, 
+            e -> {
+                colorSeleccionado = colorChooser.getColor();
+                lblColorSeleccionado.setBackground(colorSeleccionado);
+            }, 
+            null
+        );
+        
+        // Establecer el icono de la aplicación
+        dialog.setIconImage(appIcon.getImage());
+        dialog.setVisible(true);
+    }
+
+    private void registrarEquipo() {
+        if (!validarCampos()) return;
+
+        try {
+            String id = txtID.getText();
+            String nombre = txtNombre.getText().trim();
+            String ciudad = (String) cbxCiudad.getSelectedItem();
+
+            if (existeEquipoConNombre(nombre)) {
+                JOptionPane.showMessageDialog(this, 
+                    "Ya existe un equipo con ese nombre", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (existeEquipoConColor(colorSeleccionado)) {
+                JOptionPane.showMessageDialog(this, 
+                    "Ya existe un equipo con ese color", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            Equipo nuevoEquipo = new Equipo(id, nombre, colorSeleccionado);
+            nuevoEquipo.setCiudad(ciudad);
+            SerieNacional.getInstance().agregarEquipo(nuevoEquipo);
+
+            JOptionPane.showMessageDialog(this, 
+                "Equipo registrado exitosamente.\n" +
+                "ID: " + id + "\n" +
+                "Nombre: " + nombre, 
+                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+            limpiarCampos();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al registrar equipo: " + e.getMessage(), 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void modificarEquipo() {
+        if (!validarCampos()) return;
+
+        try {
+            String nombre = txtNombre.getText().trim();
+            String ciudad = (String) cbxCiudad.getSelectedItem();
+
+            for (Equipo equipo : SerieNacional.getInstance().getMisEquipos()) {
+                if (equipo.getNombre().equalsIgnoreCase(nombre) && !equipo.getId().equals(aux.getId())) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Ya existe otro equipo con ese nombre", 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
+            for (Equipo equipo : SerieNacional.getInstance().getMisEquipos()) {
+                if (equipo.getColor().equals(colorSeleccionado) && !equipo.getId().equals(aux.getId())) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Ya existe otro equipo con ese color", 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+
+            aux.setNombre(nombre);
+            aux.setColor(colorSeleccionado);
+            aux.setCiudad(ciudad);
+
+            JOptionPane.showMessageDialog(this, 
+                "Equipo modificado exitosamente.\n" +
+                "ID: " + aux.getId() + "\n" +
+                "Nombre: " + aux.getNombre(), 
+                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+            dispose();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error al modificar equipo: " + e.getMessage(), 
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void limpiarCampos() {
+        txtNombre.setText("");
+        cbxCiudad.setSelectedIndex(0);
+        colorSeleccionado = null;
+        lblColorSeleccionado.setBackground(Color.WHITE);
+        txtID.setText("E-" + SerieNacional.getInstance().getGenEquipo());
+        txtNombre.requestFocus();
     }
 
     private boolean validarCampos() {
         if (txtNombre.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El nombre es obligatorio", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Debe ingresar un nombre", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (colorSeleccionado == null) {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un color", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        if (cmbCiudad.getSelectedItem().equals("Seleccionar Pais")) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un Pais", "Error", JOptionPane.ERROR_MESSAGE);
+        if (cbxCiudad.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un país", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
     }
 
-    private void registrarEquipo(String id) {
-        try {
-            Equipo nuevoEquipo = new Equipo(id, txtNombre.getText().trim(), colorSeleccionado);
-            nuevoEquipo.setCiudad((String) cmbCiudad.getSelectedItem());
-            SerieNacional.getInstance().agregarEquipo(nuevoEquipo);
-
-            JOptionPane.showMessageDialog(this,
-                    "Equipo registrado exitosamente!\nID: " + id,
-                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            dispose();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "Error al registrar equipo: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void modificarEquipo() {
-        try {
-            aux.setNombre(txtNombre.getText().trim());
-            aux.setColor(colorSeleccionado);
-            aux.setCiudad((String) cmbCiudad.getSelectedItem());
-
-            JOptionPane.showMessageDialog(this,
-                    "Equipo modificado exitosamente!",
-                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            dispose();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "Error al modificar equipo: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void mostrarSelectorSimpleDeColor() {
-        JColorChooser chooser = new JColorChooser();
-
-        // Mantener solo la pestaña "Swatches"
-        AbstractColorChooserPanel[] panels = chooser.getChooserPanels();
-        for (AbstractColorChooserPanel accp : panels) {
-            if (!accp.getDisplayName().equals("Swatches")) {
-                chooser.removeChooserPanel(accp);
+    private boolean existeEquipoConNombre(String nombre) {
+        for (Equipo equipo : SerieNacional.getInstance().getMisEquipos()) {
+            if (equipo.getNombre().equalsIgnoreCase(nombre)) {
+                return true;
             }
         }
+        return false;
+    }
 
-        // Crear y mostrar el diálogo personalizado
-        JDialog dialog = JColorChooser.createDialog(
-                this,
-                "Selecciona un color",
-                true,
-                chooser,
-                e -> {
-                    colorSeleccionado = chooser.getColor();
-                    lblColorSeleccionado.setBackground(colorSeleccionado);
-                },
-                null
-        );
-
-        dialog.setVisible(true);
+    private boolean existeEquipoConColor(Color color) {
+        for (Equipo equipo : SerieNacional.getInstance().getMisEquipos()) {
+            if (equipo.getColor().equals(color)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
