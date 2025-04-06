@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.Collections;
 import logico.Juego;
+import java.io.Serializable;
 
-public class SerieNacional {
-    
+
+public class SerieNacional implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
     private ArrayList<Equipo> misEquipos;
     private static int genEquipo;
     private ArrayList<Jugador> misJugadores;

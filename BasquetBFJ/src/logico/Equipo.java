@@ -1,8 +1,11 @@
 package logico;
 import java.awt.Color;
-import java.util.ArrayList;
-public class Equipo {
 
+import java.io.Serializable;
+import java.util.ArrayList;
+public class Equipo implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	private String id;
     private String nombre;
     private String ciudad;

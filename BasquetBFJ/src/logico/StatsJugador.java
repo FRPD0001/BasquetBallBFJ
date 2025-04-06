@@ -1,7 +1,10 @@
 package logico;
 
-public class StatsJugador {
+import java.io.Serializable;
+
+public class StatsJugador implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
     private String jugador;
     private float puntosPorPartido;
     private float rebotesPorPartido;

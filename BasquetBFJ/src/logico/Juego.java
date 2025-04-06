@@ -1,9 +1,12 @@
 package logico;
 
 import java.time.LocalDate;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Juego {
+public class Juego implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
     private String id;
     private Equipo local;
     private Equipo visitante;
