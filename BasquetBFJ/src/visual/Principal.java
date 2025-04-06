@@ -254,7 +254,7 @@ public class Principal extends JFrame {
         btnCalendario.addActionListener(e -> mostrarSubmenu(panelCalendario));
         btnAjustes.addActionListener(e -> mostrarSubmenu(panelAjustes));
 
-        // Estructura inicial de los paneles
+        // Estructura inicial de los panel
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdo, null);
         splitPane.setDividerLocation(350);
         splitPane.setEnabled(false);

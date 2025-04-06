@@ -64,7 +64,7 @@ public class VerCalendario extends JPanel {
             tablaJuegos.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
-        // Organización de componentes
+        // Organización de componente
         JScrollPane scrollTabla = new JScrollPane(tablaJuegos);
         scrollTabla.setBorder(BorderFactory.createEmptyBorder());
 
