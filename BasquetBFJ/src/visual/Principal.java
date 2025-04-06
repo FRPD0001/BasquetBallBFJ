@@ -2,6 +2,9 @@ package visual;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+
+import logico.SerieNacional;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -197,17 +200,21 @@ public class Principal extends JFrame {
             GenCalendario genCalendario = new GenCalendario(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
             
             JDialog dialog = new JDialog(this, "Generar Calendario", true);
-            dialog.getContentPane().add(genCalendario); // Cambiado de setContentPane a add
+            dialog.getContentPane().add(genCalendario);
             dialog.pack();
-            dialog.setSize(915, 700); // Tamaño adecuado para el contenido
+            dialog.setSize(915, 700);
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
         });
 
         btnVerCalendario.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, 
-                "Funcionalidad de Ver Calendario - Mostrará los juegos programados", 
-                "Calendario", JOptionPane.INFORMATION_MESSAGE);
+            if (SerieNacional.getInstance().getMisJuegos().isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "No hay juegos programados. Genere primero un calendario.", 
+                    "Calendario Vacío", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                VerCalendario.mostrarDialog(this, coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+            }
         });
 
         btnEmpezarJuegos.addActionListener(e -> {
