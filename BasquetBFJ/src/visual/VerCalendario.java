@@ -4,7 +4,6 @@ import java.awt.*;
 import java.time.*;
 import java.util.Date;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.*;
 import javax.swing.table.*;
 import logico.*;
@@ -16,7 +15,8 @@ public class VerCalendario extends JPanel {
     private DefaultTableModel modeloTabla;
     private Color colorFondo;
     private Color colorBoton;
-    private ArrayList<Juego> todosJuegos; // Cambiado a ArrayList específico
+    private ArrayList<Juego> todosJuegos;
+    private Color colorDiasConJuegos = new Color(144, 238, 144); // Verde claro para días con partidos
 
     public VerCalendario(Color colorFondo, Color colorBoton) {
         this.colorFondo = colorFondo;
@@ -35,6 +35,52 @@ public class VerCalendario extends JPanel {
         calendar.setDecorationBackgroundColor(colorBoton);
         calendar.setDecorationBackgroundVisible(true);
         calendar.setWeekOfYearVisible(false);
+
+        // Personalizar el renderizado de días usando IDateEvaluator
+        IDateEvaluator dateEvaluator = new IDateEvaluator() {
+            @Override
+            public boolean isSpecial(Date date) {
+                LocalDate localDate = convertToLocalDate(date);
+                return tieneJuegos(localDate);
+            }
+
+            @Override
+            public Color getSpecialForegroundColor() {
+                return Color.BLACK;
+            }
+
+            @Override
+            public Color getSpecialBackroundColor() {
+                return colorDiasConJuegos;
+            }
+
+            @Override
+            public String getSpecialTooltip() {
+                return "Partidos programados";
+            }
+
+            @Override
+            public boolean isInvalid(Date date) {
+                return false;
+            }
+
+            @Override
+            public Color getInvalidForegroundColor() {
+                return null;
+            }
+
+            @Override
+            public Color getInvalidBackroundColor() {
+                return null;
+            }
+
+            @Override
+            public String getInvalidTooltip() {
+                return null;
+            }
+        };
+
+        calendar.getDayChooser().addDateEvaluator(dateEvaluator);
 
         // Listener para selección de fecha
         calendar.addPropertyChangeListener("calendar", evt -> {
@@ -64,7 +110,7 @@ public class VerCalendario extends JPanel {
             tablaJuegos.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
-        // Organización de componente
+        // Organización de componentes
         JScrollPane scrollTabla = new JScrollPane(tablaJuegos);
         scrollTabla.setBorder(BorderFactory.createEmptyBorder());
 
@@ -80,7 +126,16 @@ public class VerCalendario extends JPanel {
     private void cargarJuegos() {
         todosJuegos.clear();
         todosJuegos.addAll(SerieNacional.getInstance().getMisJuegos());
-        calendar.updateUI();
+        calendar.updateUI(); // Actualizar el calendario para mostrar los días marcados
+    }
+
+    private boolean tieneJuegos(LocalDate fecha) {
+        for (Juego juego : todosJuegos) {
+            if (juego.getFechaJuego().equals(fecha)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void mostrarJuegosFecha(LocalDate fecha) {
