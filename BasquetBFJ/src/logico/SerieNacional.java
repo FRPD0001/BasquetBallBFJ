@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.Collections;
 import logico.Juego;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 
@@ -17,6 +25,7 @@ public class SerieNacional implements Serializable {
     private ArrayList<Juego> misJuegos;
     private static int genJuego;
     private static SerieNacional serie;
+    private static String FILE_NAME = "Serie_Nacional.DAT";
 
     private SerieNacional() {
         genEquipo = 1;
@@ -91,6 +100,7 @@ public class SerieNacional implements Serializable {
     public void agregarJugador(Jugador jugador) {
         misJugadores.add(jugador);
         genJugador++;
+        guardarFileTest();
     }
 
     public void agregarJuego(Juego juego) {
@@ -154,5 +164,60 @@ public class SerieNacional implements Serializable {
         ArrayList<Equipo> equipos = new ArrayList<>(misEquipos);
         Collections.shuffle(equipos);
         return generarRoundRobin();
+    }
+    
+    public void guardarFileTest() {
+    	FileOutputStream fos = null;
+    	try {
+			fos = new FileOutputStream(FILE_NAME);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	ObjectOutputStream oos = null;
+		try {
+			oos = new ObjectOutputStream(fos);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	try {
+			oos.writeObject(SerieNacional.getInstance());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				fos.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+			
+		}
+    }
+    
+    public void cargarFicheroTest() {
+        if (serie == null) {
+            getInstance();
+        }
+
+        File file = new File(FILE_NAME);
+
+        // Create the file with a default SerieNacional if it doesn't exist
+        if (!file.exists()) {
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+                oos.writeObject(new SerieNacional());  // Assuming SerieNacional has a default constructor
+            } catch (IOException e) {
+                System.err.println("Error creando archivo: " + e.getMessage());
+                return;
+            }
+        }
+
+        // Load the existing or newly created file
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            serie = (SerieNacional) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error cargando archivo: " + e.getMessage());
+        }
     }
 }

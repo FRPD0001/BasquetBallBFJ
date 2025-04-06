@@ -8,10 +8,9 @@ import logico.SerieNacional;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class Principal extends JFrame {
@@ -129,15 +128,19 @@ public class Principal extends JFrame {
             }
         });
         
-        btnGuardar.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, 
-                "Funcionalidad de guardar implementada aquí", 
-                "Guardar", JOptionPane.INFORMATION_MESSAGE);
+        btnGuardar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(Principal.this, 
+                    "Funcionalidad de guardar implementada aquí", 
+                    "Guardar", JOptionPane.INFORMATION_MESSAGE);
+                SerieNacional.getInstance().guardarFileTest();
+            }
         });
 
         JPanel panelGuardar = new JPanel();
         panelGuardar.setLayout(new BoxLayout(panelGuardar, BoxLayout.X_AXIS));
-        panelGuardar.setBackground(coloresClaros[colorIndex]); // Usar el color claro actual
+        panelGuardar.setBackground(coloresClaros[colorIndex]);
         panelGuardar.setBorder(BorderFactory.createEmptyBorder(0, 40, 40, 0));
         panelGuardar.add(btnGuardar);
         panelGuardar.add(Box.createHorizontalGlue());
@@ -159,7 +162,6 @@ public class Principal extends JFrame {
             }
         });
 
-        // Resto del código de la clase Principal...
         panelEquipos = new JPanel();
         panelEquipos.setLayout(new BoxLayout(panelEquipos, BoxLayout.Y_AXIS));
         panelEquipos.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
@@ -258,31 +260,40 @@ public class Principal extends JFrame {
 
         JButton[] botonesCalendario = {btnGenerarCalendario, btnVerCalendario, btnEmpezarJuegos};
 
-        btnGenerarCalendario.addActionListener(e -> {
-            GenCalendario genCalendario = new GenCalendario(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-            
-            JDialog dialog = new JDialog(this, "Generar Calendario", true);
-            dialog.getContentPane().add(genCalendario);
-            dialog.pack();
-            dialog.setSize(915, 700);
-            dialog.setLocationRelativeTo(this);
-            dialog.setVisible(true);
-        });
-
-        btnVerCalendario.addActionListener(e -> {
-            if (SerieNacional.getInstance().getMisJuegos().isEmpty()) {
-                JOptionPane.showMessageDialog(this, 
-                    "No hay juegos programados. Genere primero un calendario.", 
-                    "Calendario Vacío", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                VerCalendario.mostrarDialog(this, coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+        btnGenerarCalendario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GenCalendario genCalendario = new GenCalendario(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                
+                JDialog dialog = new JDialog(Principal.this, "Generar Calendario", true);
+                dialog.getContentPane().add(genCalendario);
+                dialog.pack();
+                dialog.setSize(915, 700);
+                dialog.setLocationRelativeTo(Principal.this);
+                dialog.setVisible(true);
             }
         });
 
-        btnEmpezarJuegos.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, 
-                "Funcionalidad de Empezar Juegos - Iniciará la temporada", 
-                "Iniciar Juegos", JOptionPane.INFORMATION_MESSAGE);
+        btnVerCalendario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (SerieNacional.getInstance().getMisJuegos().isEmpty()) {
+                    JOptionPane.showMessageDialog(Principal.this, 
+                        "No hay juegos programados. Genere primero un calendario.", 
+                        "Calendario Vacío", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    VerCalendario.mostrarDialog(Principal.this, coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+                }
+            }
+        });
+
+        btnEmpezarJuegos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(Principal.this, 
+                    "Funcionalidad de Empezar Juegos - Iniciará la temporada", 
+                    "Iniciar Juegos", JOptionPane.INFORMATION_MESSAGE);
+            }
         });
 
         panelCalendario.add(Box.createVerticalStrut(150));
@@ -303,20 +314,53 @@ public class Principal extends JFrame {
 
         JButton[] botonesAjustes = {btnCambiarColor, btnCambiarFondo};
 
-        btnCambiarColor.addActionListener(e -> cambiarColor(botones, botonesAjustes, botonesEquipos, botonesJugadores, botonesCalendario));
-        btnCambiarFondo.addActionListener(e -> cambiarImagenFondo());
+        btnCambiarColor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cambiarColor(botones, botonesAjustes, botonesEquipos, botonesJugadores, botonesCalendario);
+            }
+        });
+        
+        btnCambiarFondo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cambiarImagenFondo();
+            }
+        });
 
         panelAjustes.add(Box.createVerticalStrut(200));
         panelAjustes.add(btnCambiarColor);
         panelAjustes.add(Box.createVerticalStrut(300));
         panelAjustes.add(btnCambiarFondo);
 
-        btnEquipos.addActionListener(e -> mostrarSubmenu(panelEquipos));
-        btnJugadores.addActionListener(e -> mostrarSubmenu(panelJugadores));
-        btnCalendario.addActionListener(e -> mostrarSubmenu(panelCalendario));
-        btnAjustes.addActionListener(e -> mostrarSubmenu(panelAjustes));
+        btnEquipos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarSubmenu(panelEquipos);
+            }
+        });
 
-        // Estructura inicial de los panel
+        btnJugadores.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarSubmenu(panelJugadores);
+            }
+        });
+
+        btnCalendario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarSubmenu(panelCalendario);
+            }
+        });
+
+        btnAjustes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarSubmenu(panelAjustes);
+            }
+        });
+
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdo, null);
         splitPane.setDividerLocation(350);
         splitPane.setEnabled(false);
@@ -464,7 +508,6 @@ public class Principal extends JFrame {
             btn.setForeground(Color.BLACK);
         }
         
-        // Actualizar fondos de los paneles
         panelIzquierdo.setBackground(coloresClaros[colorIndex]);
         panelBotones.setBackground(coloresClaros[colorIndex]);
         panelAjustes.setBackground(coloresOscuros[colorIndex]);
@@ -472,10 +515,9 @@ public class Principal extends JFrame {
         panelJugadores.setBackground(coloresOscuros[colorIndex]);
         panelCalendario.setBackground(coloresOscuros[colorIndex]);
         
-        JPanel panelGuardar = (JPanel) panelIzquierdo.getComponent(1); // Obtener el panel sur
+        JPanel panelGuardar = (JPanel) panelIzquierdo.getComponent(1);
         panelGuardar.setBackground(coloresClaros[colorIndex]);
         
-        // Actualizar el botón guardar
         JButton btnGuardar = (JButton) panelGuardar.getComponent(0);
         btnGuardar.setBackground(coloresOscuros[colorIndex]);
     }
@@ -506,6 +548,7 @@ public class Principal extends JFrame {
             @Override
             public void run() {
                 Principal ventana = new Principal();
+                SerieNacional.getInstance().cargarFicheroTest();
                 ventana.setVisible(true);
             }
         });
