@@ -3,7 +3,6 @@ package visual;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.colorchooser.AbstractColorChooserPanel;
 import logico.Equipo;
 import logico.SerieNacional;
 import java.awt.event.ActionEvent;
@@ -25,7 +24,8 @@ public class RegEquipo extends JDialog {
         "Puerto Rico", "Cuba", "Argentina", "Venezuela", "Chile", "Brazil"
     };
 
-    public RegEquipo(Color colorPrincipal, Color colorSecundario) {
+    public RegEquipo(Color colorPrincipal, Color colorSecundario, Equipo equipoAModificar) {
+        this.aux = equipoAModificar;
         appIcon = new ImageIcon("media/LogoProyecto.png");
         setIconImage(appIcon.getImage());
         setTitle(aux == null ? "Registrar Equipo" : "Modificar Equipo");
@@ -38,7 +38,7 @@ public class RegEquipo extends JDialog {
         contentPanel.setLayout(null);
 
         contentPanel.setBackground(colorSecundario);
-        
+
         JLabel lblID = new JLabel("ID:");
         lblID.setBounds(12, 13, 56, 16);
         contentPanel.add(lblID);
@@ -119,10 +119,11 @@ public class RegEquipo extends JDialog {
     }
 
     private void cargarDatosEquipo() {
+        txtID.setText(aux.getId());
         txtNombre.setText(aux.getNombre());
         colorSeleccionado = aux.getColor();
         lblColorSeleccionado.setBackground(colorSeleccionado);
-        
+
         for (int i = 0; i < CIUDADES.length; i++) {
             if (CIUDADES[i].equals(aux.getCiudad())) {
                 cbxCiudad.setSelectedIndex(i);
@@ -132,32 +133,10 @@ public class RegEquipo extends JDialog {
     }
 
     private void mostrarSelectorColor() {
-        JColorChooser colorChooser = new JColorChooser(colorSeleccionado != null ? colorSeleccionado : Color.WHITE);
-        
-        // Mantener solo la pestaña "Swatches"
-        AbstractColorChooserPanel[] panels = colorChooser.getChooserPanels();
-        for (AbstractColorChooserPanel accp : panels) {
-            if (!accp.getDisplayName().equals("Swatches")) {
-                colorChooser.removeChooserPanel(accp);
-            }
+        colorSeleccionado = JColorChooser.showDialog(this, "Seleccionar Color", colorSeleccionado);
+        if (colorSeleccionado != null) {
+            lblColorSeleccionado.setBackground(colorSeleccionado);
         }
-
-        // Configurar el diálogo del selector de color
-        JDialog dialog = JColorChooser.createDialog(
-            this, 
-            "Seleccionar Color del Equipo", 
-            true, 
-            colorChooser, 
-            e -> {
-                colorSeleccionado = colorChooser.getColor();
-                lblColorSeleccionado.setBackground(colorSeleccionado);
-            }, 
-            null
-        );
-        
-        // Establecer el icono de la aplicación
-        dialog.setIconImage(appIcon.getImage());
-        dialog.setVisible(true);
     }
 
     private void registrarEquipo() {

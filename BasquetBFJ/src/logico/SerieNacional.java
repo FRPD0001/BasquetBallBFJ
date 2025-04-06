@@ -220,4 +220,13 @@ public class SerieNacional implements Serializable {
             System.err.println("Error cargando archivo: " + e.getMessage());
         }
     }
+
+    public Equipo buscarEquipoPorId(String id) {
+        for (Equipo eq : misEquipos) {
+            if (eq.getId().equals(id)) {
+                return eq;
+            }
+        }
+        return null;
+    }
 }

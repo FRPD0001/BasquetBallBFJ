@@ -175,7 +175,7 @@ public class Principal extends JFrame {
 
         btnAgregarEquipo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                RegEquipo regEquipo = new RegEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
+                RegEquipo regEquipo = new RegEquipo(coloresOscuros[colorIndex], coloresClaros[colorIndex], null);
                 regEquipo.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                 regEquipo.setVisible(true);
             }
