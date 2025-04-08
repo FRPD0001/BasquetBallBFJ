@@ -51,8 +51,8 @@ public class Estadisticas extends JDialog {
         }
 
         txtNombre.setText(jugadorActual.getNombre());
-        txtPeso.setText(String.format("%.1f", jugadorActual.getPeso()));
-        txtAltura.setText(String.format("%.2f", jugadorActual.getAltura()));
+        txtPeso.setText(String.format("%.1f" + " Kg", jugadorActual.getPeso()));
+        txtAltura.setText(String.format("%.2f" + " M", jugadorActual.getAltura()));
         txtLesionado.setText(jugadorActual.isLesionado() ? "Lesionado" : "Activo");
         txtSalario.setText(String.format("%.2f", jugadorActual.getSalario()));
 
