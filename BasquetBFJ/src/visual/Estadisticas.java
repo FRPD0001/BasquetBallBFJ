@@ -6,11 +6,13 @@ import java.awt.event.*;
 import logico.Jugador;
 import logico.StatsJugador;
 import logico.SerieNacional;
+import logico.Equipo;
 
 public class Estadisticas extends JDialog {
-    private JTextField txtNombre, txtPeso, txtAltura, txtEquipo, txtLesionado;
+    private JTextField txtNombre, txtPeso, txtAltura, txtLesionado;
     private JTextField txtPuntos, txtRebotes, txtAsistencias, txtTirosLibres, txtTirosCampo, txtTriples;
     private JTextField txtCoefEficiencia, txtSalario;
+    private JComboBox<Equipo> cbxEquipos;
     private Color colorOscuro;
     private Color colorClaro;
     private JButton btnModificar;
@@ -34,14 +36,13 @@ public class Estadisticas extends JDialog {
         getContentPane().setBackground(colorOscuro);
         getContentPane().setLayout(new BorderLayout(5, 5));
 
-        // Panel central con datos
         JPanel panelDatos = crearPanelDatos();
         add(new JScrollPane(panelDatos), BorderLayout.CENTER);
 
-        // Panel inferior con botones
         JPanel panelInferior = crearPanelInferior();
         add(panelInferior, BorderLayout.SOUTH);
     }
+
 
     private void cargarDatosJugador() {
         if (jugadorActual == null) {
@@ -49,15 +50,19 @@ public class Estadisticas extends JDialog {
             return;
         }
 
-        // Mostrar datos
         txtNombre.setText(jugadorActual.getNombre());
         txtPeso.setText(String.format("%.1f", jugadorActual.getPeso()));
         txtAltura.setText(String.format("%.2f", jugadorActual.getAltura()));
-        txtEquipo.setText(jugadorActual.getEquipo() != null ? jugadorActual.getEquipo().getNombre() : "Sin equipo");
         txtLesionado.setText(jugadorActual.isLesionado() ? "Lesionado" : "Activo");
         txtSalario.setText(String.format("%.2f", jugadorActual.getSalario()));
 
-        // Mostrar estadísticas
+        cargarComboEquipos();
+        if (jugadorActual.getEquipo() != null) {
+            cbxEquipos.setSelectedItem(jugadorActual.getEquipo());
+        } else {
+            cbxEquipos.setSelectedIndex(0); 
+        }
+
         StatsJugador stats = jugadorActual.getEstadistica();
         if (stats != null) {
             txtPuntos.setText(String.format("%.1f", stats.getPuntosPorPartido()));
@@ -74,18 +79,15 @@ public class Estadisticas extends JDialog {
         btnModificar.setEnabled(true);
     }
 
-    // Rest of the methods remain the same...
     private JPanel crearPanelDatos() {
         JPanel panel = new JPanel();
         panel.setBackground(colorOscuro);
         panel.setLayout(new GridLayout(14, 2, 5, 3));
         panel.setBorder(BorderFactory.createEmptyBorder(15, 125, 15, 100));
 
-        // Crear campos de texto
         txtNombre = crearCampoTexto(false);
         txtPeso = crearCampoTexto(false);
         txtAltura = crearCampoTexto(false);
-        txtEquipo = crearCampoTexto(false);
         txtLesionado = crearCampoTexto(false);
         txtSalario = crearCampoTexto(false);
         txtPuntos = crearCampoTexto(true);
@@ -96,11 +98,15 @@ public class Estadisticas extends JDialog {
         txtTriples = crearCampoTexto(true);
         txtCoefEficiencia = crearCampoTexto(false);
 
-        // Agregar campos
+        cbxEquipos = new JComboBox<>();
+        cbxEquipos.setEnabled(false);
+        cbxEquipos.setFont(new Font("Arial", Font.PLAIN, 12));
+        cbxEquipos.setForeground(Color.BLACK);
+
         agregarCampo(panel, "Nombre:", txtNombre);
         agregarCampo(panel, "Peso:", txtPeso);
         agregarCampo(panel, "Altura:", txtAltura);
-        agregarCampo(panel, "Equipo:", txtEquipo);
+        agregarCampo(panel, "Equipo:", cbxEquipos);
         agregarCampo(panel, "Estado:", txtLesionado);
         agregarCampo(panel, "Salario:", txtSalario);
         agregarCampo(panel, "Puntos/partido:", txtPuntos);
@@ -113,6 +119,31 @@ public class Estadisticas extends JDialog {
 
         return panel;
     }
+
+    private void cargarComboEquipos() {
+        cbxEquipos.removeAllItems();
+        cbxEquipos.addItem(null);
+        
+        for (Equipo equipo : SerieNacional.getInstance().getMisEquipos()) {
+            cbxEquipos.addItem(equipo);
+        }
+       
+        cbxEquipos.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, 
+                    int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value == null) {
+                    setText("Sin equipo");
+                } else if (value instanceof Equipo) {
+                    Equipo e = (Equipo) value;
+                    setText(e.getNombre() + " (" + e.getId() + ")");
+                }
+                return this;
+            }
+        });
+    }
+
 
     private JPanel crearPanelInferior() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
@@ -157,15 +188,18 @@ public class Estadisticas extends JDialog {
         return campo;
     }
 
-    private void agregarCampo(JPanel panel, String etiqueta, JTextField campo) {
+    private void agregarCampo(JPanel panel, String etiqueta, JComponent componente) {
         JLabel lbl = new JLabel(etiqueta);
         lbl.setFont(new Font("Arial", Font.BOLD, 12));
         lbl.setForeground(Color.BLACK);
         lbl.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
         panel.add(lbl);
         
-        campo.setMargin(new Insets(2, 2, 2, 2));
-        panel.add(campo);
+        componente.setFont(new Font("Arial", Font.PLAIN, 12));
+        if (componente instanceof JTextField) {
+            ((JTextField) componente).setMargin(new Insets(2, 2, 2, 2));
+        }
+        panel.add(componente);
     }
 
     private void toggleModoEdicion() {
@@ -182,11 +216,9 @@ public class Estadisticas extends JDialog {
     }
 
     private void habilitarEdicionCampos() {
-        // Habilitar todos los campos editables
         txtNombre.setEditable(true);
         txtPeso.setEditable(true);
         txtAltura.setEditable(true);
-        txtEquipo.setEditable(true);
         txtLesionado.setEditable(true);
         txtSalario.setEditable(true);
         txtPuntos.setEditable(true);
@@ -195,13 +227,12 @@ public class Estadisticas extends JDialog {
         txtTirosLibres.setEditable(true);
         txtTirosCampo.setEditable(true);
         txtTriples.setEditable(true);
+        cbxEquipos.setEnabled(true); // Habilitar ComboBox
         
-        // Cambiar color de fondo para indicar campos editables
         Color verdeClaro = new Color(220, 255, 220);
         txtNombre.setBackground(verdeClaro);
         txtPeso.setBackground(verdeClaro);
         txtAltura.setBackground(verdeClaro);
-        txtEquipo.setBackground(verdeClaro);
         txtLesionado.setBackground(verdeClaro);
         txtSalario.setBackground(verdeClaro);
         txtPuntos.setBackground(verdeClaro);
@@ -210,6 +241,7 @@ public class Estadisticas extends JDialog {
         txtTirosLibres.setBackground(verdeClaro);
         txtTirosCampo.setBackground(verdeClaro);
         txtTriples.setBackground(verdeClaro);
+        cbxEquipos.setBackground(verdeClaro);
     }
 
     private void deshabilitarEdicionCampos() {
@@ -217,7 +249,6 @@ public class Estadisticas extends JDialog {
         txtNombre.setEditable(false);
         txtPeso.setEditable(false);
         txtAltura.setEditable(false);
-        txtEquipo.setEditable(false);
         txtLesionado.setEditable(false);
         txtSalario.setEditable(false);
         txtPuntos.setEditable(false);
@@ -226,12 +257,12 @@ public class Estadisticas extends JDialog {
         txtTirosLibres.setEditable(false);
         txtTirosCampo.setEditable(false);
         txtTriples.setEditable(false);
+        cbxEquipos.setEnabled(false); // Deshabilitar ComboBox
         
         // Restaurar color de fondo
         txtNombre.setBackground(Color.WHITE);
         txtPeso.setBackground(Color.WHITE);
         txtAltura.setBackground(Color.WHITE);
-        txtEquipo.setBackground(Color.WHITE);
         txtLesionado.setBackground(Color.WHITE);
         txtSalario.setBackground(Color.WHITE);
         txtPuntos.setBackground(Color.WHITE);
@@ -240,20 +271,21 @@ public class Estadisticas extends JDialog {
         txtTirosLibres.setBackground(Color.WHITE);
         txtTirosCampo.setBackground(Color.WHITE);
         txtTriples.setBackground(Color.WHITE);
+        cbxEquipos.setBackground(Color.WHITE);
     }
 
     private void guardarCambios() {
         if (jugadorActual == null) return;
         
         try {
-            // Actualizar datos básicos del jugador
             jugadorActual.setNombre(txtNombre.getText());
             jugadorActual.setPeso(Float.parseFloat(txtPeso.getText()));
             jugadorActual.setAltura(Float.parseFloat(txtAltura.getText()));
             jugadorActual.setLesionado(txtLesionado.getText().equalsIgnoreCase("Lesionado"));
             jugadorActual.setSalario(Float.parseFloat(txtSalario.getText()));
+            Equipo equipoSeleccionado = (Equipo) cbxEquipos.getSelectedItem();
+            jugadorActual.setEquipo(equipoSeleccionado);
             
-            // Actualizar estadísticas si existen
             if (jugadorActual.getEstadistica() != null) {
                 StatsJugador stats = jugadorActual.getEstadistica();
                 stats.setPuntosPorPartido(Float.parseFloat(txtPuntos.getText()));
@@ -264,7 +296,6 @@ public class Estadisticas extends JDialog {
                 stats.setPorcentajeTriples(Float.parseFloat(txtTriples.getText()));
             }
             
-            // Actualizar coeficiente de eficiencia
             actualizarCoeficienteEficiencia();
             
             JOptionPane.showMessageDialog(this, "Cambios guardados exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -284,9 +315,9 @@ public class Estadisticas extends JDialog {
         txtNombre.setText("");
         txtPeso.setText("");
         txtAltura.setText("");
-        txtEquipo.setText("");
         txtLesionado.setText("");
         txtSalario.setText("");
+        cbxEquipos.setSelectedIndex(-1);
         limpiarEstadisticas();
         btnModificar.setEnabled(false);
     }
