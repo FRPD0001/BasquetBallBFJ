@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 
 public class Servidor extends Thread {
-    private static final int PUERTO = 7000;
+    private static final int PUERTO = 7500;
     private static final String ARCHIVO_RESPALDO = "Serie_Nacional_Respaldo.DAT";
 
     public static void  main(String args[]) {

@@ -31,6 +31,7 @@ public class Principal extends JFrame {
         "media/fondoProyecto2.jpg",
         "media/fondoProyecto3.jpg",
     };
+    
     private int colorIndex = 0;
     private int fondoIndex = 0;
     private JPanel panelActual;
