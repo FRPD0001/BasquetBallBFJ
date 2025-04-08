@@ -1,23 +1,13 @@
 package logico;
 
 import java.util.ArrayList;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.Collections;
-import logico.Juego;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
 
 public class SerieNacional implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = 1L;
     private ArrayList<Equipo> misEquipos;
     private static int genEquipo = 1;
     private ArrayList<Jugador> misJugadores;
@@ -26,6 +16,11 @@ public class SerieNacional implements Serializable {
     private static int genJuego = 1;
     private static SerieNacional serie;
     private static String FILE_NAME = "Serie_Nacional.DAT";
+
+    private int savedGenEquipo = 1;
+    private int savedGenJugador = 1;
+    private int savedGenJuego = 1;
+	private int savedGenLesion = 1;
 
     private SerieNacional() {
         misEquipos = new ArrayList<>();
@@ -40,77 +35,97 @@ public class SerieNacional implements Serializable {
         return serie;
     }
 
-    public ArrayList<Equipo> getMisEquipos() {
-        return misEquipos;
+    public void guardarFileTest() {
+        FileOutputStream fos = null;
+        ObjectOutputStream oos = null;
+        
+        try {
+            // Sincronizamos los contadores estáticos con las variables de instancia antes de guardar
+            this.savedGenEquipo = genEquipo;
+            this.savedGenJugador = genJugador;
+            this.savedGenJuego = genJuego;
+            this.savedGenLesion  = Jugador.getGenLesion(); // Guardar el valor de genLesion
+            
+            fos = new FileOutputStream(FILE_NAME);
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(this);
+        } catch (IOException e) {
+            System.err.println("Error al guardar los datos: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (oos != null) oos.close();
+                if (fos != null) fos.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
+    
+    public void cargarFicheroTest() {
+        File file = new File(FILE_NAME);
+        if (!file.exists()) {
+            guardarFileTest();
+            return;
+        }
 
-    public void setMisEquipos(ArrayList<Equipo> misEquipos) {
-        this.misEquipos = misEquipos;
-    }
-
-    public static int getGenEquipo() {
-        return genEquipo;
-    }
-
-    public static void setGenEquipo(int genEquipo) {
-        SerieNacional.genEquipo = genEquipo;
-    }
-
-    public ArrayList<Jugador> getMisJugadores() {
-        return misJugadores;
-    }
-
-    public void setMisJugadores(ArrayList<Jugador> misJugadores) {
-        this.misJugadores = misJugadores;
-    }
-
-    public static int getGenJugador() {
-        return genJugador;
-    }
-
-    public static void setGenJugador(int genJugador) {
-        SerieNacional.genJugador = genJugador;
-    }
-
-    public ArrayList<Juego> getMisJuegos() {
-        return misJuegos;
-    }
-
-    public void setMisJuegos(ArrayList<Juego> misJuegos) {
-        this.misJuegos = misJuegos;
-    }
-
-    public static int getGenJuego() {
-        return genJuego;
-    }
-
-    public static void setGenJuego(int genJuego) {
-        SerieNacional.genJuego = genJuego;
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        
+        try {
+            fis = new FileInputStream(file);
+            ois = new ObjectInputStream(fis);
+            SerieNacional loaded = (SerieNacional) ois.readObject();
+            
+            this.misEquipos = loaded.misEquipos;
+            this.misJugadores = loaded.misJugadores;
+            this.misJuegos = loaded.misJuegos;
+            genEquipo = loaded.savedGenEquipo;
+            genJugador = loaded.savedGenJugador;
+            genJuego = loaded.savedGenJuego;
+            Jugador.setGenLesion(loaded.savedGenLesion); // Cargar el valor de genLesion
+            serie = this;
+            
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error al cargar los datos: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ois != null) ois.close();
+                if (fis != null) fis.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public void agregarEquipo(Equipo equipo) {
+        equipo.setId("EQ-" + genEquipo);
         misEquipos.add(equipo);
         genEquipo++;
     }
 
     public void agregarJugador(Jugador jugador) {
+        jugador.setId("J-" + genJugador);
         misJugadores.add(jugador);
         genJugador++;
-        guardarFileTest();
     }
 
     public void agregarJuego(Juego juego) {
+        juego.setId("JG-" + genJuego);
         misJuegos.add(juego);
         genJuego++;
     }
 
-    public float Winrate(Equipo equipo) {
-        if (equipo.getWin() + equipo.getLose() == 0) {
-            return 0;
+    public Equipo buscarEquipoPorId(String id) {
+        for (Equipo eq : misEquipos) {
+            if (eq.getId().equals(id)) {
+                return eq;
+            }
         }
-        return (float) equipo.getWin() / (equipo.getWin() + equipo.getLose()) * 100;
+        return null;
     }
-    
+
     public Jugador buscarJugadorPorId(String id) {
         for (Jugador jugador : misJugadores) {
             if (jugador.getId().equals(id)) {
@@ -119,15 +134,15 @@ public class SerieNacional implements Serializable {
         }
         return null;
     }
-    
-    // Nuevos métodos para el calendario
+
+    // Métodos para generar round robin
     public boolean esNumeroEquiposPar() {
         return misEquipos.size() % 2 == 0;
     }
 
     public ArrayList<ArrayList<Equipo>> generarRoundRobin() {
         if (!esNumeroEquiposPar()) {
-            return new ArrayList<>(); // Retorna lista vacía si no es par
+            return new ArrayList<>();
         }
         
         ArrayList<Equipo> equipos = new ArrayList<>(misEquipos);
@@ -155,74 +170,37 @@ public class SerieNacional implements Serializable {
         
         return todasJornadas;
     }
-    
-    public ArrayList<ArrayList<Equipo>> generarRoundRobinAleatorio() {
-        ArrayList<Equipo> equipos = new ArrayList<>(misEquipos);
-        Collections.shuffle(equipos);
-        return generarRoundRobin();
-    }
-    
-    public void guardarFileTest() {
-    	FileOutputStream fos = null;
-    	try {
-			fos = new FileOutputStream(FILE_NAME);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	ObjectOutputStream oos = null;
-		try {
-			oos = new ObjectOutputStream(fos);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	try {
-			oos.writeObject(SerieNacional.getInstance());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				fos.close();
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-			
-		}
-    }
-    
-    public void cargarFicheroTest() {
-        if (serie == null) {
-            getInstance();
-        }
 
-        File file = new File(FILE_NAME);
-
-        // Create the file with a default SerieNacional if it doesn't exist
-        if (!file.exists()) {
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-                oos.writeObject(new SerieNacional());  // Assuming SerieNacional has a default constructor
-            } catch (IOException e) {
-                System.err.println("Error creando archivo: " + e.getMessage());
-                return;
-            }
-        }
-
-        // Load the existing or newly created file
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            serie = (SerieNacional) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error cargando archivo: " + e.getMessage());
-        }
+    // Getters y setters
+    public ArrayList<Equipo> getMisEquipos() {
+        return misEquipos;
     }
 
-    public Equipo buscarEquipoPorId(String id) {
-        for (Equipo eq : misEquipos) {
-            if (eq.getId().equals(id)) {
-                return eq;
-            }
+    public ArrayList<Jugador> getMisJugadores() {
+        return misJugadores;
+    }
+
+    public ArrayList<Juego> getMisJuegos() {
+        return misJuegos;
+    }
+
+    public static int getGenEquipo() {
+        return genEquipo;
+    }
+
+    public static int getGenJugador() {
+        return genJugador;
+    }
+
+    public static int getGenJuego() {
+        return genJuego;
+    }
+
+    // Métodos para estadísticas
+    public float Winrate(Equipo equipo) {
+        if (equipo.getWin() + equipo.getLose() == 0) {
+            return 0;
         }
-        return null;
+        return (float) equipo.getWin() / (equipo.getWin() + equipo.getLose()) * 100;
     }
 }

@@ -17,6 +17,7 @@ public class Jugador implements Serializable {
     private boolean lesionado;
     private float salario;
     private static int genLesion = 1;
+    private int savedGenLesion = 1;
     private static float salarioMax = 500000.00f;
     private static float salarioMin = 250000.00f;
 
@@ -144,4 +145,12 @@ public class Jugador implements Serializable {
 	    }
 	    return null;
 	}
+	
+    public int getSavedGenLesion() {
+        return savedGenLesion;
+    }
+
+    public void setSavedGenLesion(int savedGenLesion) {
+        this.savedGenLesion = savedGenLesion;
+    }
 }
