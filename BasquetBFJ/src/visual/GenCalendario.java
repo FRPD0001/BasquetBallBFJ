@@ -23,6 +23,7 @@ import javax.swing.table.JTableHeader;
 import logico.Equipo;
 import logico.Juego;
 import logico.SerieNacional;
+import com.toedter.calendar.JDateChooser;
 
 public class GenCalendario extends JPanel {
     private JButton btnGenerarAleatorio;
@@ -237,6 +238,13 @@ public class GenCalendario extends JPanel {
         ArrayList<Juego> juegos = new ArrayList<>();
         LocalDate fechaBase = LocalDate.now();
         
+        // Crear componentes para el diálogo de fecha
+        JPanel panelFecha = new JPanel();
+        JDateChooser dateChooser = new JDateChooser();
+        dateChooser.setDateFormatString("yyyy-MM-dd");
+        panelFecha.add(new JLabel("Seleccione fecha:"));
+        panelFecha.add(dateChooser);
+        
         for (int i = 0; i < emparejamientosActuales.size(); i++) {
             ArrayList<Equipo> jornada = emparejamientosActuales.get(i);
             
@@ -244,33 +252,39 @@ public class GenCalendario extends JPanel {
                 Equipo local = jornada.get(j);
                 Equipo visitante = jornada.get(j + 1);
                 
-                String fechaStr = JOptionPane.showInputDialog(this,
-                    "Fecha para el partido:\n" + 
-                    local.getNombre() + " vs " + visitante.getNombre());
+                // Configurar fecha por defecto
+                dateChooser.setDate(java.sql.Date.valueOf(fechaBase));
                 
-                try {
-                    LocalDate fecha = LocalDate.parse(fechaStr);
-                    Juego juego = new Juego(
-                        "J" + (SerieNacional.getInstance().getMisJuegos().size() + 1),
-                        local,
-                        visitante,
-                        new ArrayList<>(),
-                        0,
-                        0,
-                        null,
-                        fecha
-                    );
-                    juegos.add(juego);
-                    fechaBase = fecha.plusDays(1);
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, 
-                        "Formato de fecha inválido. Use YYYY-MM-DD. " + e.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
+                int opcion = JOptionPane.showConfirmDialog(this, panelFecha, 
+                    "Fecha para: " + local.getNombre() + " vs " + visitante.getNombre(),
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                
+                if (opcion != JOptionPane.OK_OPTION) {
+                    return; // El usuario canceló
                 }
+                
+                // Obtener la fecha seleccionada
+                java.util.Date fechaSeleccionada = dateChooser.getDate();
+                LocalDate fecha = fechaSeleccionada.toInstant()
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDate();
+                
+                Juego juego = new Juego(
+                    "J" + (SerieNacional.getInstance().getMisJuegos().size() + 1),
+                    local,
+                    visitante,
+                    new ArrayList<>(),
+                    0,
+                    0,
+                    null,
+                    fecha
+                );
+                juegos.add(juego);
+                fechaBase = fecha.plusDays(1); // Siguiente fecha por defecto
             }
         }
         
+        // Guardar todos los juegos
         for (Juego juego : juegos) {
             SerieNacional.getInstance().agregarJuego(juego);
             juego.getLocal().getJuegos().add(juego);

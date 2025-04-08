@@ -19,19 +19,15 @@ public class SerieNacional implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
     private ArrayList<Equipo> misEquipos;
-    private static int genEquipo;
+    private static int genEquipo = 1;
     private ArrayList<Jugador> misJugadores;
-    private static int genJugador;
+    private static int genJugador = 1;
     private ArrayList<Juego> misJuegos;
-    private static int genJuego;
+    private static int genJuego = 1;
     private static SerieNacional serie;
     private static String FILE_NAME = "Serie_Nacional.DAT";
 
     private SerieNacional() {
-        genEquipo = 1;
-        genJugador = 1;
-        genJuego = 1;
-        
         misEquipos = new ArrayList<>();
         misJugadores = new ArrayList<>();
         misJuegos = new ArrayList<>();
