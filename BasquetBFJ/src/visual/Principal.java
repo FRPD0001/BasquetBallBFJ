@@ -17,6 +17,8 @@ public class Principal extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel panelAjustes, panelEquipos, panelJugadores, panelCalendario, panelIzquierdo, panelDerecho, panelBotones;
+    private JButton btnCerrar, btnLogout, btnGuardar, btnRespaldo;
+    private JPanel panelBotonesInferiores;
     private JLabel lblImagen;
     private Color[] coloresOscuros = {new Color(147, 112, 219), new Color(100, 149, 237), Color.RED, new Color(17, 115, 68)};
     private Color[] coloresClaros = {new Color(216, 191, 216), new Color(200, 220, 255), new Color(255, 200, 200), new Color(200, 255, 200)};
@@ -86,30 +88,43 @@ public class Principal extends JFrame {
         panelIzquierdo.add(panelBotones, BorderLayout.CENTER);
 
         // Botón de cerrar (X)
-        JButton btnCerrar = new JButton("X") {
+        JButton btnCerrar = new JButton("") {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
-                
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                g2.setColor(new Color(0, 0, 0, 255));
-                g2.fillRoundRect(1, 3, getWidth()-2, getHeight()-2, 15, 15);
-                
+                // Fondo con esquinas redondeadas
                 g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth()-2, getHeight()-2, 15, 15);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                
+                // Borde
+                g2.setColor(new Color(0, 0, 0, 100));
+                g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 15, 15);
                 
                 g2.dispose();
                 super.paintComponent(g);
             }
         };
         
+        btnCerrar.setToolTipText("Cerrar programa");
+        
+        ImageIcon iconoCloseOriginal = new ImageIcon("media/Close.png");
+
+        Image imagenCloseEscalada = iconoCloseOriginal.getImage().getScaledInstance(
+            btnCerrar.getPreferredSize().width - 5,
+            btnCerrar.getPreferredSize().height + 15,
+            Image.SCALE_SMOOTH
+        );
+
+        ImageIcon iconoCloseEscalado = new ImageIcon(imagenCloseEscalada);
+        btnCerrar.setIcon(iconoCloseEscalado);
+        
         btnCerrar.setContentAreaFilled(false);
         btnCerrar.setBorderPainted(false);
         btnCerrar.setFocusPainted(false);
-        btnCerrar.setOpaque(false);
-        btnCerrar.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 24));
-        btnCerrar.setBackground(new Color(255, 59, 48)); // Rojo para cerrar
+        btnCerrar.setOpaque(true);
+        btnCerrar.setBackground(coloresOscuros[colorIndex]);
         btnCerrar.setForeground(Color.WHITE);
         btnCerrar.setPreferredSize(new Dimension(60, 60));
         btnCerrar.setMaximumSize(new Dimension(60, 60));
@@ -117,13 +132,13 @@ public class Principal extends JFrame {
         btnCerrar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                btnCerrar.setBackground(new Color(255, 59, 48).darker());
+                btnCerrar.setBackground(coloresOscuros[colorIndex].darker());
                 btnCerrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
             
             @Override
             public void mouseExited(MouseEvent e) {
-                btnCerrar.setBackground(new Color(255, 59, 48));
+                btnCerrar.setBackground(coloresOscuros[colorIndex]);
             }
         });
         
@@ -135,30 +150,44 @@ public class Principal extends JFrame {
         });
 
         // Botón de logout (L)
-        JButton btnLogout = new JButton("L") {
+        JButton btnLogout = new JButton("") {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
-                
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                g2.setColor(new Color(0, 0, 0, 255));
-                g2.fillRoundRect(1, 3, getWidth()-2, getHeight()-2, 15, 15);
-                
+                // Fondo con esquinas redondeadas
                 g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth()-2, getHeight()-2, 15, 15);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                
+                // Borde
+                g2.setColor(new Color(0, 0, 0, 100));
+                g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 15, 15);
                 
                 g2.dispose();
                 super.paintComponent(g);
             }
         };
         
+        btnLogout.setToolTipText("Cerrar sesión");
+        
+        ImageIcon iconoLogoutOriginal = new ImageIcon("media/Logout.png");
+
+     // Escalar la imagen al tamaño del botón (ajustado a un margen interno)
+     Image imagenLogoutEscalada = iconoLogoutOriginal.getImage().getScaledInstance(
+         btnLogout.getPreferredSize().width - 10, 
+         btnLogout.getPreferredSize().height + 10, 
+         Image.SCALE_SMOOTH
+     );
+
+     ImageIcon iconoLogoutEscalado = new ImageIcon(imagenLogoutEscalada);
+     btnLogout.setIcon(iconoLogoutEscalado);
+        
         btnLogout.setContentAreaFilled(false);
         btnLogout.setBorderPainted(false);
         btnLogout.setFocusPainted(false);
-        btnLogout.setOpaque(false);
-        btnLogout.setFont(new Font("Arial", Font.BOLD, 24));
-        btnLogout.setBackground(new Color(255, 149, 0)); // Naranja para logout
+        btnLogout.setOpaque(true);
+        btnLogout.setBackground(coloresOscuros[colorIndex]);
         btnLogout.setForeground(Color.WHITE);
         btnLogout.setPreferredSize(new Dimension(60, 60));
         btnLogout.setMaximumSize(new Dimension(60, 60));
@@ -166,13 +195,13 @@ public class Principal extends JFrame {
         btnLogout.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                btnLogout.setBackground(new Color(255, 149, 0).darker());
+                btnLogout.setBackground(coloresOscuros[colorIndex].darker());
                 btnLogout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
             
             @Override
             public void mouseExited(MouseEvent e) {
-                btnLogout.setBackground(new Color(255, 149, 0));
+                btnLogout.setBackground(coloresOscuros[colorIndex]);
             }
         });
         
@@ -186,34 +215,44 @@ public class Principal extends JFrame {
         });
 
         // Botón de guardar
-        JButton btnGuardar = new JButton("\uD83D\uDCBE") {
+        JButton btnGuardar = new JButton("") {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
-                
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                g2.setColor(new Color(0, 0, 0, 255));
-                g2.fillRoundRect(1, 3, getWidth()-2, getHeight()-2, 15, 15);
-                
+                // Fondo con esquinas redondeadas
                 g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth()-2, getHeight()-2, 15, 15);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                
+                // Borde
+                g2.setColor(new Color(0, 0, 0, 100));
+                g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 15, 15);
                 
                 g2.dispose();
                 super.paintComponent(g);
             }
         };
         
+        btnGuardar.setToolTipText("Guardar");
+        
+        ImageIcon iconoOriginal = new ImageIcon("media/Save.png");
+
+     // Escalar la imagen al tamaño del botón (por ejemplo, 30x30 píxeles)
+     Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(30, 25, Image.SCALE_SMOOTH);
+
+     ImageIcon iconoEscalado = new ImageIcon(imagenEscalada);
+     btnGuardar.setIcon(iconoEscalado);
+        
         btnGuardar.setContentAreaFilled(false);
         btnGuardar.setBorderPainted(false);
         btnGuardar.setFocusPainted(false);
-        btnGuardar.setOpaque(false);
-        btnGuardar.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 24));
+        btnGuardar.setOpaque(true);
         btnGuardar.setBackground(coloresOscuros[colorIndex]);
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.setPreferredSize(new Dimension(60, 60));
         btnGuardar.setMaximumSize(new Dimension(60, 60));
-        
+
         btnGuardar.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -238,30 +277,45 @@ public class Principal extends JFrame {
         });
 
         // Botón de respaldo (R)
-        JButton btnRespaldo = new JButton("R") {
+        JButton btnRespaldo = new JButton("") {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
-                
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                g2.setColor(new Color(0, 0, 0, 255));
-                g2.fillRoundRect(1, 3, getWidth()-2, getHeight()-2, 15, 15);
-                
+                // Fondo con esquinas redondeadas
                 g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth()-2, getHeight()-2, 15, 15);
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                
+                // Borde
+                g2.setColor(new Color(0, 0, 0, 100));
+                g2.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 15, 15);
                 
                 g2.dispose();
                 super.paintComponent(g);
             }
         };
         
+        btnRespaldo.setToolTipText("Respaldar información");
+        
+        ImageIcon iconoBackupOriginal = new ImageIcon("media/Backup.png");
+
+     // Escalar la imagen al tamaño del botón con un pequeño margen
+     Image imagenBackupEscalada = iconoBackupOriginal.getImage().getScaledInstance(
+         btnRespaldo.getPreferredSize().width - 5, 
+         btnRespaldo.getPreferredSize().height + 20, 
+         Image.SCALE_SMOOTH
+     );
+
+     ImageIcon iconoBackupEscalado = new ImageIcon(imagenBackupEscalada);
+     btnRespaldo.setIcon(iconoBackupEscalado);
+        
         btnRespaldo.setContentAreaFilled(false);
         btnRespaldo.setBorderPainted(false);
         btnRespaldo.setFocusPainted(false);
-        btnRespaldo.setOpaque(false);
+        btnRespaldo.setOpaque(true);
         btnRespaldo.setFont(new Font("Arial", Font.BOLD, 24));
-        btnRespaldo.setBackground(new Color(52, 199, 89)); // Verde para respaldo
+        btnRespaldo.setBackground(coloresOscuros[colorIndex]); 
         btnRespaldo.setForeground(Color.WHITE);
         btnRespaldo.setPreferredSize(new Dimension(60, 60));
         btnRespaldo.setMaximumSize(new Dimension(60, 60));
@@ -269,13 +323,13 @@ public class Principal extends JFrame {
         btnRespaldo.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                btnRespaldo.setBackground(new Color(52, 199, 89).darker());
+                btnRespaldo.setBackground(coloresOscuros[colorIndex].darker());
                 btnRespaldo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
             
             @Override
             public void mouseExited(MouseEvent e) {
-                btnRespaldo.setBackground(new Color(52, 199, 89));
+                btnRespaldo.setBackground(coloresOscuros[colorIndex]);
             }
         });
         
@@ -665,15 +719,55 @@ public class Principal extends JFrame {
             btn.setForeground(Color.BLACK);
         }
         
+        for (JButton btn : botones) {
+            btn.setBackground(coloresOscuros[colorIndex]);
+        }
+        
         panelIzquierdo.setBackground(coloresClaros[colorIndex]);
         panelBotones.setBackground(coloresClaros[colorIndex]);
         panelAjustes.setBackground(coloresOscuros[colorIndex]);
         panelEquipos.setBackground(coloresOscuros[colorIndex]);
         panelJugadores.setBackground(coloresOscuros[colorIndex]);
         panelCalendario.setBackground(coloresOscuros[colorIndex]);
+
+        btnCerrar.setBackground(coloresOscuros[colorIndex]);
+        btnLogout.setBackground(coloresOscuros[colorIndex]);
+        btnGuardar.setBackground(coloresOscuros[colorIndex]);
+        btnRespaldo.setBackground(coloresOscuros[colorIndex]);
+        
+        panelIzquierdo.revalidate();
+        panelIzquierdo.repaint();
+        panelBotonesInferiores.revalidate();
+        panelBotonesInferiores.repaint();
         
         JPanel panelBotonesInferiores = (JPanel) panelIzquierdo.getComponent(1);
         panelBotonesInferiores.setBackground(coloresClaros[colorIndex]);
+        
+        // Configuración común para todos los botones inferiores
+        for (JButton btn : new JButton[]{btnCerrar, btnLogout, btnGuardar, btnRespaldo}) {
+            btn.setContentAreaFilled(false);
+            btn.setBorderPainted(false);
+            btn.setFocusPainted(false);
+            btn.setOpaque(true);
+            btn.setBackground(coloresOscuros[colorIndex]);
+            btn.setForeground(Color.WHITE);
+            btn.setPreferredSize(new Dimension(60, 60));
+            btn.setMaximumSize(new Dimension(60, 60));
+            
+            btn.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    JButton source = (JButton) e.getSource();
+                    source.setBackground(coloresOscuros[colorIndex].darker());
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    JButton source = (JButton) e.getSource();
+                    source.setBackground(coloresOscuros[colorIndex]);
+                }
+            });
+        }
         
         // Actualizar color del botón de guardar
         Component[] components = panelBotonesInferiores.getComponents();
