@@ -7,11 +7,16 @@ import logico.SerieNacional;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class Principal extends JFrame {
 
@@ -282,9 +287,7 @@ public class Principal extends JFrame {
         btnRespaldo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(Principal.this, 
-                    "Funcionalidad de respaldo no implementada aún", 
-                    "Respaldo", JOptionPane.INFORMATION_MESSAGE);
+                realizarRespaldoRemotoSimple();
             }
         });
 
@@ -717,5 +720,39 @@ public class Principal extends JFrame {
                 ventana.setVisible(true);
             }
         });
+    }
+    
+    private void realizarRespaldoRemotoSimple() {
+        int confirmacion = JOptionPane.showConfirmDialog(this,
+            "¿Desea crear un respaldo remoto de los datos?",
+            "Confirmar Respaldo",
+            JOptionPane.YES_NO_OPTION);
+        
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        try (Socket sfd = new Socket("localhost", 7000);
+             DataInputStream fis = new DataInputStream(new FileInputStream("Serie_Nacional.DAT"));
+             DataOutputStream os = new DataOutputStream(sfd.getOutputStream())) {
+            
+            int unByte;
+            while ((unByte = fis.read()) != -1) {
+                os.write(unByte);
+                os.flush();
+            }
+            
+            JOptionPane.showMessageDialog(this,
+                "Respaldo remoto creado exitosamente",
+                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } catch (UnknownHostException uhe) {
+            JOptionPane.showMessageDialog(this,
+                "No se puede acceder al servidor: " + uhe.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(this,
+                "Error en comunicación: " + ioe.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
