@@ -17,6 +17,9 @@ public class SerieNacional implements Serializable {
     private static SerieNacional serie;
     private static String FILE_NAME = "Serie_Nacional.DAT";
 
+    private ArrayList<User> usuarios;
+    private static User usuarioActual;
+    
     private int savedGenEquipo = 1;
     private int savedGenJugador = 1;
     private int savedGenJuego = 1;
@@ -26,13 +29,53 @@ public class SerieNacional implements Serializable {
         misEquipos = new ArrayList<>();
         misJugadores = new ArrayList<>();
         misJuegos = new ArrayList<>();
+        usuarios = new ArrayList<>();
+        crearUsuarioAdminPorDefecto();
     }
-
     public static SerieNacional getInstance() {
         if (serie == null) {
             serie = new SerieNacional();
         }
         return serie;
+    }
+
+    private void crearUsuarioAdminPorDefecto() {
+        if (!existeUsuario("admin")) {
+            User admin = new User("Administrador", "admin", "admin123");
+            usuarios.add(admin);
+        }
+    }
+
+    public boolean existeUsuario(String username) {
+        for (User user : usuarios) {
+            if (user.getUserName().equalsIgnoreCase(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean autenticarUsuario(String username, String password) {
+        for (User user : usuarios) {
+            if (user.getUserName().equals(username) && user.getPass().equals(password)) {
+                usuarioActual = user;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void agregarUsuario(User user) {
+        usuarios.add(user);
+        guardarFileTest();
+    }
+
+    public static User getUsuarioActual() {
+        return usuarioActual;
+    }
+
+    public static void cerrarSesion() {
+        usuarioActual = null;
     }
 
     public void guardarFileTest() {
@@ -196,7 +239,6 @@ public class SerieNacional implements Serializable {
         return genJuego;
     }
 
-    // Métodos para estadísticas
     public float Winrate(Equipo equipo) {
         if (equipo.getWin() + equipo.getLose() == 0) {
             return 0;

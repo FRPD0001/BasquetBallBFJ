@@ -104,8 +104,8 @@ public class Estadisticas extends JDialog {
         cbxEquipos.setForeground(Color.BLACK);
 
         agregarCampo(panel, "Nombre:", txtNombre);
-        agregarCampo(panel, "Peso:", txtPeso);
-        agregarCampo(panel, "Altura:", txtAltura);
+        agregarCampo(panel, "Peso (kg):", txtPeso);
+        agregarCampo(panel, "Altura (m):", txtAltura);
         agregarCampo(panel, "Equipo:", cbxEquipos);
         agregarCampo(panel, "Estado:", txtLesionado);
         agregarCampo(panel, "Salario:", txtSalario);
