@@ -20,6 +20,7 @@ public class SerieNacional implements Serializable {
     private int savedGenEquipo = 1;
     private int savedGenJugador = 1;
     private int savedGenJuego = 1;
+	private int savedGenLesion = 1;
 
     private SerieNacional() {
         misEquipos = new ArrayList<>();
@@ -43,6 +44,7 @@ public class SerieNacional implements Serializable {
             this.savedGenEquipo = genEquipo;
             this.savedGenJugador = genJugador;
             this.savedGenJuego = genJuego;
+            this.savedGenLesion  = Jugador.getGenLesion(); // Guardar el valor de genLesion
             
             fos = new FileOutputStream(FILE_NAME);
             oos = new ObjectOutputStream(fos);
@@ -81,6 +83,7 @@ public class SerieNacional implements Serializable {
             genEquipo = loaded.savedGenEquipo;
             genJugador = loaded.savedGenJugador;
             genJuego = loaded.savedGenJuego;
+            Jugador.setGenLesion(loaded.savedGenLesion); // Cargar el valor de genLesion
             serie = this;
             
         } catch (IOException | ClassNotFoundException e) {
