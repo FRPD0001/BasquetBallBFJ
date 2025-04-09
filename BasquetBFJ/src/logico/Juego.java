@@ -87,7 +87,6 @@ public class Juego implements Serializable {
         return isDone;
     }
 
-    // ============ SETTERS ============
     public void setId(String id) {
         this.id = id;
     }
