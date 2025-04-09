@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import logico.SerieNacional;
+import logico.User;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -37,6 +38,7 @@ public class Principal extends JFrame {
     private JPanel panelActual;
     private JButton btnAgregarEquipo, btnListarEquipos, btnAgregarJugador, btnListarJugadores;
     private JButton btnGenerarCalendario, btnVerCalendario, btnEmpezarJuegos;
+    private JButton btnAgregarUsuario;
 
     class RoundedBorder implements Border {
         private int radius;
@@ -59,7 +61,18 @@ public class Principal extends JFrame {
     }
 
     public Principal() {
-        setTitle("Basketball Manager");
+    	
+    	
+    	if (SerieNacional.getUsuarioActual() == null) {
+            JOptionPane.showMessageDialog(null, 
+                "Debe iniciar sesión primero", 
+                "Acceso no autorizado", 
+                JOptionPane.ERROR_MESSAGE);
+            this.dispose(); // Cierra la ventana si se crea sin autenticación
+            return;
+        }
+    	
+        setTitle("Basketball Manager - Usuario: " + SerieNacional.getUsuarioActual().getUserName());
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -168,6 +181,21 @@ public class Principal extends JFrame {
                 super.paintComponent(g);
             }
         };
+        btnLogout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(Principal.this, 
+                    "¿Está seguro que desea cerrar sesión?", 
+                    "Confirmar", 
+                    JOptionPane.YES_NO_OPTION);
+                
+                if (confirm == JOptionPane.YES_OPTION) {
+                    SerieNacional.cerrarSesion();
+                    Principal.this.dispose();
+                    new Login().setVisible(true); // Vuelve a mostrar el login
+                }
+            }
+        });
         
         ImageIcon iconoLogoutOriginal = new ImageIcon("media/Logout.png");
 
@@ -515,8 +543,29 @@ public class Principal extends JFrame {
 
         JButton btnCambiarColor = crearBotonSubmenuModerno("Cambiar Color");
         JButton btnCambiarFondo = crearBotonSubmenuModerno("Cambiar Fondo");
+         btnAgregarUsuario = crearBotonSubmenuModerno("Agregar Usuario"); // Nuevo botón
 
-        JButton[] botonesAjustes = {btnCambiarColor, btnCambiarFondo};
+        
+        
+        JButton[] botonesAjustes = {btnCambiarColor, btnCambiarFondo, btnAgregarUsuario}; // Añádelo al array
+        
+        btnAgregarUsuario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Solo permite agregar usuarios si el usuario actual es Administrador
+                if (SerieNacional.getUsuarioActual() != null && 
+                    SerieNacional.getUsuarioActual().getTipo().equals("Administrador")) {
+                    RegUser regUser = new RegUser();
+                    regUser.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                    regUser.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(Principal.this,
+                        "Solo los administradores pueden agregar usuarios",
+                        "Acceso denegado",
+                        JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
 
         btnCambiarColor.addActionListener(new ActionListener() {
             @Override
@@ -532,10 +581,14 @@ public class Principal extends JFrame {
             }
         });
 
-        panelAjustes.add(Box.createVerticalStrut(200));
+        panelAjustes.add(Box.createVerticalStrut(100));  // Espacio inicial reducido
         panelAjustes.add(btnCambiarColor);
-        panelAjustes.add(Box.createVerticalStrut(300));
+        panelAjustes.add(Box.createVerticalStrut(150));
         panelAjustes.add(btnCambiarFondo);
+        panelAjustes.add(Box.createVerticalStrut(150));
+        panelAjustes.add(btnAgregarUsuario);  // Nuevo botón añadido
+        
+        configurarPermisosUsuario();
 
         btnEquipos.addActionListener(new ActionListener() {
             @Override
@@ -564,6 +617,8 @@ public class Principal extends JFrame {
                 mostrarSubmenu(panelAjustes);
             }
         });
+        
+        configurarPermisosUsuario();
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdo, null);
         splitPane.setDividerLocation(350);
@@ -576,6 +631,28 @@ public class Principal extends JFrame {
         getContentPane().add(mainSplitPane);
     }
 
+    
+    private void configurarPermisosUsuario() {
+        User usuario = SerieNacional.getUsuarioActual();
+        if (usuario == null) return;
+        
+        boolean esAnotador = "Anotador".equals(usuario.getTipo());
+        
+        JButton[] botonesRestringidos = {
+            btnAgregarEquipo, 
+            btnAgregarJugador, 
+            btnGenerarCalendario, 
+            btnAgregarUsuario
+        };
+        
+        for (JButton boton : botonesRestringidos) {
+            boton.setEnabled(!esAnotador);
+            boton.setToolTipText(esAnotador ? 
+                "Función restringida para anotadores" : 
+                boton.getToolTipText());
+        }
+    }
+    
     private JButton crearBotonModerno(String texto) {
         JButton boton = new JButton(texto) {
             @Override
@@ -754,17 +831,6 @@ public class Principal extends JFrame {
             lblImagen.setText("Error cargando imagen");
         }
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                Principal ventana = new Principal();
-                SerieNacional.getInstance().cargarFicheroTest();
-                ventana.setVisible(true);
-            }
-        });
-    }
     
     private void realizarRespaldoRemotoSimple() {
         int confirmacion = JOptionPane.showConfirmDialog(this,
@@ -799,4 +865,7 @@ public class Principal extends JFrame {
                 "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    
+    
 }

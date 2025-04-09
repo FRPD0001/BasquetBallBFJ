@@ -18,18 +18,20 @@ public class Estadisticas extends JDialog {
     private JButton btnModificar;
     private Jugador jugadorActual;
     private boolean modoEdicion = false;
+    private boolean esAnotador = false; // Nuevo campo para controlar el tipo de usuario
 
-    public Estadisticas(Jugador jugador, Color colorClaro, Color colorOscuro) {
+    public Estadisticas(Jugador jugador, Color colorClaro, Color colorOscuro, boolean esAnotador) {
         this.colorOscuro = colorOscuro;
         this.colorClaro = colorClaro;
         this.jugadorActual = jugador;
+        this.esAnotador = esAnotador; // Recibe el tipo de usuario
         initialize();
         cargarDatosJugador();
     }
 
     private void initialize() {
         setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
-        setTitle("Estadísticas de Jugador");
+        setTitle("Estadísticas de Jugador" + (esAnotador ? " (Solo lectura)" : ""));
         setSize(600, 700);
         setLocationRelativeTo(null);
         setModal(true);
@@ -42,7 +44,6 @@ public class Estadisticas extends JDialog {
         JPanel panelInferior = crearPanelInferior();
         add(panelInferior, BorderLayout.SOUTH);
     }
-
 
     private void cargarDatosJugador() {
         if (jugadorActual == null) {
@@ -57,6 +58,7 @@ public class Estadisticas extends JDialog {
         txtSalario.setText(String.format("%.2f", jugadorActual.getSalario()));
 
         cargarComboEquipos();
+        
         if (jugadorActual.getEquipo() != null) {
             cbxEquipos.setSelectedItem(jugadorActual.getEquipo());
         } else {
@@ -76,48 +78,8 @@ public class Estadisticas extends JDialog {
             limpiarEstadisticas();
         }
         
-        btnModificar.setEnabled(true);
-    }
-
-    private JPanel crearPanelDatos() {
-        JPanel panel = new JPanel();
-        panel.setBackground(colorOscuro);
-        panel.setLayout(new GridLayout(14, 2, 5, 3));
-        panel.setBorder(BorderFactory.createEmptyBorder(15, 125, 15, 100));
-
-        txtNombre = crearCampoTexto(false);
-        txtPeso = crearCampoTexto(false);
-        txtAltura = crearCampoTexto(false);
-        txtLesionado = crearCampoTexto(false);
-        txtSalario = crearCampoTexto(false);
-        txtPuntos = crearCampoTexto(true);
-        txtRebotes = crearCampoTexto(true);
-        txtAsistencias = crearCampoTexto(true);
-        txtTirosLibres = crearCampoTexto(true);
-        txtTirosCampo = crearCampoTexto(true);
-        txtTriples = crearCampoTexto(true);
-        txtCoefEficiencia = crearCampoTexto(false);
-
-        cbxEquipos = new JComboBox<>();
-        cbxEquipos.setEnabled(false);
-        cbxEquipos.setFont(new Font("Arial", Font.PLAIN, 12));
-        cbxEquipos.setForeground(Color.BLACK);
-
-        agregarCampo(panel, "Nombre:", txtNombre);
-        agregarCampo(panel, "Peso(Kg):", txtPeso);
-        agregarCampo(panel, "Altura(m):", txtAltura);
-        agregarCampo(panel, "Equipo:", cbxEquipos);
-        agregarCampo(panel, "Estado:", txtLesionado);
-        agregarCampo(panel, "Salario:", txtSalario);
-        agregarCampo(panel, "Puntos/partido:", txtPuntos);
-        agregarCampo(panel, "Rebotes/partido:", txtRebotes);
-        agregarCampo(panel, "Asistencias/partido:", txtAsistencias);
-        agregarCampo(panel, "% Tiros libres:", txtTirosLibres);
-        agregarCampo(panel, "% Tiros campo:", txtTirosCampo);
-        agregarCampo(panel, "% Triples:", txtTriples);
-        agregarCampo(panel, "Eficiencia:", txtCoefEficiencia);
-
-        return panel;
+        // Deshabilitar el botón de modificar si es anotador
+        btnModificar.setEnabled(!esAnotador);
     }
 
     private void cargarComboEquipos() {
@@ -144,6 +106,47 @@ public class Estadisticas extends JDialog {
         });
     }
 
+	private JPanel crearPanelDatos() {
+        JPanel panel = new JPanel();
+        panel.setBackground(colorOscuro);
+        panel.setLayout(new GridLayout(14, 2, 5, 3));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 125, 15, 100));
+
+        // Todos los campos se crean como no editables
+        txtNombre = crearCampoTexto(false);
+        txtPeso = crearCampoTexto(false);
+        txtAltura = crearCampoTexto(false);
+        txtLesionado = crearCampoTexto(false);
+        txtSalario = crearCampoTexto(false);
+        txtPuntos = crearCampoTexto(true);
+        txtRebotes = crearCampoTexto(true);
+        txtAsistencias = crearCampoTexto(true);
+        txtTirosLibres = crearCampoTexto(true);
+        txtTirosCampo = crearCampoTexto(true);
+        txtTriples = crearCampoTexto(true);
+        txtCoefEficiencia = crearCampoTexto(false);
+
+        cbxEquipos = new JComboBox<>();
+        cbxEquipos.setEnabled(false); // Siempre deshabilitado inicialmente
+        cbxEquipos.setFont(new Font("Arial", Font.PLAIN, 12));
+        cbxEquipos.setForeground(Color.BLACK);
+
+        agregarCampo(panel, "Nombre:", txtNombre);
+        agregarCampo(panel, "Peso(Kg):", txtPeso);
+        agregarCampo(panel, "Altura(m):", txtAltura);
+        agregarCampo(panel, "Equipo:", cbxEquipos);
+        agregarCampo(panel, "Estado:", txtLesionado);
+        agregarCampo(panel, "Salario:", txtSalario);
+        agregarCampo(panel, "Puntos/partido:", txtPuntos);
+        agregarCampo(panel, "Rebotes/partido:", txtRebotes);
+        agregarCampo(panel, "Asistencias/partido:", txtAsistencias);
+        agregarCampo(panel, "% Tiros libres:", txtTirosLibres);
+        agregarCampo(panel, "% Tiros campo:", txtTirosCampo);
+        agregarCampo(panel, "% Triples:", txtTriples);
+        agregarCampo(panel, "Eficiencia:", txtCoefEficiencia);
+
+        return panel;
+    }
 
     private JPanel crearPanelInferior() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
@@ -154,10 +157,17 @@ public class Estadisticas extends JDialog {
         btnModificar.setBackground(colorClaro);
         btnModificar.setForeground(Color.WHITE);
         btnModificar.setFont(new Font("Arial", Font.BOLD, 14));
-        btnModificar.addActionListener(e -> toggleModoEdicion());
+        
+        // Solo agregar el ActionListener si no es anotador
+        if (!esAnotador) {
+            btnModificar.addActionListener(e -> toggleModoEdicion());
+        } else {
+            btnModificar.setEnabled(false); // Deshabilitar completamente para anotadores
+            btnModificar.setToolTipText("Solo disponible para administradores");
+        }
         panel.add(btnModificar);
         
-        JButton btnCancelar = new JButton("Cancelar");
+        JButton btnCancelar = new JButton("Cerrar");
         btnCancelar.setBackground(new Color(178, 34, 34));
         btnCancelar.setForeground(Color.WHITE);
         btnCancelar.setFont(new Font("Arial", Font.BOLD, 14));
@@ -166,6 +176,9 @@ public class Estadisticas extends JDialog {
 
         return panel;
     }
+
+    // ... (resto de los métodos permanecen iguales)
+
 
     private JTextField crearCampoTexto(boolean esEstadistica) {
         JTextField campo = new JTextField();

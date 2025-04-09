@@ -5,52 +5,48 @@ import java.io.Serializable;
 public class User implements Serializable {
     
     private static final long serialVersionUID = 1L;
-    private String tipo;  // Administrador, Entrenador, Scout
-    private String userName;
+    private String tipo;  // Valores posibles: "Administrador", "Entrenador", "Scout", "Anotador"
+    private String userName;  // Nombre de usuario (no afecta permisos)
     private String pass;
     
     public User(String tipo, String userName, String pass) {
-        super();
+        // Validación para asegurar que el tipo sea válido (opcional pero recomendado)
+        if (!tipo.equalsIgnoreCase("Administrador") &&  
+            !tipo.equalsIgnoreCase("Anotador")) {
+            throw new IllegalArgumentException("Tipo de usuario no válido: " + tipo);
+        }
         this.tipo = tipo;
-        this.userName = userName;
+        this.userName = userName;  // El username no se usa para permisos
         this.pass = pass;
     }
 
-    
+    // --- Getters y Setters (se mantienen igual) ---
     public String getTipo() {
         return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public String getPass() {
         return pass;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
-    }
-
+    // --- Métodos para verificar el tipo (basados SOLO en el campo `tipo`) ---
     public boolean esAdministrador() {
         return tipo.equalsIgnoreCase("Administrador");
     }
 
-    public boolean esEntrenador() {
-        return tipo.equalsIgnoreCase("Entrenador");
+
+    // Método clave: Verifica si es anotador (usa SOLO el campo `tipo`)
+    public boolean esAnotador() {
+        return tipo.equalsIgnoreCase("Anotador");
     }
 
-    public boolean esScout() {
-        return tipo.equalsIgnoreCase("Scout");
+    // Método general para permisos de edición (opcional)
+    public boolean puedeModificar() {
+        return !esAnotador(); // Todos pueden modificar excepto anotadores
     }
 
     @Override

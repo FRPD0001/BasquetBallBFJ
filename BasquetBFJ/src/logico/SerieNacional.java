@@ -64,6 +64,9 @@ public class SerieNacional implements Serializable {
         }
         return false;
     }
+    public static boolean isUsuarioAutenticado() {
+        return usuarioActual != null;
+    }
 
     public void agregarUsuario(User user) {
         usuarios.add(user);
@@ -119,7 +122,7 @@ public class SerieNacional implements Serializable {
             fis = new FileInputStream(file);
             ois = new ObjectInputStream(fis);
             SerieNacional loaded = (SerieNacional) ois.readObject();
-            
+            this.usuarios = loaded.usuarios;
             this.misEquipos = loaded.misEquipos;
             this.misJugadores = loaded.misJugadores;
             this.misJuegos = loaded.misJuegos;

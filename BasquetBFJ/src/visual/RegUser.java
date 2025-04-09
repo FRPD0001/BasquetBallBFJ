@@ -38,7 +38,7 @@ public class RegUser extends JDialog {
         gbc.gridy = 0;
         panel.add(lblTipo, gbc);
 
-        cbTipo = new JComboBox<>(new String[]{"Administrador", "Entrenador", "Scout"});
+        cbTipo = new JComboBox<>(new String[]{"Administrador", "Anotador"});
         gbc.gridx = 1;
         gbc.gridy = 0;
         panel.add(cbTipo, gbc);
