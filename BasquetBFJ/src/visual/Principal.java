@@ -828,6 +828,7 @@ public class Principal extends JFrame {
             lblImagen.setText("Error cargando imagen");
         }
     }
+    //.
     
     private void realizarRespaldoRemotoSimple() {
         int confirmacion = JOptionPane.showConfirmDialog(this,
