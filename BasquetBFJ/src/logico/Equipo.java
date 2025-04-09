@@ -27,6 +27,8 @@ public class Equipo implements Serializable{
         this.lose = 0;
         this.nomina = 0.0f;
     }
+    
+    //.
 
 
     public String getId() {
