@@ -1,6 +1,7 @@
 package visual;
 
 import java.awt.*;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import logico.Equipo;
@@ -133,11 +134,32 @@ public class RegEquipo extends JDialog {
     }
 
     private void mostrarSelectorColor() {
-        colorSeleccionado = JColorChooser.showDialog(this, "Seleccionar Color", colorSeleccionado);
-        if (colorSeleccionado != null) {
-            lblColorSeleccionado.setBackground(colorSeleccionado);
+        JColorChooser chooser = new JColorChooser(colorSeleccionado != null ? colorSeleccionado : Color.WHITE);
+
+        // Elimina todos los paneles excepto el de swatches
+        AbstractColorChooserPanel[] panels = chooser.getChooserPanels();
+        for (AbstractColorChooserPanel panel : panels) {
+            if (!panel.getDisplayName().equals("Swatches")) {
+                chooser.removeChooserPanel(panel);
+            }
         }
+
+        // Crea el diálogo de selección
+        JDialog dialog = JColorChooser.createDialog(
+            this,
+            "Seleccionar Color",
+            true,
+            chooser,
+            e -> {
+                colorSeleccionado = chooser.getColor();
+                lblColorSeleccionado.setBackground(colorSeleccionado);
+            },
+            null
+        );
+
+        dialog.setVisible(true);
     }
+
 
     private void registrarEquipo() {
         if (!validarCampos()) return;

@@ -491,9 +491,16 @@ public class Principal extends JFrame {
         btnEmpezarJuegos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(Principal.this, 
-                    "Funcionalidad de Empezar Juegos - Iniciará la temporada", 
-                    "Iniciar Juegos", JOptionPane.INFORMATION_MESSAGE);
+            	
+                if (SerieNacional.getInstance().getMisJuegos().isEmpty()) {
+                    JOptionPane.showMessageDialog(Principal.this, 
+                        "No hay juegos programados. Genere primero un calendario.", 
+                        "Calendario Vacío", JOptionPane.INFORMATION_MESSAGE);
+                    
+                } else {
+                	
+                }
+                EmpezarJuegos.mostrarDialog(Principal.this, coloresClaros[colorIndex], coloresOscuros[colorIndex]);
             }
         });
 
