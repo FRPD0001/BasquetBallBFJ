@@ -5,95 +5,177 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Juego implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = 1L;
     private String id;
     private Equipo local;
     private Equipo visitante;
-    private ArrayList<StatsJugador> estadisticas;
+    private ArrayList<Jugador> activosLocal;
+    private ArrayList<Jugador> activosVisitante;
     private int puntosLocal;
     private int puntosVisitante;
-    private String winner;
+    private Equipo winner;
     private LocalDate fechaJuego;
+    private boolean isDone;
 
-   
-
-    public String getId() {
-        return id;
+    // Constructor completo que inicializa todos los campos
+    public Juego(String id, Equipo local, Equipo visitante, LocalDate fechaJuego) {
+        this.id = id;
+        this.local = local;
+        this.visitante = visitante;
+        this.activosLocal = new ArrayList<>();
+        this.activosVisitante = new ArrayList<>();
+        this.puntosLocal = 0;
+        this.puntosVisitante = 0;
+        this.winner = null;
+        this.fechaJuego = fechaJuego;
+        this.isDone = false;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    // Método para actualizar resultado del juego
+    public void actualizarResultado(int puntosLocal, int puntosVisitante) {
+        this.puntosLocal = puntosLocal;
+        this.puntosVisitante = puntosVisitante;
+        
+        if (puntosLocal > puntosVisitante) {
+            setWinner(local);
+        } else if (puntosVisitante > puntosLocal) {
+            setWinner(visitante);
+        } else {
+            setWinner(null);
+        }
+    }
+
+    // ============ GETTERS ============
+    public String getId() {
+        return id;
     }
 
     public Equipo getLocal() {
         return local;
     }
 
-    public void setLocal(Equipo local) {
-        this.local = local;
-    }
-
     public Equipo getVisitante() {
         return visitante;
     }
 
-    public void setVisitante(Equipo visitante) {
-        this.visitante = visitante;
+    public ArrayList<Jugador> getActivosLocal() {
+        return activosLocal;
     }
 
-    public ArrayList<StatsJugador> getEstadisticas() {
-        return estadisticas;
-    }
-
-    public void setEstadisticas(ArrayList<StatsJugador> estadisticas) {
-        this.estadisticas = estadisticas;
+    public ArrayList<Jugador> getActivosVisitante() {
+        return activosVisitante;
     }
 
     public int getPuntosLocal() {
         return puntosLocal;
     }
 
-    public void setPuntosLocal(int puntosLocal) {
-        this.puntosLocal = puntosLocal;
-    }
-
     public int getPuntosVisitante() {
         return puntosVisitante;
+    }
+
+    public Equipo getWinner() {
+        return winner;
+    }
+
+    public LocalDate getFechaJuego() {
+        return fechaJuego;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    // ============ SETTERS ============
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setLocal(Equipo local) {
+        this.local = local;
+    }
+
+    public void setVisitante(Equipo visitante) {
+        this.visitante = visitante;
+    }
+
+    public void setActivosLocal(ArrayList<Jugador> activosLocal) {
+        if (activosLocal != null) {
+            this.activosLocal = activosLocal;
+        }
+    }
+
+    public void setActivosVisitante(ArrayList<Jugador> activosVisitante) {
+        if (activosVisitante != null) {
+            this.activosVisitante = activosVisitante;
+        }
+    }
+
+    public void setPuntosLocal(int puntosLocal) {
+        this.puntosLocal = puntosLocal;
     }
 
     public void setPuntosVisitante(int puntosVisitante) {
         this.puntosVisitante = puntosVisitante;
     }
 
-    public String getWinner() {
-        return winner;
-    }
-
-    public void setWinner(String winner) {
+    public void setWinner(Equipo winner) {
+        // Si había un ganador previo, revertir estadísticas
+        if (this.winner != null) {
+            if (this.winner.equals(local)) {
+                local.setWin(local.getWin() - 1);
+                visitante.setLose(visitante.getLose() - 1);
+            } else if (this.winner.equals(visitante)) {
+                visitante.setWin(visitante.getWin() - 1);
+                local.setLose(local.getLose() - 1);
+            }
+        }
+        
         this.winner = winner;
+        this.isDone = (winner != null);
+        
+        // Aplicar nuevas estadísticas
+        if (winner != null) {
+            if (winner.equals(local)) {
+                local.setWin(local.getWin() + 1);
+                visitante.setLose(visitante.getLose() + 1);
+            } else if (winner.equals(visitante)) {
+                visitante.setWin(visitante.getWin() + 1);
+                local.setLose(local.getLose() + 1);
+            }
+        }
     }
 
-	public LocalDate getFechaJuego() {
-		return fechaJuego;
-	}
+    public void setFechaJuego(LocalDate fechaJuego) {
+        this.fechaJuego = fechaJuego;
+    }
 
-	public void setFechaJuego(LocalDate fechaJuego) {
-		this.fechaJuego = fechaJuego;
-	}
+    public void setDone(boolean isDone) {
+        this.isDone = isDone;
+        if (!isDone) {
+            this.winner = null;
+        }
+    }
 
-	public Juego(String id, Equipo local, Equipo visitante, ArrayList<StatsJugador> estadisticas, int puntosLocal,
-			int puntosVisitante, String winner, LocalDate fechaJuego) {
-		super();
-		this.id = id;
-		this.local = local;
-		this.visitante = visitante;
-		this.estadisticas = estadisticas;
-		this.puntosLocal = puntosLocal;
-		this.puntosVisitante = puntosVisitante;
-		this.winner = winner;
-		this.fechaJuego = fechaJuego;
-	}
-	
-	
+    // Métodos para manejar jugadores activos
+    public void agregarJugadorLocal(Jugador jugador) {
+        if (jugador != null && !activosLocal.contains(jugador)) {
+            activosLocal.add(jugador);
+        }
+    }
+
+    public void agregarJugadorVisitante(Jugador jugador) {
+        if (jugador != null && !activosVisitante.contains(jugador)) {
+            activosVisitante.add(jugador);
+        }
+    }
+
+    public void removerJugadorLocal(Jugador jugador) {
+        activosLocal.remove(jugador);
+    }
+
+    public void removerJugadorVisitante(Jugador jugador) {
+        activosVisitante.remove(jugador);
+    }
 }

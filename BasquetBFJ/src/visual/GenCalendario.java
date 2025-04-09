@@ -271,15 +271,11 @@ public class GenCalendario extends JPanel {
                     .toLocalDate();
                 
                 Juego juego = new Juego(
-                    "J" + (SerieNacional.getInstance().getMisJuegos().size() + 1),
-                    local,
-                    visitante,
-                    new ArrayList<>(),
-                    0,
-                    0,
-                    null,
-                    fecha
-                );
+                        "J" + (SerieNacional.getInstance().getMisJuegos().size() + 1),
+                        local,
+                        visitante,
+                        fecha
+                    );
                 juegos.add(juego);
                 fechaBase = fecha.plusDays(1); // Siguiente fecha por defecto
             }
