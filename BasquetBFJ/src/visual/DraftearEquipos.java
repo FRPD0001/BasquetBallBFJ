@@ -13,25 +13,36 @@ public class DraftearEquipos extends JFrame {
     private Juego juego;
     private Color colorFondo;
     private Color colorBoton;
+    private JLabel[] slotsLocal;
+    private JLabel[] slotsVisitante;
 
     public DraftearEquipos(Juego juego, Color colorFondo, Color colorBoton) {
         this.juego = juego;
         this.colorFondo = colorFondo;
         this.colorBoton = colorBoton;
+        this.slotsLocal = new JLabel[5];
+        this.slotsVisitante = new JLabel[5];
         initUI();
     }
 
     private void initUI() {
         setTitle("Draftear Equipos");
-        setSize(1200, 700);
+        setSize(1200, 750); // Aumentado para el panel inferior
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setBackground(colorFondo);
 
+        try {
+            setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
+        } catch (Exception e) {
+            System.err.println("Error cargando icono: " + e.getMessage());
+        }
 
-        setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
-
+        // Panel principal con cancha y jugadores
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        
+        // Panel de cancha
         JPanel canchaPanel = new JPanel(null) {
             private Image fondo = new ImageIcon("media/Cancha.png").getImage();
 
@@ -41,24 +52,84 @@ public class DraftearEquipos extends JFrame {
                 g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
             }
         };
-        canchaPanel.setPreferredSize(new Dimension(800, 700));
+        canchaPanel.setPreferredSize(new Dimension(800, 650));
 
         // Crear slots de posición
         crearSlotsPosiciones(canchaPanel);
 
-        // Paneles de jugadores - VERIFICAR JUGADORES ANTES
-        System.out.println("Jugadores Local: " + juego.getLocal().getJugadores().size());
-        System.out.println("Jugadores Visitante: " + juego.getVisitante().getJugadores().size());
-
+        // Paneles de jugadores
         JPanel panelLocal = crearPanelJugadores(juego.getLocal().getJugadores(), true);
         JPanel panelVisitante = crearPanelJugadores(juego.getVisitante().getJugadores(), false);
 
-        add(panelLocal, BorderLayout.WEST);
-        add(canchaPanel, BorderLayout.CENTER);
-        add(panelVisitante, BorderLayout.EAST);
+        mainPanel.add(panelLocal, BorderLayout.WEST);
+        mainPanel.add(canchaPanel, BorderLayout.CENTER);
+        mainPanel.add(panelVisitante, BorderLayout.EAST);
+
+        // Panel inferior con botones
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        panelBotones.setBackground(colorFondo);
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
+
+        // Botón Empezar Juego (verde)
+        JButton btnEmpezar = new JButton("Empezar Juego");
+        btnEmpezar.setBackground(new Color(0, 150, 0));
+        btnEmpezar.setForeground(Color.WHITE);
+        btnEmpezar.setFont(new Font("Arial", Font.BOLD, 14));
+        btnEmpezar.addActionListener(e -> verificarYEmpezarJuego());
+        
+        // Botón Cancelar (rojo)
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setBackground(new Color(150, 0, 0));
+        btnCancelar.setForeground(Color.WHITE);
+        btnCancelar.setFont(new Font("Arial", Font.BOLD, 14));
+        btnCancelar.addActionListener(e -> cancelarJuego());
+
+        panelBotones.add(btnEmpezar);
+        panelBotones.add(btnCancelar);
+
+        add(mainPanel, BorderLayout.CENTER);
+        add(panelBotones, BorderLayout.SOUTH);
 
         revalidate();
         repaint();
+    }
+
+    private void verificarYEmpezarJuego() {
+        // Verificar slots locales
+        for (int i = 0; i < slotsLocal.length; i++) {
+            if (slotsLocal[i].getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "Falta asignar jugador en posición " + (i+1) + " del equipo local", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        
+        // Verificar slots visitante
+        for (int i = 0; i < slotsVisitante.length; i++) {
+            if (slotsVisitante[i].getText().isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "Falta asignar jugador en posición " + (i+1) + " del equipo visitante", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        
+        // Si todo está correcto
+        JOptionPane.showMessageDialog(this, 
+            "¡Juego iniciado correctamente!", 
+            "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        dispose();
+    }
+
+    private void cancelarJuego() {
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "¿Está seguro que desea cancelar el juego?", 
+            "Confirmar cancelación", JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            dispose();
+        }
     }
 
     private void crearSlotsPosiciones(JPanel canchaPanel) {
@@ -81,17 +152,17 @@ public class DraftearEquipos extends JFrame {
         };
 
         // Crear slots para local
-        for (int[] pos : posicionesLocal) {
-            JLabel slot = crearSlotPosicion();
-            slot.setLocation(pos[0], pos[1]);
-            canchaPanel.add(slot);
+        for (int i = 0; i < posicionesLocal.length; i++) {
+            slotsLocal[i] = crearSlotPosicion();
+            slotsLocal[i].setLocation(posicionesLocal[i][0], posicionesLocal[i][1]);
+            canchaPanel.add(slotsLocal[i]);
         }
 
         // Crear slots para visitante
-        for (int[] pos : posicionesVisitante) {
-            JLabel slot = crearSlotPosicion();
-            slot.setLocation(pos[0], pos[1]);
-            canchaPanel.add(slot);
+        for (int i = 0; i < posicionesVisitante.length; i++) {
+            slotsVisitante[i] = crearSlotPosicion();
+            slotsVisitante[i].setLocation(posicionesVisitante[i][0], posicionesVisitante[i][1]);
+            canchaPanel.add(slotsVisitante[i]);
         }
     }
 
@@ -129,7 +200,7 @@ public class DraftearEquipos extends JFrame {
 
         // Añadir jugadores
         for (Jugador jugador : jugadores) {
-            if (jugador != null) { // Verificación adicional
+            if (jugador != null) {
                 JLabel labelJugador = crearLabelJugador(jugador, esLocal);
                 panel.add(labelJugador);
                 panel.add(Box.createVerticalStrut(10));
@@ -147,7 +218,11 @@ public class DraftearEquipos extends JFrame {
         label.setBackground(esLocal ? juego.getLocal().getColor() : juego.getVisitante().getColor());
         label.setForeground(Color.WHITE);
         label.setFont(new Font("Arial", Font.BOLD, 12));
-        label.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        label.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.BLACK),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        label.setPreferredSize(new Dimension(180, 30));
         label.setMaximumSize(new Dimension(180, 30));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         
