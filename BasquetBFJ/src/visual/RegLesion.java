@@ -103,19 +103,19 @@ public class RegLesion extends JDialog {
         // Panel de botones
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-        buttonPanel.setBackground(colorClaro);
+        buttonPanel.setBackground(Color.WHITE);
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.setFont(new Font("Arial", Font.BOLD, 14));
-        btnGuardar.setBackground(new Color(34, 139, 34)); // Verde similar a RegEquipo
+        btnGuardar.setBackground(new Color(34, 139, 34)); 
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.addActionListener(e -> guardarLesion());
         buttonPanel.add(btnGuardar);
         
         JButton btnCancelar = new JButton("Cancelar");
         btnCancelar.setFont(new Font("Arial", Font.BOLD, 14));
-        btnCancelar.setBackground(new Color(178, 34, 34)); // Rojo similar a RegEquipo
+        btnCancelar.setBackground(new Color(178, 34, 34));
         btnCancelar.setForeground(Color.WHITE);
         btnCancelar.addActionListener(e -> dispose());
         buttonPanel.add(btnCancelar);
