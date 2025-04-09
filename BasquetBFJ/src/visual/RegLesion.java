@@ -6,18 +6,20 @@ import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import javax.swing.border.BevelBorder;
 import javax.swing.text.MaskFormatter;
 import logico.SerieNacional;
 import logico.Jugador;
 import logico.Lesion;
+import com.toedter.calendar.JDateChooser;
 
 public class RegLesion extends JDialog {
     private JPanel contentPanel;
     private JTextField txtId;
     private JComboBox<Jugador> cmbJugador;
     private JTextField txtLesion;
-    private JFormattedTextField txtFechaLesion;
-    private JFormattedTextField txtFechaRecuperacion;
+    private JDateChooser dateChooserLesion;
+    private JDateChooser dateChooserRecuperacion;
     private JCheckBox chkLesionado;
     private Color colorOscuro;
     private Color colorClaro;
@@ -35,90 +37,86 @@ public class RegLesion extends JDialog {
         
         contentPanel = new JPanel();
         contentPanel.setBackground(colorClaro);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        contentPanel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new GridLayout(7, 2, 10, 15));
         
-        try {
-            MaskFormatter dateMask = new MaskFormatter("##/##/####");
-            dateMask.setPlaceholderCharacter(' ');
-            
-            JLabel lblId = new JLabel("ID Lesión:");
-            lblId.setFont(new Font("Arial", Font.BOLD, 14));
-            contentPanel.add(lblId);
-            
-            txtId = new JTextField();
-            txtId.setEditable(false);
-            txtId.setText("LES-" + Jugador.getGenLesion());
-            txtId.setFont(new Font("Arial", Font.PLAIN, 14));
-            contentPanel.add(txtId);
-            
-            JLabel lblJugador = new JLabel("Jugador:");
-            lblJugador.setFont(new Font("Arial", Font.BOLD, 14));
-            contentPanel.add(lblJugador);
-            
-            cmbJugador = new JComboBox<>();
-            cmbJugador.setFont(new Font("Arial", Font.PLAIN, 14));
-            cargarJugadores();
-            contentPanel.add(cmbJugador);
-            
-            JLabel lblLesion = new JLabel("Tipo de Lesión:");
-            lblLesion.setFont(new Font("Arial", Font.BOLD, 14));
-            contentPanel.add(lblLesion);
-            
-            txtLesion = new JTextField();
-            txtLesion.setFont(new Font("Arial", Font.PLAIN, 14));
-            contentPanel.add(txtLesion);
-            
-            // Fecha de lesión
-            JLabel lblFechaLesion = new JLabel("Fecha Lesión:");
-            lblFechaLesion.setFont(new Font("Arial", Font.BOLD, 14));
-            contentPanel.add(lblFechaLesion);
-            
-            txtFechaLesion = new JFormattedTextField(dateMask);
-            txtFechaLesion.setFont(new Font("Arial", Font.PLAIN, 14));
-            txtFechaLesion.setToolTipText("Formato: DD/MM/AAAA");
-            contentPanel.add(txtFechaLesion);
-            
-            // Fecha de recuperación
-            JLabel lblFechaRecuperacion = new JLabel("Fecha Recuperación:");
-            lblFechaRecuperacion.setFont(new Font("Arial", Font.BOLD, 14));
-            contentPanel.add(lblFechaRecuperacion);
-            
-            txtFechaRecuperacion = new JFormattedTextField(dateMask);
-            txtFechaRecuperacion.setFont(new Font("Arial", Font.PLAIN, 14));
-            txtFechaRecuperacion.setToolTipText("Formato: DD/MM/AAAA");
-            contentPanel.add(txtFechaRecuperacion);
-            
-            // Estado de lesión
-            JLabel lblLesionado = new JLabel("Actualmente Lesionado:");
-            lblLesionado.setFont(new Font("Arial", Font.BOLD, 14));
-            contentPanel.add(lblLesionado);
-            
-            chkLesionado = new JCheckBox();
-            contentPanel.add(chkLesionado);
-            
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al inicializar componentes: " + e.getMessage(), 
-                "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        JLabel lblId = new JLabel("ID Lesión:");
+        lblId.setFont(new Font("Arial", Font.BOLD, 14));
+        contentPanel.add(lblId);
+        
+        txtId = new JTextField();
+        txtId.setEditable(false);
+        txtId.setText("LES-" + Jugador.getGenLesion());
+        txtId.setFont(new Font("Arial", Font.PLAIN, 14));
+        contentPanel.add(txtId);
+        
+        JLabel lblJugador = new JLabel("Jugador:");
+        lblJugador.setFont(new Font("Arial", Font.BOLD, 14));
+        contentPanel.add(lblJugador);
+        
+        cmbJugador = new JComboBox<>();
+        cmbJugador.setFont(new Font("Arial", Font.PLAIN, 14));
+        cargarJugadores();
+        contentPanel.add(cmbJugador);
+        
+        JLabel lblLesion = new JLabel("Tipo de Lesión:");
+        lblLesion.setFont(new Font("Arial", Font.BOLD, 14));
+        contentPanel.add(lblLesion);
+        
+        txtLesion = new JTextField();
+        txtLesion.setFont(new Font("Arial", Font.PLAIN, 14));
+        contentPanel.add(txtLesion);
+        
+        // Fecha de lesión con JDateChooser
+        JLabel lblFechaLesion = new JLabel("Fecha Lesión:");
+        lblFechaLesion.setFont(new Font("Arial", Font.BOLD, 14));
+        contentPanel.add(lblFechaLesion);
+        
+        dateChooserLesion = new JDateChooser();
+        dateChooserLesion.setDateFormatString("dd/MM/yyyy");
+        dateChooserLesion.setFont(new Font("Arial", Font.PLAIN, 14));
+        JPanel panelFechaLesion = new JPanel(new BorderLayout());
+        panelFechaLesion.add(dateChooserLesion);
+        contentPanel.add(panelFechaLesion);
+        
+        // Fecha de recuperación con JDateChooser
+        JLabel lblFechaRecuperacion = new JLabel("Fecha Recuperación:");
+        lblFechaRecuperacion.setFont(new Font("Arial", Font.BOLD, 14));
+        contentPanel.add(lblFechaRecuperacion);
+        
+        dateChooserRecuperacion = new JDateChooser();
+        dateChooserRecuperacion.setDateFormatString("dd/MM/yyyy");
+        dateChooserRecuperacion.setFont(new Font("Arial", Font.PLAIN, 14));
+        JPanel panelFechaRecuperacion = new JPanel(new BorderLayout());
+        panelFechaRecuperacion.add(dateChooserRecuperacion);
+        contentPanel.add(panelFechaRecuperacion);
+        
+        // Estado de lesión
+        JLabel lblLesionado = new JLabel("Actualmente Lesionado:");
+        lblLesionado.setFont(new Font("Arial", Font.BOLD, 14));
+        contentPanel.add(lblLesionado);
+        
+        chkLesionado = new JCheckBox();
+        contentPanel.add(chkLesionado);
         
         // Panel de botones
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         buttonPanel.setBackground(colorClaro);
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
         
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.setFont(new Font("Arial", Font.BOLD, 14));
-        btnGuardar.setBackground(colorOscuro);
+        btnGuardar.setBackground(new Color(34, 139, 34)); // Verde similar a RegEquipo
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.addActionListener(e -> guardarLesion());
         buttonPanel.add(btnGuardar);
         
         JButton btnCancelar = new JButton("Cancelar");
         btnCancelar.setFont(new Font("Arial", Font.BOLD, 14));
-        btnCancelar.setBackground(colorOscuro);
-        btnGuardar.setForeground(Color.WHITE);
+        btnCancelar.setBackground(new Color(178, 34, 34)); // Rojo similar a RegEquipo
+        btnCancelar.setForeground(Color.WHITE);
         btnCancelar.addActionListener(e -> dispose());
         buttonPanel.add(btnCancelar);
     }
@@ -155,8 +153,17 @@ public class RegLesion extends JDialog {
                 throw new Exception("Debe especificar el tipo de lesión");
             }
             
-            LocalDate fechaLesion = parseFecha(txtFechaLesion.getText().trim());
-            LocalDate fechaRecuperacion = parseFecha(txtFechaRecuperacion.getText().trim());
+            if (dateChooserLesion.getDate() == null || dateChooserRecuperacion.getDate() == null) {
+                throw new Exception("Debe seleccionar ambas fechas");
+            }
+            
+            LocalDate fechaLesion = dateChooserLesion.getDate().toInstant()
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDate();
+                
+            LocalDate fechaRecuperacion = dateChooserRecuperacion.getDate().toInstant()
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalDate();
             
             if (fechaRecuperacion.isBefore(fechaLesion)) {
                 throw new Exception("La fecha de recuperación debe ser posterior a la de lesión");
@@ -187,20 +194,6 @@ public class RegLesion extends JDialog {
                 "Error al registrar lesión:\n" + e.getMessage(), 
                 "Error", 
                 JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    
-    private LocalDate parseFecha(String fechaStr) throws Exception {
-        try {
-            String cleaned = fechaStr.replaceAll("[^0-9/]", "").trim();
-            
-            if (!cleaned.matches("\\d{2}/\\d{2}/\\d{4}")) {
-                throw new DateTimeParseException("Formato inválido", fechaStr, 0);
-            }
-            
-            return LocalDate.parse(cleaned, dateFormatter);
-        } catch (DateTimeParseException e) {
-            throw new Exception("Fecha inválida. Use formato DD/MM/AAAA");
         }
     }
 }
