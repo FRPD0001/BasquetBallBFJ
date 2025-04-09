@@ -199,7 +199,6 @@ public class Principal extends JFrame {
         
         ImageIcon iconoLogoutOriginal = new ImageIcon("media/Logout.png");
 
-     // Escalar la imagen al tamaño del botón (ajustado a un margen interno)
      Image imagenLogoutEscalada = iconoLogoutOriginal.getImage().getScaledInstance(
          btnLogout.getPreferredSize().width - 1, 
          btnLogout.getPreferredSize().height + 20, 
@@ -215,7 +214,6 @@ public class Principal extends JFrame {
         btnLogout.setBorderPainted(false);
         btnLogout.setFocusPainted(false);
         btnLogout.setOpaque(false);
-        btnLogout.setFont(new Font("Arial", Font.BOLD, 24));
         btnLogout.setBackground(new Color(245, 124, 0));
         btnLogout.setForeground(Color.WHITE);
         btnLogout.setPreferredSize(new Dimension(60, 60));
@@ -301,7 +299,6 @@ public class Principal extends JFrame {
             }
         });
 
-        // Botón de respaldo (R)
         JButton btnRespaldo = new JButton("") {
             @Override
             protected void paintComponent(Graphics g) {

@@ -1,8 +1,10 @@
 package visual;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -10,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -239,11 +243,8 @@ public class GenCalendario extends JPanel {
         LocalDate fechaBase = LocalDate.now();
         
         // Crear componentes para el diálogo de fecha
-        JPanel panelFecha = new JPanel();
         JDateChooser dateChooser = new JDateChooser();
-        dateChooser.setDateFormatString("yyyy-MM-dd");
-        panelFecha.add(new JLabel("Seleccione fecha:"));
-        panelFecha.add(dateChooser);
+        dateChooser.setDateFormatString("dd/MM/yyyy"); // Formato DD/MM/YYYY
         
         for (int i = 0; i < emparejamientosActuales.size(); i++) {
             ArrayList<Equipo> jornada = emparejamientosActuales.get(i);
@@ -255,7 +256,7 @@ public class GenCalendario extends JPanel {
                 // Configurar fecha por defecto
                 dateChooser.setDate(java.sql.Date.valueOf(fechaBase));
                 
-                int opcion = JOptionPane.showConfirmDialog(this, panelFecha, 
+                int opcion = JOptionPane.showConfirmDialog(this, dateChooser, 
                     "Fecha para: " + local.getNombre() + " vs " + visitante.getNombre(),
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
                 
@@ -270,15 +271,11 @@ public class GenCalendario extends JPanel {
                     .toLocalDate();
                 
                 Juego juego = new Juego(
-                    "J" + (SerieNacional.getInstance().getMisJuegos().size() + 1),
-                    local,
-                    visitante,
-                    new ArrayList<>(),
-                    0,
-                    0,
-                    null,
-                    fecha
-                );
+                        "J" + (SerieNacional.getInstance().getMisJuegos().size() + 1),
+                        local,
+                        visitante,
+                        fecha
+                    );
                 juegos.add(juego);
                 fechaBase = fecha.plusDays(1); // Siguiente fecha por defecto
             }

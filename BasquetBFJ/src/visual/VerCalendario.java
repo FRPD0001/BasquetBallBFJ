@@ -1,6 +1,7 @@
 package visual;
 
 import java.awt.*;
+import java.beans.*;
 import java.time.*;
 import java.util.Date;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ public class VerCalendario extends JPanel {
     private Color colorFondo;
     private Color colorBoton;
     private ArrayList<Juego> todosJuegos;
-    private Color colorDiasConJuegos = new Color(144, 238, 144); // Verde claro para días con partidos
 
     public VerCalendario(Color colorFondo, Color colorBoton) {
         this.colorFondo = colorFondo;
@@ -24,6 +24,7 @@ public class VerCalendario extends JPanel {
         this.todosJuegos = new ArrayList<Juego>();
         initComponents();
         cargarJuegos();
+        mostrarTodosJuegos();
     }
 
     private void initComponents() {
@@ -36,58 +37,15 @@ public class VerCalendario extends JPanel {
         calendar.setDecorationBackgroundVisible(true);
         calendar.setWeekOfYearVisible(false);
 
-        // Personalizar el renderizado de días usando IDateEvaluator
-        IDateEvaluator dateEvaluator = new IDateEvaluator() {
+        // Permitir cambiar mes y año
+        calendar.getMonthChooser().setEnabled(true);
+        calendar.getYearChooser().setEnabled(true);
+
+        // Evitar que se pueda cambiar la fecha seleccionada
+        calendar.addPropertyChangeListener("calendar", new PropertyChangeListener() {
             @Override
-            public boolean isSpecial(Date date) {
-                LocalDate localDate = convertToLocalDate(date);
-                return tieneJuegos(localDate);
-            }
-
-            @Override
-            public Color getSpecialForegroundColor() {
-                return Color.BLACK;
-            }
-
-            @Override
-            public Color getSpecialBackroundColor() {
-                return colorDiasConJuegos;
-            }
-
-            @Override
-            public String getSpecialTooltip() {
-                return "Partidos programados";
-            }
-
-            @Override
-            public boolean isInvalid(Date date) {
-                return false;
-            }
-
-            @Override
-            public Color getInvalidForegroundColor() {
-                return null;
-            }
-
-            @Override
-            public Color getInvalidBackroundColor() {
-                return null;
-            }
-
-            @Override
-            public String getInvalidTooltip() {
-                return null;
-            }
-        };
-
-        calendar.getDayChooser().addDateEvaluator(dateEvaluator);
-
-        // Listener para selección de fecha
-        calendar.addPropertyChangeListener("calendar", evt -> {
-            Date fechaSeleccionada = calendar.getDate();
-            if (fechaSeleccionada != null) {
-                LocalDate fecha = convertToLocalDate(fechaSeleccionada);
-                mostrarJuegosFecha(fecha);
+            public void propertyChange(PropertyChangeEvent evt) {
+                calendar.setDate((Date) evt.getOldValue());
             }
         });
 
@@ -126,64 +84,19 @@ public class VerCalendario extends JPanel {
     private void cargarJuegos() {
         todosJuegos.clear();
         todosJuegos.addAll(SerieNacional.getInstance().getMisJuegos());
-        calendar.updateUI(); // Actualizar el calendario para mostrar los días marcados
+        calendar.updateUI();
     }
 
-    private boolean tieneJuegos(LocalDate fecha) {
-        for (Juego juego : todosJuegos) {
-            if (juego.getFechaJuego().equals(fecha)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void mostrarJuegosFecha(LocalDate fecha) {
+    private void mostrarTodosJuegos() {
         modeloTabla.setRowCount(0);
-        ArrayList<Juego> juegosDia = new ArrayList<Juego>();
-        
         for (Juego juego : todosJuegos) {
-            if (juego.getFechaJuego().equals(fecha)) {
-                juegosDia.add(juego);
-            }
+            modeloTabla.addRow(new Object[]{
+                juego.getFechaJuego().toString(),
+                juego.getLocal().getNombre(),
+                "VS",
+                juego.getVisitante().getNombre()
+            });
         }
-        
-        if (!juegosDia.isEmpty()) {
-            for (Juego juego : juegosDia) {
-                modeloTabla.addRow(new Object[]{
-                    juego.getFechaJuego().toString(),
-                    juego.getLocal().getNombre(),
-                    "VS",
-                    juego.getVisitante().getNombre()
-                });
-            }
-            
-            if (juegosDia.size() == 1) {
-                mostrarDetalleJuego(juegosDia.get(0));
-            }
-        }
-    }
-
-    private void mostrarDetalleJuego(Juego juego) {
-        String mensaje = String.format(
-            "<html><b>Detalles del Partido:</b><br><br>" +
-            "<b>Fecha:</b> %s<br>" +
-            "<b>Local:</b> %s<br>" +
-            "<b>Visitante:</b> %s</html>",
-            juego.getFechaJuego(),
-            juego.getLocal().getNombre(),
-            juego.getVisitante().getNombre()
-        );
-
-        JLabel label = new JLabel(mensaje);
-        label.setFont(new Font("Arial", Font.PLAIN, 14));
-        
-        JOptionPane.showMessageDialog(
-            this, 
-            label,
-            "Detalles del Juego", 
-            JOptionPane.INFORMATION_MESSAGE
-        );
     }
 
     private LocalDate convertToLocalDate(Date date) {
