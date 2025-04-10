@@ -8,6 +8,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,7 +176,6 @@ public class DraftearEquipos extends JFrame {
                         return false;
                     }
                     
-                    // Comprobar si el jugador está en el equipo contrario
                     if ((esLocal && jugadoresLabelsVisitante.containsKey(data)) || (!esLocal && jugadoresLabelsLocal.containsKey(data))) {
                         JOptionPane.showMessageDialog(DraftearEquipos.this, 
                             "Este jugador no puede ser colocado en este equipo", 
@@ -186,7 +186,6 @@ public class DraftearEquipos extends JFrame {
                     target.setText(data);
                     target.setBackground(new Color(200, 255, 200));
                     
-                    // Ocultar el jugador de la lista correspondiente
                     if (esLocal) {
                         JLabel jugadorLabel = jugadoresLabelsLocal.get(data);
                         if (jugadorLabel != null) {
@@ -238,7 +237,7 @@ public class DraftearEquipos extends JFrame {
 
     private JPanel crearPanelJugadores(List<Jugador> jugadores, boolean esLocal) {
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setLayout(new BorderLayout()); // Cambiamos a BorderLayout para mejor organización
         panel.setBackground(colorFondo);
         panel.setPreferredSize(new Dimension(220, getHeight()));
         panel.setBorder(BorderFactory.createTitledBorder(
@@ -248,37 +247,58 @@ public class DraftearEquipos extends JFrame {
         JLabel titulo = new JLabel(esLocal ? juego.getLocal().getNombre() : juego.getVisitante().getNombre());
         titulo.setFont(new Font("Arial", Font.BOLD, 16));
         titulo.setForeground(colorBoton);
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(titulo);
-        panel.add(Box.createVerticalStrut(15));
+        titulo.setHorizontalAlignment(SwingConstants.CENTER); // Centramos el texto
+        panel.add(titulo, BorderLayout.NORTH);
+
+        JPanel jugadoresPanel = new JPanel();
+        jugadoresPanel.setLayout(new BoxLayout(jugadoresPanel, BoxLayout.Y_AXIS));
+        jugadoresPanel.setBackground(colorFondo);
 
         if (jugadores == null || jugadores.isEmpty()) {
             JLabel vacio = new JLabel("No hay jugadores");
             vacio.setForeground(Color.RED);
             vacio.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panel.add(vacio);
-            return panel;
-        }
+            jugadoresPanel.add(vacio);
+        } else {
+            List<Jugador> jugadoresDisponibles = new ArrayList<>();
+            for (Jugador jugador : jugadores) {
+                if (jugador != null && !jugador.isLesionado()) {
+                    jugadoresDisponibles.add(jugador);
+                }
+            }
 
-        for (Jugador jugador : jugadores) {
-            if (jugador != null) {
-                JLabel labelJugador = crearLabelJugador(jugador, esLocal);
-                panel.add(labelJugador);
-                panel.add(Box.createVerticalStrut(8));
-                
-                // Guardar referencia al label del jugador
-                String nombreFormateado = formatearNombreCompleto(jugador);
-                if (esLocal) {
-                    jugadoresLabelsLocal.put(nombreFormateado, labelJugador);
-                } else {
-                    jugadoresLabelsVisitante.put(nombreFormateado, labelJugador);
+            if (jugadoresDisponibles.isEmpty()) {
+                JLabel vacio = new JLabel("No hay jugadores disponibles");
+                vacio.setForeground(Color.RED);
+                vacio.setAlignmentX(Component.CENTER_ALIGNMENT);
+                jugadoresPanel.add(vacio);
+            } else {
+                for (Jugador jugador : jugadoresDisponibles) {
+                    JLabel labelJugador = crearLabelJugador(jugador, esLocal);
+                    labelJugador.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    jugadoresPanel.add(labelJugador);
+                    jugadoresPanel.add(Box.createVerticalStrut(8));
+                    
+                    String nombreFormateado = formatearNombreCompleto(jugador);
+                    if (esLocal) {
+                        jugadoresLabelsLocal.put(nombreFormateado, labelJugador);
+                    } else {
+                        jugadoresLabelsVisitante.put(nombreFormateado, labelJugador);
+                    }
                 }
             }
         }
 
+        JScrollPane scrollPane = new JScrollPane(jugadoresPanel);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Hace el scroll más suave
+        
+        panel.add(scrollPane, BorderLayout.CENTER);
+
         return panel;
     }
-
     private JLabel crearLabelJugador(Jugador jugador, boolean esLocal) {
         String nombre = formatearNombreCompleto(jugador);
         JLabel label = new JLabel(nombre, SwingConstants.CENTER);
@@ -325,7 +345,13 @@ public class DraftearEquipos extends JFrame {
                     dge.startDrag(null, transferable);
                 }
             });
-        
+        label.setToolTipText(
+        	    "<html>" +
+        	    "Nombre: " + jugador.getNombre() + "<br>" +
+        	    "Salario: $" + String.format("%.2f", jugador.getSalario()) + "<br>"  +
+        	    "Eficiencia:" + jugador.getEstadistica().calcularCoeficienteEfectividad() +
+        	    "</html>"
+        	);
         return label;
     }
 

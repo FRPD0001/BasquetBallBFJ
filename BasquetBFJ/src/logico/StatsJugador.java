@@ -97,7 +97,7 @@ public class StatsJugador implements Serializable {
         	     ((porcentajeTriples / 100) * puntosPorPartido * 0.5f) +
                  ((porcentajeTirosLibres / 100) * puntosPorPartido * 0.3f) -
         	     (rebotesPorPartido * 0.3f); // Ajuste por rebotes defensivos
-        efectividad = efectividad * 15 / 20;
+        efectividad = efectividad * 15 / 2;
         
         return Math.max(efectividad/100.0f, 0); // Evitar valores negativos
     }
