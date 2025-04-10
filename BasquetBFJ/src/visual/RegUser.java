@@ -14,10 +14,12 @@ public class RegUser extends JDialog {
     private JComboBox<String> cbTipo;
     private Color[] coloresOscuros;
     private Color[] coloresClaros;
+    private int colorIndex; // Índice de color
 
-    public RegUser(Color[] coloresOscuros, Color[] coloresClaros) {
+    public RegUser(Color[] coloresOscuros, Color[] coloresClaros, int colorIndex) {
         this.coloresOscuros = coloresOscuros;
         this.coloresClaros = coloresClaros;
+        this.colorIndex = colorIndex;
         initComponents();
     }
 
@@ -34,8 +36,11 @@ public class RegUser extends JDialog {
 
         // Panel principal
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(coloresClaros[0]);  // Fondo con el color claro
+        
+        // Usar colorIndex para seleccionar el color
+        panel.setBackground(coloresClaros[colorIndex]);  // Fondo con el color claro seleccionado
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
@@ -157,3 +162,4 @@ public class RegUser extends JDialog {
         dispose(); // Cerrar ventana
     }
 }
+
