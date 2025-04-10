@@ -3,6 +3,7 @@ package visual;
 import java.awt.*;
 import java.beans.*;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -89,9 +90,14 @@ public class VerCalendario extends JPanel {
 
     private void mostrarTodosJuegos() {
         modeloTabla.setRowCount(0);
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        
         for (Juego juego : todosJuegos) {
+            String fechaFormateada = juego.getFechaJuego().format(formatter);
+            
             modeloTabla.addRow(new Object[]{
-                juego.getFechaJuego().toString(),
+                fechaFormateada,
                 juego.getLocal().getNombre(),
                 "VS",
                 juego.getVisitante().getNombre()
