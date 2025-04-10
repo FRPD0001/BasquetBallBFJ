@@ -842,7 +842,7 @@ public class Principal extends JFrame {
             return;
         }
 
-        try (Socket sfd = new Socket("localhost", 7000);
+        try (Socket sfd = new Socket("localhost", 7500);
              DataInputStream fis = new DataInputStream(new FileInputStream("Serie_Nacional.DAT"));
              DataOutputStream os = new DataOutputStream(sfd.getOutputStream())) {
             

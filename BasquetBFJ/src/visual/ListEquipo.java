@@ -161,7 +161,7 @@ public class ListEquipo extends JDialog {
         for (Equipo equipo : listaEquipos) {
             double winrate = SerieNacional.getInstance().Winrate(equipo);
 
-            String winrateStr = (equipo.getWin() + equipo.getLose() == 0) ? "N/A" : String.format("%.2f%%", winrate * 100);
+            String winrateStr = (equipo.getWin() + equipo.getLose() == 0) ? "N/A" : String.format("%.2f%%", winrate);
 
             tableModel.addRow(new Object[]{
                 equipo.getId(),
