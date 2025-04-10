@@ -595,6 +595,7 @@ public class Principal extends JFrame {
         panelAjustes.add(btnAgregarUsuario);  // Nuevo botón añadido
         
         configurarPermisosUsuario();
+        //.
 
         btnEquipos.addActionListener(new ActionListener() {
             @Override
