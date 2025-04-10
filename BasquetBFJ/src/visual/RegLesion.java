@@ -110,14 +110,24 @@ public class RegLesion extends JDialog {
         btnGuardar.setFont(new Font("Arial", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(34, 139, 34)); 
         btnGuardar.setForeground(Color.WHITE);
-        btnGuardar.addActionListener(e -> guardarLesion());
+        btnGuardar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                guardarLesion();
+            }
+        });
         buttonPanel.add(btnGuardar);
-        
+
         JButton btnCancelar = new JButton("Cancelar");
         btnCancelar.setFont(new Font("Arial", Font.BOLD, 14));
         btnCancelar.setBackground(new Color(178, 34, 34));
         btnCancelar.setForeground(Color.WHITE);
-        btnCancelar.addActionListener(e -> dispose());
+        btnCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
         buttonPanel.add(btnCancelar);
     }
     

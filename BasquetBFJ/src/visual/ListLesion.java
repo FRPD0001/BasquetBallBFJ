@@ -50,7 +50,15 @@ public class ListLesion extends JDialog {
         cbJugadores = new JComboBox<>();
         cbJugadores.setFont(new Font("Arial", Font.PLAIN, 14));
         cargarJugadores();
-        cbJugadores.addActionListener(e -> cargarLesiones());
+
+        // Usar una clase anónima en lugar de lambda
+        cbJugadores.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cargarLesiones();
+            }
+        });
+
         panelSuperior.add(cbJugadores);
         
         contentPanel.add(panelSuperior, BorderLayout.NORTH);
@@ -89,15 +97,27 @@ public class ListLesion extends JDialog {
         btnDeslesionar = new JButton("Deslesionar Jugador");
         btnDeslesionar.setFont(new Font("Arial", Font.BOLD, 12));
         btnDeslesionar.setBackground(new Color(220, 220, 220)); 
-        btnDeslesionar.setEnabled(false); 
-        btnDeslesionar.addActionListener(e -> deslesionarJugador());
+        btnDeslesionar.setEnabled(false);
+        btnDeslesionar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deslesionarJugador();
+            }
+        });
+
         buttonPane.add(btnDeslesionar);
 
         JButton okButton = new JButton("OK");
         okButton.setFont(new Font("Arial", Font.BOLD, 12));
-        okButton.setBackground(new Color(34, 139, 34)); // Verde
+        okButton.setBackground(new Color(34, 139, 34));
         okButton.setForeground(Color.WHITE);
-        okButton.addActionListener(e -> dispose());
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+
         buttonPane.add(okButton);
     }
 

@@ -1,6 +1,8 @@
 package visual;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -63,9 +65,11 @@ public class ListJugador extends JDialog {
         tableJugadores.getTableHeader().setBackground(colorOscuro);
         tableJugadores.getTableHeader().setForeground(colorClaro);
 
-        // Configurar selección de fila
-        tableJugadores.getSelectionModel().addListSelectionListener(e -> {
-            btnDetalles.setEnabled(tableJugadores.getSelectedRow() != -1);
+        tableJugadores.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                btnDetalles.setEnabled(tableJugadores.getSelectedRow() != -1);
+            }
         });
 
         JPanel buttonPane = new JPanel();
@@ -107,7 +111,12 @@ public class ListJugador extends JDialog {
         closeButton.setFont(new Font("Arial", Font.BOLD, 12));
         closeButton.setBackground(new Color(34, 139, 34));
         closeButton.setForeground(Color.WHITE);
-        closeButton.addActionListener(e -> dispose());
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
         buttonPane.add(closeButton);
     }
 

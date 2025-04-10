@@ -201,38 +201,44 @@ public class EmpezarJuegos {
     }
     
     private class EquipoColorRenderer extends DefaultTableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, 
-                boolean isSelected, boolean hasFocus, int row, int column) {
+    	@Override
+    	public Component getTableCellRendererComponent(JTable table, Object value, 
+    	        boolean isSelected, boolean hasFocus, int row, int column) {
+
+    	    if (value == null || !(value instanceof Equipo)) {
+    	        return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    	    }
+
+    	    Equipo equipo = (Equipo) value;
+    	    JPanel panel = new JPanel() {
+    	        @Override
+    	        protected void paintComponent(Graphics g) {
+    	            super.paintComponent(g);
+    	            g.setColor(equipo.getColor());
+    	            g.fillRect(5, 10, 20, 20);
+    	            g.setColor(Color.BLACK);
+    	            g.drawRect(5, 10, 20, 20);
+    	        }
+    	    };
+    	    
+    	    if (isSelected) {
+    	        panel.setBackground(table.getSelectionBackground());
+    	    } else {
+    	        panel.setBackground(Color.WHITE);
+    	    }
+
+    	    panel.setLayout(null);
+
+    	    JLabel nombreLabel = new JLabel(equipo.getNombre());
+    	    nombreLabel.setBounds(30, 0, 200, 40);
+    	    nombreLabel.setFont(new Font("Arial", Font.BOLD, 12));
+    	    nombreLabel.setForeground(isSelected ? table.getSelectionForeground() : Color.BLACK);
+
+    	    panel.add(nombreLabel);
+
+    	    return panel;
+
             
-            if (value == null) {
-                return new JPanel();
-            }
-            
-            if (value instanceof Equipo) {
-                Equipo equipo = (Equipo) value;
-                JPanel panel = new JPanel() {
-                    @Override
-                    protected void paintComponent(Graphics g) {
-                        super.paintComponent(g);
-                        g.setColor(equipo.getColor());
-                        g.fillRect(5, 10, 20, 20);
-                        g.setColor(Color.BLACK);
-                        g.drawRect(5, 10, 20, 20);
-                    }
-                };
-                panel.setBackground(Color.WHITE);
-                panel.setLayout(null);
-                
-                JLabel nombreLabel = new JLabel(equipo.getNombre());
-                nombreLabel.setBounds(30, 0, 200, 40);
-                nombreLabel.setFont(new Font("Arial", Font.BOLD, 12));
-                nombreLabel.setForeground(Color.BLACK);
-                panel.add(nombreLabel);
-                
-                return panel;
-            }
-            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
     }
 
@@ -246,10 +252,18 @@ public class EmpezarJuegos {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, 
                 boolean isSelected, boolean hasFocus, int row, int column) {
-            if (value == null) {
-                return new JPanel();
+            
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            
+            if (isSelected) {
+                setBackground(table.getSelectionBackground());
+                setForeground(table.getSelectionForeground());
+            } else {
+                setBackground(table.getBackground());
+                setForeground(Color.BLACK);
             }
-            super.getTableCellRendererComponent(table, "VS", isSelected, hasFocus, row, column);
+
+            setText("VS");
             return this;
         }
     }

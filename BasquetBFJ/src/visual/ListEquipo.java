@@ -118,7 +118,12 @@ public class ListEquipo extends JDialog {
         okButton.setBackground(new Color(34, 139, 34));
         okButton.setForeground(Color.WHITE);
         okButton.setFocusPainted(false);
-        okButton.addActionListener(e -> dispose());
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
         buttonPane.add(okButton);
 
         tableEquipos.addMouseListener(new MouseAdapter() {

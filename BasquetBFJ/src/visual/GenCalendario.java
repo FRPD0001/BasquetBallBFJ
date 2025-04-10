@@ -244,7 +244,7 @@ public class GenCalendario extends JPanel {
         
         // Crear componentes para el diálogo de fecha
         JDateChooser dateChooser = new JDateChooser();
-        dateChooser.setDateFormatString("dd/MM/yyyy"); // Formato DD/MM/YYYY
+        dateChooser.setDateFormatString("dd/MM/yyyy");
         
         for (int i = 0; i < emparejamientosActuales.size(); i++) {
             ArrayList<Equipo> jornada = emparejamientosActuales.get(i);
@@ -261,10 +261,9 @@ public class GenCalendario extends JPanel {
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
                 
                 if (opcion != JOptionPane.OK_OPTION) {
-                    return; // El usuario canceló
+                    return;
                 }
                 
-                // Obtener la fecha seleccionada
                 java.util.Date fechaSeleccionada = dateChooser.getDate();
                 LocalDate fecha = fechaSeleccionada.toInstant()
                     .atZone(java.time.ZoneId.systemDefault())

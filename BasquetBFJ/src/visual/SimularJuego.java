@@ -23,8 +23,13 @@ public class SimularJuego extends JFrame {
     private JLabel lblPuntosVisitante;
     private JLabel lblTiempo;
     private JButton btnTerminarJuego;
+    private JButton btnSiguienteTiempo;
     
     public SimularJuego(Juego juego, Color colorFondo, Color colorBoton) {
+    	
+        ImageIcon icon = new ImageIcon("media/LogoProyecto.png");
+        setIconImage(icon.getImage());
+        
         // Validaciones iniciales
         if (juego == null) {
             throw new IllegalArgumentException("El juego no puede ser null");
@@ -57,11 +62,22 @@ public class SimularJuego extends JFrame {
         }
     }
     
+    
     private void initUI() {
         // Panel superior con marcador
         JPanel panelMarcador = new JPanel(new GridLayout(1, 3));
         panelMarcador.setBackground(colorFondo);
         panelMarcador.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        btnSiguienteTiempo = new JButton("Finalizar Tiempo");
+        btnSiguienteTiempo.setBackground(colorBoton);
+        btnSiguienteTiempo.setForeground(Color.WHITE);
+        btnSiguienteTiempo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                siguienteTiempo();
+            }
+        });
         
         // Equipo local
         JPanel panelLocal = crearPanelEquipo(juego.getLocal(), true);
@@ -74,11 +90,6 @@ public class SimularJuego extends JFrame {
         lblTiempo = new JLabel("PRIMER TIEMPO", SwingConstants.CENTER);
         lblTiempo.setFont(new Font("Arial", Font.BOLD, 16));
         lblTiempo.setForeground(colorBoton);
-        
-        JButton btnSiguienteTiempo = new JButton("Finalizar Tiempo");
-        btnSiguienteTiempo.setBackground(colorBoton);
-        btnSiguienteTiempo.setForeground(Color.WHITE);
-        btnSiguienteTiempo.addActionListener(e -> siguienteTiempo());
         
         panelTiempo.add(lblTiempo);
         panelTiempo.add(Box.createVerticalStrut(20));
@@ -103,8 +114,15 @@ public class SimularJuego extends JFrame {
         btnTerminarJuego.setBackground(new Color(150, 0, 0));
         btnTerminarJuego.setForeground(Color.WHITE);
         btnTerminarJuego.setEnabled(false);
-        btnTerminarJuego.addActionListener(e -> terminarJuego());
+        btnTerminarJuego.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                terminarJuego();
+            }
+        });
+
         
+        panelInferior.setLayout(new FlowLayout(FlowLayout.CENTER));  // Centrado horizontal
         panelInferior.add(btnTerminarJuego);
         
         add(panelMarcador, BorderLayout.NORTH);
@@ -138,47 +156,65 @@ public class SimularJuego extends JFrame {
     }
     
     private JPanel crearPanelOpcionesPuntuacion() {
-        JPanel panelOpciones = new JPanel(new GridLayout(2, 3, 10, 10));
+        JPanel panelOpciones = new JPanel(new GridLayout(2, 3, 10, 10)); // Mantener las filas y columnas
+
         panelOpciones.setBackground(colorFondo);
         panelOpciones.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        
+
         String[] tiposPuntos = {"Tiro Libre (1pt)", "Tiro de Campo (2pts)", "Triple (3pts)"};
-        
+
+        // Paneles para los botones de local y visitante
+        JPanel panelLocal = new JPanel(new GridLayout(1, 3)); // Un solo row, tres botones para el local
+        JPanel panelVisitante = new JPanel(new GridLayout(1, 3)); // Un solo row, tres botones para el visitante
+
         for (String tipo : tiposPuntos) {
             // Botón para equipo local
             JButton btnLocal = new JButton("Local: " + tipo);
             btnLocal.setBackground(juego.getLocal().getColor());
             btnLocal.setForeground(Color.WHITE);
-            btnLocal.addActionListener(e -> {
-                try {
-                    agregarPuntos(true, tipo);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, 
-                        "Error al agregar puntos: " + ex.getMessage(), 
-                        "Error", JOptionPane.ERROR_MESSAGE);
+            btnLocal.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        agregarPuntos(true, tipo);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(SimularJuego.this,
+                                "Error al agregar puntos: " + ex.getMessage(),
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             });
-            
+
             // Botón para equipo visitante
             JButton btnVisitante = new JButton("Visitante: " + tipo);
             btnVisitante.setBackground(juego.getVisitante().getColor());
             btnVisitante.setForeground(Color.WHITE);
-            btnVisitante.addActionListener(e -> {
-                try {
-                    agregarPuntos(false, tipo);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, 
-                        "Error al agregar puntos: " + ex.getMessage(), 
-                        "Error", JOptionPane.ERROR_MESSAGE);
+            btnVisitante.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        agregarPuntos(false, tipo);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(SimularJuego.this,
+                                "Error al agregar puntos: " + ex.getMessage(),
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             });
-            
-            panelOpciones.add(btnLocal);
-            panelOpciones.add(btnVisitante);
+
+            // Agregar los botones a sus paneles correspondientes
+            panelLocal.add(btnLocal);
+            panelVisitante.add(btnVisitante);
         }
-        
+
+        // Agregar los paneles de local y visitante al panelOpciones
+        panelOpciones.add(panelLocal);
+        panelOpciones.add(panelVisitante);
+
         return panelOpciones;
+        
     }
+
     
     private void agregarPuntos(boolean esLocal, String tipoPunto) {
         int puntos = 0;
@@ -219,23 +255,28 @@ public class SimularJuego extends JFrame {
         
         if (tiempoTranscurrido == 1) {
             lblTiempo.setText("SEGUNDO TIEMPO");
-        } else if (tiempoTranscurrido == 2) {
-            lblTiempo.setText("JUEGO TERMINADO");
+        } else if (tiempoTranscurrido >= 2) {  // Cambiado a >= para mayor seguridad
+            lblTiempo.setText("ULTIMO TIEMPO");
             btnTerminarJuego.setEnabled(true);
+            btnSiguienteTiempo.setEnabled(false);
             
-            // Deshabilitar botones de puntuación
-            Component[] components = getContentPane().getComponents();
-            for (Component component : components) {
-                if (component instanceof JPanel) {
-                    disableButtons((JPanel) component);
-                }
-            }
         }
     }
     
+    private void disableAllButtons() {
+        Component[] components = getContentPane().getComponents();
+        for (Component component : components) {
+            if (component instanceof JPanel) {
+                disableButtons((JPanel) component);
+            }
+        }
+        // Asegurarse que el botón Terminar Juego queda habilitado
+        btnTerminarJuego.setEnabled(true);
+    }
+
     private void disableButtons(JPanel panel) {
         for (Component component : panel.getComponents()) {
-            if (component instanceof JButton) {
+            if (component instanceof JButton && component != btnTerminarJuego) {
                 component.setEnabled(false);
             } else if (component instanceof JPanel) {
                 disableButtons((JPanel) component);
@@ -250,17 +291,21 @@ public class SimularJuego extends JFrame {
             if (puntosLocal > puntosVisitante) {
                 juego.actualizarResultado(puntosLocal, puntosVisitante);
                 mensaje = "¡" + juego.getLocal().getNombre() + " gana el juego!\n" +
-                          "Resultado: " + puntosLocal + " - " + puntosVisitante;
+                          "Resultado final: " + puntosLocal + " - " + puntosVisitante;
             } else if (puntosVisitante > puntosLocal) {
                 juego.actualizarResultado(puntosLocal, puntosVisitante);
                 mensaje = "¡" + juego.getVisitante().getNombre() + " gana el juego!\n" +
-                          "Resultado: " + puntosLocal + " - " + puntosVisitante;
+                          "Resultado final: " + puntosLocal + " - " + puntosVisitante;
             } else {
-                mensaje = "¡Empate!\nResultado: " + puntosLocal + " - " + puntosVisitante;
+                juego.actualizarResultado(puntosLocal, puntosVisitante);
+                mensaje = "¡Empate!\nResultado final: " + puntosLocal + " - " + puntosVisitante;
             }
             
-            JOptionPane.showMessageDialog(this, mensaje, 
-                "Juego Terminado", JOptionPane.INFORMATION_MESSAGE);
+            // Mostrar mensaje simple sin opciones
+            JOptionPane.showMessageDialog(this, 
+                mensaje,
+                "Juego Terminado", 
+                JOptionPane.INFORMATION_MESSAGE);
             
             dispose();
         } catch (Exception e) {

@@ -80,7 +80,12 @@ public class RegEquipo extends JDialog {
         btnColor.setBounds(105, 97, 116, 22);
         btnColor.setBackground(colorPrincipal);
         btnColor.setForeground(Color.WHITE);
-        btnColor.addActionListener(e -> mostrarSelectorColor());
+        btnColor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarSelectorColor();
+            }
+        });
         contentPanel.add(btnColor);
 
         lblColorSeleccionado = new JLabel(" ");
@@ -115,9 +120,14 @@ public class RegEquipo extends JDialog {
         cancelButton.setFont(new Font("Arial", Font.BOLD, 12));
         cancelButton.setBackground(new Color(178, 34, 34));
         cancelButton.setForeground(Color.WHITE);
-        cancelButton.addActionListener(e -> dispose());
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
         buttonPane.add(cancelButton);
-
+        
         if (aux != null) {
             cargarDatosEquipo();
         }
@@ -145,23 +155,21 @@ public class RegEquipo extends JDialog {
         
         JColorChooser chooser = new JColorChooser(colorSeleccionado);
         
-        // Configurar paneles (mantener solo Swatches)
-
-
-        
-        // Crear diálogo
         JDialog dialog = JColorChooser.createDialog(
-            this,
-            "Seleccionar Color",
-            true,
-            chooser,
-            e -> {
-                colorSeleccionado = chooser.getColor();
-                lblColorSeleccionado.setBackground(colorSeleccionado);
-                lblColorSeleccionado.repaint(); // Añadir esto para refrescar
-            },
-            null
-        );
+        	    this,
+        	    "Seleccionar Color",
+        	    true,
+        	    chooser,
+        	    new ActionListener() {
+        	        @Override
+        	        public void actionPerformed(ActionEvent e) {
+        	            colorSeleccionado = chooser.getColor();
+        	            lblColorSeleccionado.setBackground(colorSeleccionado);
+        	            lblColorSeleccionado.repaint(); // Añadir esto para refrescar
+        	        }
+        	    },
+        	    null
+        	);
         
         dialog.setVisible(true);
     }

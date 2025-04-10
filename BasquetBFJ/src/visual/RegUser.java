@@ -75,12 +75,23 @@ public class RegUser extends JDialog {
 
         // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
         JButton btnRegistrar = new JButton("Registrar");
-        btnRegistrar.addActionListener(e -> registrarUsuario());
+        btnRegistrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                registrarUsuario();
+            }
+        });
         panelBotones.add(btnRegistrar);
 
         JButton btnCancelar = new JButton("Cancelar");
-        btnCancelar.addActionListener(e -> dispose());
+        btnCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
         panelBotones.add(btnCancelar);
 
         // Configuración final

@@ -99,25 +99,31 @@ public class Login extends JFrame {
             );
 
         btnAdmin = crearBotonModerno("Administrador");
-        btnAdmin.addActionListener(e -> {
-            tipoAcceso = "admin";
-            // Resaltar botón seleccionado
-            btnAdmin.setBackground(colorSeleccion);
-            btnAdmin.setForeground(Color.WHITE);
-            // Restaurar botón no seleccionado
-            btnAnotador.setBackground(coloresOscuros[colorIndex]);
-            btnAnotador.setForeground(Color.WHITE);
+        btnAdmin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tipoAcceso = "admin";
+                // Resaltar botón seleccionado
+                btnAdmin.setBackground(colorSeleccion);
+                btnAdmin.setForeground(Color.WHITE);
+                // Restaurar botón no seleccionado
+                btnAnotador.setBackground(coloresOscuros[colorIndex]);
+                btnAnotador.setForeground(Color.WHITE);
+            }
         });
 
         btnAnotador = crearBotonModerno("Anotador");
-        btnAnotador.addActionListener(e -> {
-            tipoAcceso = "anotador";
-            // Resaltar botón seleccionado
-            btnAnotador.setBackground(colorSeleccion);
-            btnAnotador.setForeground(Color.WHITE);
-            // Restaurar botón no seleccionado
-            btnAdmin.setBackground(coloresOscuros[colorIndex]);
-            btnAdmin.setForeground(Color.WHITE);
+        btnAnotador.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tipoAcceso = "anotador";
+                // Resaltar botón seleccionado
+                btnAnotador.setBackground(colorSeleccion);
+                btnAnotador.setForeground(Color.WHITE);
+                // Restaurar botón no seleccionado
+                btnAdmin.setBackground(coloresOscuros[colorIndex]);
+                btnAdmin.setForeground(Color.WHITE);
+            }
         });
 
         configurarHoverBoton(btnAdmin, coloresOscuros[colorIndex], colorSeleccion);
@@ -170,12 +176,22 @@ public class Login extends JFrame {
 
         JButton btnLogin = crearBotonModerno("Iniciar Sesión");
         btnLogin.setBackground(new Color(52, 199, 89)); // Verde similar al botón de guardar
-        btnLogin.addActionListener(e -> validarLogin());
+        btnLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                validarLogin();
+            }
+        });
         panelBotones.add(btnLogin);
 
         JButton btnSalir = crearBotonModerno("Salir");
         btnSalir.setBackground(new Color(211, 47, 47)); // Rojo similar al botón de cerrar
-        btnSalir.addActionListener(e -> System.exit(0));
+        btnSalir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
         panelBotones.add(btnSalir);
 
         contentPane.add(panelBotones, BorderLayout.SOUTH);

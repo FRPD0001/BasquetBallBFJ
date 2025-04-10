@@ -160,18 +160,28 @@ public class Estadisticas extends JDialog {
         
         // Solo agregar el ActionListener si no es anotador
         if (!esAnotador) {
-            btnModificar.addActionListener(e -> toggleModoEdicion());
+            btnModificar.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    toggleModoEdicion();
+                }
+            });
         } else {
             btnModificar.setEnabled(false); // Deshabilitar completamente para anotadores
             btnModificar.setToolTipText("Solo disponible para administradores");
         }
         panel.add(btnModificar);
-        
+
         JButton btnCancelar = new JButton("Cerrar");
         btnCancelar.setBackground(new Color(178, 34, 34));
         btnCancelar.setForeground(Color.WHITE);
         btnCancelar.setFont(new Font("Arial", Font.BOLD, 14));
-        btnCancelar.addActionListener(e -> dispose());
+        btnCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
         panel.add(btnCancelar);
 
         return panel;
