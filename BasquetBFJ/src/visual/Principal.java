@@ -587,7 +587,7 @@ public class Principal extends JFrame {
             }
         });
 
-        panelAjustes.add(Box.createVerticalStrut(100));  // Espacio inicial reducido
+        panelAjustes.add(Box.createVerticalStrut(150));  // Espacio inicial reducido
         panelAjustes.add(btnCambiarColor);
         panelAjustes.add(Box.createVerticalStrut(150));
         panelAjustes.add(btnCambiarFondo);

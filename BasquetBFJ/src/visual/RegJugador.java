@@ -154,6 +154,8 @@ public class RegJugador extends JDialog {
 
             Jugador nuevoJugador = new Jugador(id, nombre, peso, altura, equipo);
             SerieNacional.getInstance().agregarJugador(nuevoJugador);
+            
+            equipo.reclutarJugador(nuevoJugador);
 
             JOptionPane.showMessageDialog(null, 
                 "Jugador registrado exitosamente.\n" +

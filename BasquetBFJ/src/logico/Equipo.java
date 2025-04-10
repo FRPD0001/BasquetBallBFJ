@@ -27,9 +27,6 @@ public class Equipo implements Serializable{
         this.lose = 0;
         this.nomina = 0.0f;
     }
-    
-    //.
-
 
     public String getId() {
         return id;
@@ -110,6 +107,21 @@ public class Equipo implements Serializable{
     		nomina+=jugador.calcularSalario();
     	}
     	return nomina;
+    }
+	
+    public boolean reclutarJugador(Jugador jugador) {
+        if (jugador == null) {
+            return false;
+        }
+        
+        // Verificar si el jugador ya está en el equipo
+        if (!jugadores.contains(jugador)) {
+            jugadores.add(jugador);
+            // Actualizar la nómina del equipo
+            this.nomina = CalcularNomina();
+            return true;
+        }
+        return false;
     }
     
 }

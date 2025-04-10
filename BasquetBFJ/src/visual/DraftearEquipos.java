@@ -2,7 +2,12 @@ package visual;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.List;
 import logico.Equipo;
 import logico.Juego;
@@ -17,6 +22,14 @@ public class DraftearEquipos extends JFrame {
     private JLabel[] slotsVisitante;
 
     public DraftearEquipos(Juego juego, Color colorFondo, Color colorBoton) {
+        // Validaciones iniciales
+        if (juego == null || juego.getLocal() == null || juego.getVisitante() == null) {
+            throw new IllegalArgumentException("El juego debe tener equipos asignados");
+        }
+        if (juego.getLocal().getJugadores() == null || juego.getVisitante().getJugadores() == null) {
+            throw new IllegalArgumentException("Los equipos deben tener jugadores asignados");
+        }
+
         this.juego = juego;
         this.colorFondo = colorFondo;
         this.colorBoton = colorBoton;
@@ -26,8 +39,8 @@ public class DraftearEquipos extends JFrame {
     }
 
     private void initUI() {
-        setTitle("Draftear Equipos");
-        setSize(1200, 750); // Aumentado para el panel inferior
+        setTitle("Draftear Equipos - " + juego.getLocal().getNombre() + " vs " + juego.getVisitante().getNombre());
+        setSize(1200, 750);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -95,27 +108,50 @@ public class DraftearEquipos extends JFrame {
     }
 
     private void verificarYEmpezarJuego() {
-        // Verificar slots locales
+        // Limpiar listas previas
+        juego.getActivosLocal().clear();
+        juego.getActivosVisitante().clear();
+
+        // Verificar slots locales y asignar jugadores
         for (int i = 0; i < slotsLocal.length; i++) {
             if (slotsLocal[i].getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, 
                     "Falta asignar jugador en posición " + (i+1) + " del equipo local", 
                     "Error", JOptionPane.ERROR_MESSAGE);
                 return;
+            } else {
+                // Buscar el jugador por el nombre mostrado y agregarlo a activosLocal
+                String nombreJugador = slotsLocal[i].getText();
+                for (Jugador j : juego.getLocal().getJugadores()) {
+                    if (formatearNombre(j).equals(nombreJugador)) {
+                        juego.agregarJugadorLocal(j);
+                        break;
+                    }
+                }
             }
         }
         
-        // Verificar slots visitante
+        // Verificar slots visitante y asignar jugadores
         for (int i = 0; i < slotsVisitante.length; i++) {
             if (slotsVisitante[i].getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, 
                     "Falta asignar jugador en posición " + (i+1) + " del equipo visitante", 
                     "Error", JOptionPane.ERROR_MESSAGE);
                 return;
+            } else {
+                // Buscar el jugador por el nombre mostrado y agregarlo a activosVisitante
+                String nombreJugador = slotsVisitante[i].getText();
+                for (Jugador j : juego.getVisitante().getJugadores()) {
+                    if (formatearNombre(j).equals(nombreJugador)) {
+                        juego.agregarJugadorVisitante(j);
+                        break;
+                    }
+                }
             }
         }
         
         // Si todo está correcto
+        juego.setDone(true);
         JOptionPane.showMessageDialog(this, 
             "¡Juego iniciado correctamente!", 
             "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -168,10 +204,51 @@ public class DraftearEquipos extends JFrame {
 
     private JLabel crearSlotPosicion() {
         JLabel slot = new JLabel("", SwingConstants.CENTER);
-        slot.setSize(80, 30);
+        slot.setSize(100, 35); // Tamaño aumentado para mejor visualización
         slot.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         slot.setOpaque(true);
         slot.setBackground(new Color(255, 255, 255, 200));
+        slot.setFont(new Font("Arial", Font.BOLD, 11));
+        
+        // Configurar para aceptar drops
+        slot.setTransferHandler(new TransferHandler("text") {
+            @Override
+            public boolean canImport(TransferSupport support) {
+                return true;
+            }
+            
+            @Override
+            public boolean importData(TransferSupport support) {
+                try {
+                    String data = (String)support.getTransferable().getTransferData(DataFlavor.stringFlavor);
+                    JLabel target = (JLabel)support.getComponent();
+                    
+                    // Verificar si el slot ya tiene un jugador
+                    if (!target.getText().isEmpty()) {
+                        return false;
+                    }
+                    
+                    target.setText(data);
+                    target.setBackground(new Color(200, 255, 200)); // Cambiar color al asignar
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+        });
+        
+        // Permitir quitar jugador con doble clic
+        slot.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    slot.setText("");
+                    slot.setBackground(new Color(255, 255, 255, 200));
+                }
+            }
+        });
+        
         return slot;
     }
 
@@ -180,7 +257,9 @@ public class DraftearEquipos extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(colorFondo);
         panel.setPreferredSize(new Dimension(200, getHeight()));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
+        panel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEmptyBorder(20, 10, 20, 10), 
+            esLocal ? "Jugadores Locales" : "Jugadores Visitantes"));
 
         // Título del panel
         JLabel titulo = new JLabel(esLocal ? juego.getLocal().getNombre() : juego.getVisitante().getNombre());
@@ -188,12 +267,13 @@ public class DraftearEquipos extends JFrame {
         titulo.setForeground(colorBoton);
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(titulo);
-        panel.add(Box.createVerticalStrut(20));
+        panel.add(Box.createVerticalStrut(15));
 
         // Verificar si hay jugadores
         if (jugadores == null || jugadores.isEmpty()) {
             JLabel vacio = new JLabel("No hay jugadores");
             vacio.setForeground(Color.RED);
+            vacio.setAlignmentX(Component.CENTER_ALIGNMENT);
             panel.add(vacio);
             return panel;
         }
@@ -203,7 +283,7 @@ public class DraftearEquipos extends JFrame {
             if (jugador != null) {
                 JLabel labelJugador = crearLabelJugador(jugador, esLocal);
                 panel.add(labelJugador);
-                panel.add(Box.createVerticalStrut(10));
+                panel.add(Box.createVerticalStrut(8));
             }
         }
 
@@ -222,9 +302,20 @@ public class DraftearEquipos extends JFrame {
             BorderFactory.createLineBorder(Color.BLACK),
             BorderFactory.createEmptyBorder(5, 10, 5, 10)
         ));
-        label.setPreferredSize(new Dimension(180, 30));
-        label.setMaximumSize(new Dimension(180, 30));
+        label.setPreferredSize(new Dimension(180, 35));
+        label.setMaximumSize(new Dimension(180, 35));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // Configurar drag and drop
+        label.setTransferHandler(new TransferHandler("text"));
+        
+        label.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                JLabel source = (JLabel)e.getSource();
+                TransferHandler handler = source.getTransferHandler();
+                handler.exportAsDrag(source, e, TransferHandler.COPY);
+            }
+        });
         
         return label;
     }
