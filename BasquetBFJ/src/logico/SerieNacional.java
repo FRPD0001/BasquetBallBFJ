@@ -115,40 +115,47 @@ public class SerieNacional implements Serializable {
             return;
         }
 
-        FileInputStream fis = null;
-        ObjectInputStream ois = null;
-        
-        try {
-            fis = new FileInputStream(file);
-            ois = new ObjectInputStream(fis);
+        try (FileInputStream fis = new FileInputStream(file);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+             
             SerieNacional loaded = (SerieNacional) ois.readObject();
+            
+      
+            int maxId = 0;
+            for (Equipo eq : loaded.misEquipos) {
+                if (eq.getId().startsWith("E-")) {
+                    try {
+                        int idNum = Integer.parseInt(eq.getId().substring(2));
+                        if (idNum > maxId) maxId = idNum;
+                    } catch (NumberFormatException e) {
+                        System.err.println("ID inválido: " + eq.getId());
+                    }
+                }
+            }
+            
+            
             this.usuarios = loaded.usuarios;
             this.misEquipos = loaded.misEquipos;
             this.misJugadores = loaded.misJugadores;
             this.misJuegos = loaded.misJuegos;
-            genEquipo = loaded.savedGenEquipo;
+            this.savedGenEquipo = maxId + 1;
+            genEquipo = this.savedGenEquipo;
             genJugador = loaded.savedGenJugador;
             genJuego = loaded.savedGenJuego;
-            Jugador.setGenLesion(loaded.savedGenLesion); // Cargar el valor de genLesion
-            serie = this;
+            Jugador.setGenLesion(loaded.savedGenLesion);
             
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error al cargar los datos: " + e.getMessage());
+            System.err.println("Error al cargar: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            try {
-                if (ois != null) ois.close();
-                if (fis != null) fis.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
         }
     }
 
+
     public void agregarEquipo(Equipo equipo) {
-        equipo.setId("EQ-" + genEquipo);
+        equipo.setId("E-" + genEquipo);
         misEquipos.add(equipo);
         genEquipo++;
+        guardarFileTest();
     }
 
     public void agregarJugador(Jugador jugador) {
