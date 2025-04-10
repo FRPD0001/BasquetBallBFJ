@@ -152,9 +152,7 @@ public class RegJugador extends JDialog {
             float altura = Float.parseFloat(txtAltura.getText().trim());
             Equipo equipo = (Equipo) cbxEquipos.getSelectedItem();
 
-            // Usar el constructor de Jugador en lugar de crear objeto vacío
             Jugador nuevoJugador = new Jugador(id, nombre, peso, altura, equipo);
-
             SerieNacional.getInstance().agregarJugador(nuevoJugador);
 
             JOptionPane.showMessageDialog(null, 
@@ -164,10 +162,6 @@ public class RegJugador extends JDialog {
                 "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
             clean();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Por favor ingrese valores numéricos válidos para peso y altura.", 
-                "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, 
                 "Error al registrar jugador: " + e.getMessage(), 
@@ -180,14 +174,29 @@ public class RegJugador extends JDialog {
             JOptionPane.showMessageDialog(this, "Debe ingresar un nombre", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        if (txtPeso.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe ingresar un peso", "Error", JOptionPane.ERROR_MESSAGE);
+        
+        try {
+            float peso = Float.parseFloat(txtPeso.getText().trim());
+            if (peso < 30 || peso > 300) {
+                JOptionPane.showMessageDialog(this, "El peso debe estar entre 30 y 300 kg", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Peso debe ser un valor numérico válido", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        if (txtAltura.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Debe ingresar una altura", "Error", JOptionPane.ERROR_MESSAGE);
+        
+        try {
+            float altura = Float.parseFloat(txtAltura.getText().trim());
+            if (altura < 1 || altura > 3) {
+                JOptionPane.showMessageDialog(this, "La altura debe estar entre 1 y 3 metros", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Altura debe ser un valor numérico válido", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+        
         return true;
     }
 
