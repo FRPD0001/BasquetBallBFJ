@@ -135,13 +135,21 @@ public class SimularJuego extends JFrame {
         panel.setBackground(colorFondo);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         
-        JLabel lblNombre = new JLabel(equipo.getNombre(), SwingConstants.CENTER);
+        String nombreEquipo = equipo.getNombre();
+        if (esLocal) {
+            nombreEquipo += " (L)";  // Local
+        } else {
+            nombreEquipo += " (V)";  // Visitante
+        }
+        
+        JLabel lblNombre = new JLabel(nombreEquipo, SwingConstants.CENTER);
         lblNombre.setFont(new Font("Arial", Font.BOLD, 18));
         lblNombre.setForeground(colorBoton);
         
         JLabel lblPuntos = new JLabel("0", SwingConstants.CENTER);
         lblPuntos.setFont(new Font("Arial", Font.BOLD, 36));
         lblPuntos.setForeground(Color.WHITE);
+       
         
         if (esLocal) {
             lblPuntosLocal = lblPuntos;
@@ -154,6 +162,7 @@ public class SimularJuego extends JFrame {
         
         return panel;
     }
+
     
     private JPanel crearPanelOpcionesPuntuacion() {
         JPanel panelOpciones = new JPanel(new GridLayout(2, 3, 10, 10)); // Mantener las filas y columnas

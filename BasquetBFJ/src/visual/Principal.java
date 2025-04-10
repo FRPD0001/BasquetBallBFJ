@@ -554,7 +554,8 @@ public class Principal extends JFrame {
                 // Solo permite agregar usuarios si el usuario actual es Administrador
                 if (SerieNacional.getUsuarioActual() != null && 
                     SerieNacional.getUsuarioActual().getTipo().equals("Administrador")) {
-                    RegUser regUser = new RegUser();
+                    // Pasa los colores a RegUser
+                    RegUser regUser = new RegUser(coloresOscuros, coloresClaros);
                     regUser.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                     regUser.setVisible(true);
                 } else {

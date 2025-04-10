@@ -12,8 +12,12 @@ public class RegUser extends JDialog {
     private JTextField txtPassword;
     private JTextField txtConfirmar;
     private JComboBox<String> cbTipo;
+    private Color[] coloresOscuros;
+    private Color[] coloresClaros;
 
-    public RegUser() {
+    public RegUser(Color[] coloresOscuros, Color[] coloresClaros) {
+        this.coloresOscuros = coloresOscuros;
+        this.coloresClaros = coloresClaros;
         initComponents();
     }
 
@@ -24,8 +28,13 @@ public class RegUser extends JDialog {
         setModal(true);
         setResizable(false);
 
+        // Establecer icono
+        ImageIcon icon = new ImageIcon("media/LogoProyecto.png");
+        setIconImage(icon.getImage());
+
         // Panel principal
         JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(coloresClaros[0]);  // Fondo con el color claro
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
