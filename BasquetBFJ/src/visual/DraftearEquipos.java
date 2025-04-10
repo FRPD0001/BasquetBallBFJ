@@ -446,7 +446,6 @@ public class DraftearEquipos extends JFrame {
                 }
             }
 
-            // ==================== VERIFICACIÓN FINAL ====================
             if (juego.getActivosLocal().size() != 5 || juego.getActivosVisitante().size() != 5) {
                 JOptionPane.showMessageDialog(this, 
                     "No se han asignado todos los jugadores requeridos", 
