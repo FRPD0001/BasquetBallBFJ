@@ -197,6 +197,8 @@ public class Principal extends JFrame {
             }
         });
         
+        btnLogout.setToolTipText("Cerrar sesion");
+        
         ImageIcon iconoLogoutOriginal = new ImageIcon("media/Logout.png");
 
      Image imagenLogoutEscalada = iconoLogoutOriginal.getImage().getScaledInstance(
@@ -232,14 +234,6 @@ public class Principal extends JFrame {
             }
         });
         
-        btnLogout.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(Principal.this, 
-                    "Funcionalidad de logout no implementada aún", 
-                    "Logout", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
 
         JButton btnGuardar = new JButton("") {
             @Override
@@ -293,7 +287,7 @@ public class Principal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(Principal.this, 
-                    "Funcionalidad de guardar implementada aquí", 
+                    "Datos guardados exitosamente", 
                     "Guardar", JOptionPane.INFORMATION_MESSAGE);
                 SerieNacional.getInstance().guardarFileTest();
             }
