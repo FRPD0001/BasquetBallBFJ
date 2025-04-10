@@ -212,7 +212,6 @@ public class DraftearEquipos extends JFrame {
                 if (e.getClickCount() == 2) {
                     String nombreJugador = slot.getText();
                     if (!nombreJugador.isEmpty()) {
-                        // Mostrar el jugador en la lista correspondiente
                         if (esLocal) {
                             JLabel jugadorLabel = jugadoresLabelsLocal.get(nombreJugador);
                             if (jugadorLabel != null) {
@@ -237,7 +236,7 @@ public class DraftearEquipos extends JFrame {
 
     private JPanel crearPanelJugadores(List<Jugador> jugadores, boolean esLocal) {
         JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout()); // Cambiamos a BorderLayout para mejor organización
+        panel.setLayout(new BorderLayout()); 
         panel.setBackground(colorFondo);
         panel.setPreferredSize(new Dimension(220, getHeight()));
         panel.setBorder(BorderFactory.createTitledBorder(
@@ -247,7 +246,7 @@ public class DraftearEquipos extends JFrame {
         JLabel titulo = new JLabel(esLocal ? juego.getLocal().getNombre() : juego.getVisitante().getNombre());
         titulo.setFont(new Font("Arial", Font.BOLD, 16));
         titulo.setForeground(colorBoton);
-        titulo.setHorizontalAlignment(SwingConstants.CENTER); // Centramos el texto
+        titulo.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(titulo, BorderLayout.NORTH);
 
         JPanel jugadoresPanel = new JPanel();
@@ -293,7 +292,7 @@ public class DraftearEquipos extends JFrame {
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Hace el scroll más suave
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         
         panel.add(scrollPane, BorderLayout.CENTER);
 
