@@ -527,8 +527,10 @@ public class Principal extends JFrame {
                     
                 } else {
                 	
+                	EmpezarJuegos.mostrarDialog(Principal.this, coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+                	
                 }
-                EmpezarJuegos.mostrarDialog(Principal.this, coloresClaros[colorIndex], coloresOscuros[colorIndex]);
+               
             }
         });
 
