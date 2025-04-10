@@ -310,7 +310,6 @@ public class SimularJuego extends JFrame {
                 mensaje = "¡Empate!\nResultado final: " + puntosLocal + " - " + puntosVisitante;
             }
             
-            // Mostrar mensaje simple sin opciones
             JOptionPane.showMessageDialog(this, 
                 mensaje,
                 "Juego Terminado", 
