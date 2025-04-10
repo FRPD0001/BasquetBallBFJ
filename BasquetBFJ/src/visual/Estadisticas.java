@@ -177,9 +177,6 @@ public class Estadisticas extends JDialog {
         return panel;
     }
 
-    // ... (resto de los métodos permanecen iguales)
-
-
     private JTextField crearCampoTexto(boolean esEstadistica) {
         JTextField campo = new JTextField();
         campo.setEditable(false);
@@ -291,14 +288,34 @@ public class Estadisticas extends JDialog {
         if (jugadorActual == null) return;
         
         try {
+            // Guardar datos básicos
             jugadorActual.setNombre(txtNombre.getText());
             jugadorActual.setPeso(Float.parseFloat(txtPeso.getText()));
             jugadorActual.setAltura(Float.parseFloat(txtAltura.getText()));
             jugadorActual.setLesionado(txtLesionado.getText().equalsIgnoreCase("Lesionado"));
             jugadorActual.setSalario(Float.parseFloat(txtSalario.getText()));
-            Equipo equipoSeleccionado = (Equipo) cbxEquipos.getSelectedItem();
-            jugadorActual.setEquipo(equipoSeleccionado);
             
+            // Manejar cambio de equipo
+            Equipo nuevoEquipo = (Equipo) cbxEquipos.getSelectedItem();
+            Equipo equipoActual = jugadorActual.getEquipo();
+            
+            // Solo hacer cambios si el equipo es diferente
+            if (nuevoEquipo != equipoActual && 
+                (nuevoEquipo == null || !nuevoEquipo.equals(equipoActual))) {
+                
+                // Remover del equipo actual si existe
+                if (equipoActual != null) {
+                    equipoActual.removerJugador(jugadorActual);
+                }
+                
+                // Asignar nuevo equipo y agregar al jugador
+                jugadorActual.setEquipo(nuevoEquipo);
+                if (nuevoEquipo != null) {
+                    nuevoEquipo.reclutarJugador(jugadorActual);
+                }
+            }
+            
+            // Guardar estadísticas
             if (jugadorActual.getEstadistica() != null) {
                 StatsJugador stats = jugadorActual.getEstadistica();
                 stats.setPuntosPorPartido(Float.parseFloat(txtPuntos.getText()));
@@ -311,9 +328,18 @@ public class Estadisticas extends JDialog {
             
             actualizarCoeficienteEficiencia();
             
-            JOptionPane.showMessageDialog(this, "Cambios guardados exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            // Guardar cambios en la serie nacional
+            SerieNacional.getInstance().guardarFileTest();
+            
+            JOptionPane.showMessageDialog(this, 
+                "Cambios guardados exitosamente", 
+                "Éxito", 
+                JOptionPane.INFORMATION_MESSAGE);
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error en los datos ingresados", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, 
+                "Error en los datos ingresados: " + e.getMessage(), 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 

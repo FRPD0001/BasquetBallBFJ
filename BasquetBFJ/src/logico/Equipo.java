@@ -123,5 +123,17 @@ public class Equipo implements Serializable{
         }
         return false;
     }
+    public boolean removerJugador(Jugador jugador) {
+        if (jugador == null) {
+            return false;
+        }
+        
+        if (jugadores.contains(jugador)) {
+            jugadores.remove(jugador);
+            this.nomina = CalcularNomina();
+            return true;
+        }
+        return false;
+    }
     
 }

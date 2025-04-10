@@ -20,7 +20,8 @@ public class RegJugador extends JDialog {
     private JComboBox<Equipo> cbxEquipos;
     private Jugador aux;
 
-    public RegJugador(Color colorPrincipal, Color colorSecundario) {
+    public RegJugador(Color colorPrincipal, Color colorSecundario, Jugador jugadorAModificar) {
+    	this.aux = jugadorAModificar;
         setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
         setTitle(aux == null ? "Registrar Jugador" : "Modificar Jugador");
         setModal(true);
@@ -150,18 +151,44 @@ public class RegJugador extends JDialog {
             String nombre = txtNombre.getText().trim();
             float peso = Float.parseFloat(txtPeso.getText().trim());
             float altura = Float.parseFloat(txtAltura.getText().trim());
-            Equipo equipo = (Equipo) cbxEquipos.getSelectedItem();
+            Equipo nuevoEquipo = (Equipo) cbxEquipos.getSelectedItem();
 
-            Jugador nuevoJugador = new Jugador(id, nombre, peso, altura, equipo);
-            SerieNacional.getInstance().agregarJugador(nuevoJugador);
-            
-            equipo.reclutarJugador(nuevoJugador);
+            if (aux == null) { // Registrar nuevo jugador
+                Jugador nuevoJugador = new Jugador(id, nombre, peso, altura, nuevoEquipo);
+                SerieNacional.getInstance().agregarJugador(nuevoJugador);
+                
+                if (nuevoEquipo != null) {
+                    nuevoEquipo.reclutarJugador(nuevoJugador);
+                }
 
-            JOptionPane.showMessageDialog(null, 
-                "Jugador registrado exitosamente.\n" +
-                "ID: " + id + "\n" +
-                "Nombre: " + nombre, 
-                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, 
+                    "Jugador registrado exitosamente.\n" + 
+                    "ID: " + id + "\n" + 
+                    "Nombre: " + nombre, 
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else { // Modificar jugador existente
+                // 1. Remover de su equipo actual si tiene uno
+                if (aux.getEquipo() != null) {
+                    aux.getEquipo().removerJugador(aux);
+                }
+                
+                // 2. Actualizar datos del jugador
+                aux.setNombre(nombre);
+                aux.setPeso(peso);
+                aux.setAltura(altura);
+                aux.setEquipo(nuevoEquipo);
+                
+                // 3. Agregar al nuevo equipo si se seleccionó uno
+                if (nuevoEquipo != null) {
+                    nuevoEquipo.reclutarJugador(aux);
+                }
+
+                JOptionPane.showMessageDialog(null, 
+                    "Jugador modificado exitosamente.\n" + 
+                    "ID: " + id + "\n" + 
+                    "Nombre: " + nombre, 
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            }
 
             clean();
         } catch (Exception e) {

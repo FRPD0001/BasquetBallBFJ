@@ -432,8 +432,7 @@ public class Principal extends JFrame {
 
         btnAgregarJugador.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                RegJugador regJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex]);
-                regJug.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                RegJugador regJug = new RegJugador(coloresOscuros[colorIndex], coloresClaros[colorIndex], null);
                 regJug.setVisible(true);
             }
         });
