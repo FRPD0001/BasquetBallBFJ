@@ -197,6 +197,8 @@ public class Principal extends JFrame {
             }
         });
         
+        btnLogout.setToolTipText("Cerrar sesion");
+        
         ImageIcon iconoLogoutOriginal = new ImageIcon("media/Logout.png");
 
      Image imagenLogoutEscalada = iconoLogoutOriginal.getImage().getScaledInstance(
