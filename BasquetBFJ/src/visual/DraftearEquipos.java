@@ -324,93 +324,147 @@ public class DraftearEquipos extends JFrame {
     
     private void verificarYEmpezarJuego() {
         try {
-            // 1. Validación inicial de estructuras críticas
-            if (juego == null || juego.getLocal() == null || juego.getVisitante() == null ||
-                juego.getActivosLocal() == null || juego.getActivosVisitante() == null ||
-                slotsLocal == null || slotsVisitante == null) {
-                throw new IllegalStateException("Estructura del juego no está inicializada correctamente");
+            // ==================== VALIDACIONES INICIALES ====================
+            // Construir mensaje de diagnóstico
+            StringBuilder diagnostico = new StringBuilder("Problemas de inicialización:\n");
+            boolean errorInicializacion = false;
+
+            if (juego == null) {
+                diagnostico.append("- El objeto juego no está inicializado\n");
+                errorInicializacion = true;
+            } else {
+                if (juego.getLocal() == null) {
+                    diagnostico.append("- El equipo local no está configurado\n");
+                    errorInicializacion = true;
+                }
+                if (juego.getVisitante() == null) {
+                    diagnostico.append("- El equipo visitante no está configurado\n");
+                    errorInicializacion = true;
+                }
+                if (juego.getActivosLocal() == null) {
+                    diagnostico.append("- La lista de jugadores activos locales no está inicializada\n");
+                    errorInicializacion = true;
+                }
+                if (juego.getActivosVisitante() == null) {
+                    diagnostico.append("- La lista de jugadores activos visitantes no está inicializada\n");
+                    errorInicializacion = true;
+                }
             }
 
-            // 2. Limpieza segura de listas
+            if (slotsLocal == null || slotsLocal.length != 5) {
+                diagnostico.append("- Los slots locales no están correctamente inicializados\n");
+                errorInicializacion = true;
+            }
+
+            if (slotsVisitante == null || slotsVisitante.length != 5) {
+                diagnostico.append("- Los slots visitantes no están correctamente inicializados\n");
+                errorInicializacion = true;
+            }
+
+            if (errorInicializacion) {
+                JOptionPane.showMessageDialog(this, diagnostico.toString(), 
+                    "Error de Configuración", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // ==================== LIMPIEZA DE LISTAS ====================
             juego.getActivosLocal().clear();
             juego.getActivosVisitante().clear();
 
-            // 3. Verificación de slots locales
+            // ==================== VERIFICACIÓN SLOTS LOCALES ====================
             for (int i = 0; i < slotsLocal.length; i++) {
-                if (slotsLocal[i] == null || slotsLocal[i].getText() == null) {
-                    JOptionPane.showMessageDialog(this, "Slot local " + (i+1) + " no está inicializado", 
+                JLabel slot = slotsLocal[i];
+                
+                // Verificar si el slot existe
+                if (slot == null) {
+                    JOptionPane.showMessageDialog(this, 
+                        "El slot local " + (i+1) + " no existe", 
                         "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                String nombreJugador = slotsLocal[i].getText().trim();
-                if (nombreJugador.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Posición " + (i+1) + " del equipo local está vacía", 
+                // Verificar si tiene texto
+                String nombreJugador = slot.getText();
+                if (nombreJugador == null || nombreJugador.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Debe asignar un jugador en la posición " + (i+1) + " del equipo local", 
                         "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
+                // Buscar al jugador en el equipo local
                 boolean jugadorEncontrado = false;
-                for (Jugador j : juego.getLocal().getJugadores()) {
-                    if (j != null && nombreJugador.equals(formatearNombreCompleto(j))) {
-                        juego.agregarJugadorLocal(j);
+                for (Jugador jugador : juego.getLocal().getJugadores()) {
+                    if (jugador != null && nombreJugador.equals(formatearNombreCompleto(jugador))) {
+                        juego.agregarJugadorLocal(jugador);
                         jugadorEncontrado = true;
                         break;
                     }
                 }
 
                 if (!jugadorEncontrado) {
-                    JOptionPane.showMessageDialog(this, "Jugador '" + nombreJugador + "' no encontrado en equipo local", 
+                    JOptionPane.showMessageDialog(this, 
+                        "El jugador '" + nombreJugador + "' no existe en el equipo local", 
                         "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
 
-            // 4. Verificación de slots visitante
+            // ==================== VERIFICACIÓN SLOTS VISITANTES ====================
             for (int i = 0; i < slotsVisitante.length; i++) {
-                if (slotsVisitante[i] == null || slotsVisitante[i].getText() == null) {
-                    JOptionPane.showMessageDialog(this, "Slot visitante " + (i+1) + " no está inicializado", 
+                JLabel slot = slotsVisitante[i];
+                
+                if (slot == null) {
+                    JOptionPane.showMessageDialog(this, 
+                        "El slot visitante " + (i+1) + " no existe", 
                         "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                String nombreJugador = slotsVisitante[i].getText().trim();
-                if (nombreJugador.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Posición " + (i+1) + " del equipo visitante está vacía", 
+                String nombreJugador = slot.getText();
+                if (nombreJugador == null || nombreJugador.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Debe asignar un jugador en la posición " + (i+1) + " del equipo visitante", 
                         "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
                 boolean jugadorEncontrado = false;
-                for (Jugador j : juego.getVisitante().getJugadores()) {
-                    if (j != null && nombreJugador.equals(formatearNombreCompleto(j))) {
-                        juego.agregarJugadorVisitante(j);
+                for (Jugador jugador : juego.getVisitante().getJugadores()) {
+                    if (jugador != null && nombreJugador.equals(formatearNombreCompleto(jugador))) {
+                        juego.agregarJugadorVisitante(jugador);
                         jugadorEncontrado = true;
                         break;
                     }
                 }
 
                 if (!jugadorEncontrado) {
-                    JOptionPane.showMessageDialog(this, "Jugador '" + nombreJugador + "' no encontrado en equipo visitante", 
+                    JOptionPane.showMessageDialog(this, 
+                        "El jugador '" + nombreJugador + "' no existe en el equipo visitante", 
                         "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
 
-            // 5. Validación final
+            // ==================== VERIFICACIÓN FINAL ====================
             if (juego.getActivosLocal().size() != 5 || juego.getActivosVisitante().size() != 5) {
-                throw new IllegalStateException("No se asignaron todos los jugadores requeridos");
+                JOptionPane.showMessageDialog(this, 
+                    "No se han asignado todos los jugadores requeridos", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
 
-            // 6. Iniciar simulación
+            // ==================== INICIAR SIMULACIÓN ====================
             juego.setDone(true);
-            
-            // Debug detallado
-            System.out.println("[DEBUG] Equipo local: " + juego.getLocal().getNombre() + 
-                " | Jugadores activos: " + juego.getActivosLocal().size());
-            System.out.println("[DEBUG] Equipo visitante: " + juego.getVisitante().getNombre() + 
-                " | Jugadores activos: " + juego.getActivosVisitante().size());
 
+            // Mostrar resumen en consola para depuración
+            System.out.println("=== CONFIGURACIÓN DEL JUEGO ===");
+            System.out.println("Equipo Local: " + juego.getLocal().getNombre());
+            System.out.println("Jugadores Activos: " + juego.getActivosLocal().size());
+            System.out.println("Equipo Visitante: " + juego.getVisitante().getNombre());
+            System.out.println("Jugadores Activos: " + juego.getActivosVisitante().size());
+
+            // Abrir ventana de simulación
             EventQueue.invokeLater(() -> {
                 SimularJuego simulador = new SimularJuego(
                     juego, 
@@ -420,9 +474,10 @@ public class DraftearEquipos extends JFrame {
                 simulador.setVisible(true);
                 dispose();
             });
-            
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error crítico: " + e.getMessage(), 
+            JOptionPane.showMessageDialog(this, 
+                "Error inesperado: " + e.getMessage(), 
                 "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }

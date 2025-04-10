@@ -30,6 +30,7 @@ public class Juego implements Serializable {
         this.winner = null;
         this.fechaJuego = fechaJuego;
         this.isDone = false;
+        
     }
 
     // Método para actualizar resultado del juego
