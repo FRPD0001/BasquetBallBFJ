@@ -9,7 +9,11 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -132,6 +136,7 @@ public class EmpezarJuegos {
         tablaJuegos.getColumnModel().getColumn(3).setCellRenderer(new EquipoColorRenderer());
         
         JScrollPane scrollPane = new JScrollPane(tablaJuegos);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         scrollPane.getViewport().setBackground(Color.WHITE);
         dialog.add(scrollPane, BorderLayout.CENTER);
         
@@ -173,13 +178,27 @@ public class EmpezarJuegos {
     private void cargarJuegos(List<Juego> juegos) {
         modelJuegos.setRowCount(0);
         
+        // Formato de fecha deseado
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        
         for (Juego juego : juegos) {
+            String fechaFormateada;
+            try {
+                // Obtener la fecha como LocalDate y formatearla
+                LocalDate fecha = juego.getFechaJuego();
+                fechaFormateada = fecha.format(formatter);
+            } catch (Exception e) {
+                // Si hay algún error, usar la representación original
+                fechaFormateada = juego.getFechaJuego().toString();
+                System.err.println("Error al formatear la fecha: " + e.getMessage());
+            }
+            
             modelJuegos.addRow(new Object[]{
                 juego.getId().substring(0, juego.getId().indexOf('-')),
                 juego.getLocal(),
                 "VS",
                 juego.getVisitante(),
-                juego.getFechaJuego().toString()
+                fechaFormateada
             });
         }
     }
