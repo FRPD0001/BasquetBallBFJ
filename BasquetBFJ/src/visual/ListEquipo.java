@@ -47,7 +47,8 @@ public class ListEquipo extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout());
 
-        String[] columnNames = {"ID", "Nombre", "Color Principal", "Cant. Jugadores", "J. Ganados", "J. Perdidos"};
+        // Columnas de la tabla, agregamos "Winrate"
+        String[] columnNames = {"ID", "Nombre", "Color Principal", "Cant. Jugadores", "J. Ganados", "J. Perdidos", "Winrate"};
         tableModel = new DefaultTableModel(null, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -97,7 +98,6 @@ public class ListEquipo extends JDialog {
         btnModificar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
- 
                 int selectedRow = tableEquipos.getSelectedRow();
                 if (selectedRow != -1) {
                     String idEquipo = tableModel.getValueAt(selectedRow, 0).toString();
@@ -108,7 +108,6 @@ public class ListEquipo extends JDialog {
                         cargarEquipos();
                     }
                 }
-                
             }
         });
         buttonPane.add(btnModificar);
@@ -163,13 +162,20 @@ public class ListEquipo extends JDialog {
         });
 
         for (Equipo equipo : listaEquipos) {
+            // Calcula el winrate utilizando el método de SerieNacional
+            double winrate = SerieNacional.getInstance().Winrate(equipo);
+
+            // Verifica si no se han jugado juegos
+            String winrateStr = (equipo.getWin() + equipo.getLose() == 0) ? "N/A" : String.format("%.2f%%", winrate * 100);
+
             tableModel.addRow(new Object[]{
                 equipo.getId(),
                 equipo.getNombre(),
                 equipo.getColor(),
                 equipo.getJugadores().size(),
                 equipo.getWin(),
-                equipo.getLose()
+                equipo.getLose(),
+                winrateStr  // Agregar el valor con '%' o 'N/A'
             });
         }
     }
