@@ -68,7 +68,7 @@ public class RegLesion extends JDialog {
         txtLesion.setFont(new Font("Arial", Font.PLAIN, 14));
         contentPanel.add(txtLesion);
         
-        // Fecha de lesión con JDateChooser
+        
         JLabel lblFechaLesion = new JLabel("Fecha Lesión:");
         lblFechaLesion.setFont(new Font("Arial", Font.BOLD, 14));
         contentPanel.add(lblFechaLesion);
@@ -80,7 +80,7 @@ public class RegLesion extends JDialog {
         panelFechaLesion.add(dateChooserLesion);
         contentPanel.add(panelFechaLesion);
         
-        // Fecha de recuperación con JDateChooser
+        
         JLabel lblFechaRecuperacion = new JLabel("Fecha Recuperación:");
         lblFechaRecuperacion.setFont(new Font("Arial", Font.BOLD, 14));
         contentPanel.add(lblFechaRecuperacion);
@@ -92,7 +92,7 @@ public class RegLesion extends JDialog {
         panelFechaRecuperacion.add(dateChooserRecuperacion);
         contentPanel.add(panelFechaRecuperacion);
         
-        // Estado de lesión
+        
         JLabel lblLesionado = new JLabel("Actualmente Lesionado:");
         lblLesionado.setFont(new Font("Arial", Font.BOLD, 14));
         contentPanel.add(lblLesionado);
@@ -100,7 +100,7 @@ public class RegLesion extends JDialog {
         chkLesionado = new JCheckBox();
         contentPanel.add(chkLesionado);
         
-        // Panel de botones
+     
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         buttonPanel.setBackground(Color.WHITE);

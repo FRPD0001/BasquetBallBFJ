@@ -86,11 +86,10 @@ public class SerieNacional implements Serializable {
         ObjectOutputStream oos = null;
         
         try {
-            // Sincronizamos los contadores estáticos con las variables de instancia antes de guardar
             this.savedGenEquipo = genEquipo;
             this.savedGenJugador = genJugador;
             this.savedGenJuego = genJuego;
-            this.savedGenLesion  = Jugador.getGenLesion(); // Guardar el valor de genLesion
+            this.savedGenLesion  = Jugador.getGenLesion();
             
             fos = new FileOutputStream(FILE_NAME);
             oos = new ObjectOutputStream(fos);
@@ -188,7 +187,7 @@ public class SerieNacional implements Serializable {
         return null;
     }
 
-    // Métodos para generar round robin
+    
     public boolean esNumeroEquiposPar() {
         return misEquipos.size() % 2 == 0;
     }
@@ -216,7 +215,6 @@ public class SerieNacional implements Serializable {
             
             todasJornadas.add(jornadaActual);
             
-            // Rotar equipos (excepto el primero)
             Equipo ultimo = equipos.remove(numEquipos - 1);
             equipos.add(1, ultimo);
         }
@@ -224,7 +222,6 @@ public class SerieNacional implements Serializable {
         return todasJornadas;
     }
 
-    // Getters y setters
     public ArrayList<Equipo> getMisEquipos() {
         return misEquipos;
     }

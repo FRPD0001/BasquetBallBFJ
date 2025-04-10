@@ -27,8 +27,8 @@ public class ListJugador extends JDialog {
     private boolean esAnotador;
 
     public ListJugador(Color colorOscuro, Color colorClaro) {
-        // Verificar tipo de usuario al inicio
-        User usuarioActual = SerieNacional.getUsuarioActual();
+
+    	User usuarioActual = SerieNacional.getUsuarioActual();
         esAnotador = usuarioActual != null && usuarioActual.esAnotador();
         
         setIconImage(new ImageIcon("media/LogoProyecto.png").getImage());
@@ -43,7 +43,6 @@ public class ListJugador extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout(0, 0));
 
-        // Configuración de la tabla (no editable)
         tableModel = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -86,7 +85,6 @@ public class ListJugador extends JDialog {
         });
         buttonPane.add(cbFiltro);
 
-        // Configuración del botón Ver Detalles
         btnDetalles = new JButton("Ver detalles");
         btnDetalles.setEnabled(false);
         btnDetalles.setBackground(colorOscuro);
@@ -98,7 +96,6 @@ public class ListJugador extends JDialog {
                     String id = (String) tableModel.getValueAt(selectedRow, 0);
                     Jugador jugador = SerieNacional.getInstance().buscarJugadorPorId(id);
                     if (jugador != null) {
-                        // Mostrar estadísticas en modo solo lectura para anotadores
                         Estadisticas estadisticas = new Estadisticas(jugador, colorOscuro, colorClaro, esAnotador);
                         estadisticas.setVisible(true);
                     }

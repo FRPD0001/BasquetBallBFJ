@@ -19,7 +19,6 @@ public class Juego implements Serializable {
     private LocalDate fechaJuego;
     private boolean isDone;
 
-    // ------------------------- CONSTRUCTORES -------------------------
     public Juego() {
         this("", null, null, LocalDate.now());
     }
@@ -49,12 +48,11 @@ public class Juego implements Serializable {
         } else if (puntosVisitante > puntosLocal) {
             setWinner(visitante);
         } else {
-            setWinner(null); // Empate
+            setWinner(null);
         }
     }
 
     public void setWinner(Equipo nuevoGanador) {
-        // Revertir estadísticas del ganador anterior
         if (this.winner != null) {
             if (this.winner.equals(local)) {
                 local.setWin(local.getWin() - 1);
@@ -65,11 +63,9 @@ public class Juego implements Serializable {
             }
         }
         
-        // Actualizar nuevo ganador
         this.winner = nuevoGanador;
         this.isDone = (nuevoGanador != null);
         
-        // Aplicar nuevas estadísticas
         if (nuevoGanador != null) {
             if (nuevoGanador.equals(local)) {
                 local.setWin(local.getWin() + 1);
@@ -96,7 +92,6 @@ public class Juego implements Serializable {
         return activosVisitante;
     }
 
-    // ------------------------- SETTERS PROTEGIDOS -------------------------
     public void setActivosLocal(ArrayList<Jugador> activosLocal) {
         this.activosLocal = activosLocal != null ? new ArrayList<>(activosLocal) : new ArrayList<>();
     }
@@ -105,7 +100,6 @@ public class Juego implements Serializable {
         this.activosVisitante = activosVisitante != null ? new ArrayList<>(activosVisitante) : new ArrayList<>();
     }
 
-    // ------------------------- MANEJO DE JUGADORES -------------------------
     public boolean agregarJugadorLocal(Jugador jugador) {
         Objects.requireNonNull(jugador, "Jugador no puede ser null");
         if (!getActivosLocal().contains(jugador)) {

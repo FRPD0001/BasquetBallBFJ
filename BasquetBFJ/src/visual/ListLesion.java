@@ -51,7 +51,7 @@ public class ListLesion extends JDialog {
         cbJugadores.setFont(new Font("Arial", Font.PLAIN, 14));
         cargarJugadores();
 
-        // Usar una clase anónima en lugar de lambda
+       
         cbJugadores.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -168,7 +168,6 @@ public class ListLesion extends JDialog {
             });
         }
         
-        // Habilitar botón si el jugador está lesionado
         btnDeslesionar.setEnabled(jugadorSeleccionado.isLesionado());
     }
 

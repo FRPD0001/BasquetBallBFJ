@@ -1,4 +1,4 @@
-package server; // O el paquete donde tengas tu lógica principal
+package server;
 
 import java.io.*;
 import java.net.*;
@@ -18,7 +18,7 @@ public class Servidor extends Thread {
                     Socket nsfd = sfd.accept();
                     System.out.println("Conexión aceptada de: " + nsfd.getInetAddress());
                     
-                    // Recibir el archivo
+                
                     try (DataInputStream ois = new DataInputStream(nsfd.getInputStream());
                          DataOutputStream fos = new DataOutputStream(new FileOutputStream(ARCHIVO_RESPALDO))) {
                         

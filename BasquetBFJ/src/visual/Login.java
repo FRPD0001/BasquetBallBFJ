@@ -71,20 +71,18 @@ public class Login extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(new BorderLayout(0, 0));
 
-        // Panel principal con logo y formulario
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
         panelPrincipal.setBackground(coloresClaros[colorIndex]);
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         contentPane.add(panelPrincipal, BorderLayout.CENTER);
 
-        // Logo
+       
         JLabel lblLogo = new JLabel(new ImageIcon("media/LogoProyecto.png"));
         lblLogo.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelPrincipal.add(lblLogo);
         panelPrincipal.add(Box.createRigidArea(new Dimension(10, 30)));
 
-        // Panel de tipo de acceso con botones estilo Principal
         JPanel panelTipoAcceso = new JPanel();
         panelTipoAcceso.setLayout(new GridLayout(1, 2, 15, 15));
         panelTipoAcceso.setBackground(coloresClaros[colorIndex]);
@@ -103,10 +101,8 @@ public class Login extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tipoAcceso = "admin";
-                // Resaltar botón seleccionado
                 btnAdmin.setBackground(colorSeleccion);
                 btnAdmin.setForeground(Color.WHITE);
-                // Restaurar botón no seleccionado
                 btnAnotador.setBackground(coloresOscuros[colorIndex]);
                 btnAnotador.setForeground(Color.WHITE);
             }
@@ -117,10 +113,8 @@ public class Login extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tipoAcceso = "anotador";
-                // Resaltar botón seleccionado
                 btnAnotador.setBackground(colorSeleccion);
                 btnAnotador.setForeground(Color.WHITE);
-                // Restaurar botón no seleccionado
                 btnAdmin.setBackground(coloresOscuros[colorIndex]);
                 btnAdmin.setForeground(Color.WHITE);
             }
@@ -134,13 +128,12 @@ public class Login extends JFrame {
         panelPrincipal.add(panelTipoAcceso);
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // Panel de formulario
+       
         JPanel panelFormulario = new JPanel();
         panelFormulario.setLayout(new GridLayout(4, 1, 5, 10));
         panelFormulario.setBackground(coloresClaros[colorIndex]);
         panelFormulario.setMaximumSize(new Dimension(400, 200));
 
-        // Campo Usuario
         JPanel panelUsuario = new JPanel(new BorderLayout(5, 5));
         panelUsuario.setBackground(coloresClaros[colorIndex]);
         JLabel lblUsuario = new JLabel("Usuario:");
@@ -153,7 +146,6 @@ public class Login extends JFrame {
         panelUsuario.add(textFieldUsuario, BorderLayout.CENTER);
         panelFormulario.add(panelUsuario);
 
-        // Campo Contraseña
         JPanel panelPassword = new JPanel(new BorderLayout(5, 5));
         panelPassword.setBackground(coloresClaros[colorIndex]);
         JLabel lblPassword = new JLabel("Contraseña:");
@@ -169,13 +161,12 @@ public class Login extends JFrame {
         panelPrincipal.add(panelFormulario);
         panelPrincipal.add(Box.createRigidArea(new Dimension(0, 30)));
 
-        // Panel de botones inferiores
         JPanel panelBotones = new JPanel();
         panelBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         panelBotones.setBackground(coloresClaros[colorIndex]);
 
         JButton btnLogin = crearBotonModerno("Iniciar Sesión");
-        btnLogin.setBackground(new Color(52, 199, 89)); // Verde similar al botón de guardar
+        btnLogin.setBackground(new Color(52, 199, 89));
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -185,7 +176,7 @@ public class Login extends JFrame {
         panelBotones.add(btnLogin);
 
         JButton btnSalir = crearBotonModerno("Salir");
-        btnSalir.setBackground(new Color(211, 47, 47)); // Rojo similar al botón de cerrar
+        btnSalir.setBackground(new Color(211, 47, 47));
         btnSalir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

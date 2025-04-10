@@ -242,7 +242,6 @@ public class GenCalendario extends JPanel {
         ArrayList<Juego> juegos = new ArrayList<>();
         LocalDate fechaBase = LocalDate.now();
         
-        // Crear componentes para el diálogo de fecha
         JDateChooser dateChooser = new JDateChooser();
         dateChooser.setDateFormatString("dd/MM/yyyy");
         
@@ -253,7 +252,6 @@ public class GenCalendario extends JPanel {
                 Equipo local = jornada.get(j);
                 Equipo visitante = jornada.get(j + 1);
                 
-                // Configurar fecha por defecto
                 dateChooser.setDate(java.sql.Date.valueOf(fechaBase));
                 
                 int opcion = JOptionPane.showConfirmDialog(this, dateChooser, 
@@ -276,11 +274,10 @@ public class GenCalendario extends JPanel {
                         fecha
                     );
                 juegos.add(juego);
-                fechaBase = fecha.plusDays(1); // Siguiente fecha por defecto
+                fechaBase = fecha.plusDays(1); 
             }
         }
         
-        // Guardar todos los juegos
         for (Juego juego : juegos) {
             SerieNacional.getInstance().agregarJuego(juego);
             juego.getLocal().getJuegos().add(juego);

@@ -72,13 +72,11 @@ public class EmpezarJuegos {
             System.err.println("No se pudo cargar el icono: " + e.getMessage());
         }
         
-        // Panel superior con filtros (eliminado el combo de jornadas)
         JPanel panelFiltros = new JPanel();
         panelFiltros.setBackground(colorFondo);
         panelFiltros.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         dialog.add(panelFiltros, BorderLayout.NORTH);
         
-        // Modelo y tabla de juegos (sin columna de jornada)
         modelJuegos = new DefaultTableModel(
             new Object[]{"Local", "VS", "Visitante", "Fecha"}, 0) {
             @Override
@@ -98,24 +96,21 @@ public class EmpezarJuegos {
         tablaJuegos.setRowHeight(40);
         tablaJuegos.setFont(new Font("Arial", Font.PLAIN, 12));
         
-        // Renderers personalizados
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         
         tablaJuegos.getColumnModel().getColumn(1).setCellRenderer(new VSRenderer());
-        tablaJuegos.getColumnModel().getColumn(3).setCellRenderer(centerRenderer); // Fecha centrada
+        tablaJuegos.getColumnModel().getColumn(3).setCellRenderer(centerRenderer); 
         
-        // Renderers para equipos
         EquipoColorRenderer equipoRenderer = new EquipoColorRenderer();
-        tablaJuegos.getColumnModel().getColumn(0).setCellRenderer(equipoRenderer); // Local
-        tablaJuegos.getColumnModel().getColumn(2).setCellRenderer(equipoRenderer); // Visitante
+        tablaJuegos.getColumnModel().getColumn(0).setCellRenderer(equipoRenderer); 
+        tablaJuegos.getColumnModel().getColumn(2).setCellRenderer(equipoRenderer); 
         
         JScrollPane scrollPane = new JScrollPane(tablaJuegos);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         scrollPane.getViewport().setBackground(Color.WHITE);
         dialog.add(scrollPane, BorderLayout.CENTER);
         
-        // Panel inferior con botones
         JPanel panelBotones = new JPanel();
         panelBotones.setBackground(colorFondo);
         panelBotones.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -179,7 +174,6 @@ public class EmpezarJuegos {
         Equipo local = (Equipo) modelJuegos.getValueAt(filaSeleccionada, 0);
         Equipo visitante = (Equipo) modelJuegos.getValueAt(filaSeleccionada, 2);
         
-        // Buscar el juego correspondiente
         Juego juegoSeleccionado = null;
         for (Juego juego : juegosDisponibles) {
             if (juego.getLocal().equals(local) && juego.getVisitante().equals(visitante)) {

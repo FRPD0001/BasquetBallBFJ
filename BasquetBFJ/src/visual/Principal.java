@@ -68,7 +68,7 @@ public class Principal extends JFrame {
                 "Debe iniciar sesión primero", 
                 "Acceso no autorizado", 
                 JOptionPane.ERROR_MESSAGE);
-            this.dispose(); // Cierra la ventana si se crea sin autenticación
+            this.dispose();  
             return;
         }
     	
@@ -192,7 +192,7 @@ public class Principal extends JFrame {
                 if (confirm == JOptionPane.YES_OPTION) {
                     SerieNacional.cerrarSesion();
                     Principal.this.dispose();
-                    new Login().setVisible(true); // Vuelve a mostrar el login
+                    new Login().setVisible(true);
                 }
             }
         });
@@ -542,16 +542,16 @@ public class Principal extends JFrame {
 
         JButton btnCambiarColor = crearBotonSubmenuModerno("Cambiar Color");
         JButton btnCambiarFondo = crearBotonSubmenuModerno("Cambiar Fondo");
-         btnAgregarUsuario = crearBotonSubmenuModerno("Agregar Usuario"); // Nuevo botón
+         btnAgregarUsuario = crearBotonSubmenuModerno("Agregar Usuario"); 
 
         
         
-        JButton[] botonesAjustes = {btnCambiarColor, btnCambiarFondo, btnAgregarUsuario}; // Añádelo al array
+        JButton[] botonesAjustes = {btnCambiarColor, btnCambiarFondo, btnAgregarUsuario}; 
         
         btnAgregarUsuario.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Solo permite agregar usuarios si el usuario actual es Administrador
+                
                 if (SerieNacional.getUsuarioActual() != null && 
                     SerieNacional.getUsuarioActual().getTipo().equals("Administrador")) {
                     RegUser regUser = new RegUser(coloresOscuros, coloresClaros, colorIndex);
@@ -580,15 +580,15 @@ public class Principal extends JFrame {
             }
         });
 
-        panelAjustes.add(Box.createVerticalStrut(150));  // Espacio inicial reducido
+        panelAjustes.add(Box.createVerticalStrut(150)); 
         panelAjustes.add(btnCambiarColor);
         panelAjustes.add(Box.createVerticalStrut(150));
         panelAjustes.add(btnCambiarFondo);
         panelAjustes.add(Box.createVerticalStrut(150));
-        panelAjustes.add(btnAgregarUsuario);  // Nuevo botón añadido
+        panelAjustes.add(btnAgregarUsuario); 
         
         configurarPermisosUsuario();
-        //.
+        
 
         btnEquipos.addActionListener(new ActionListener() {
             @Override
@@ -799,12 +799,12 @@ public class Principal extends JFrame {
         JPanel panelBotonesInferiores = (JPanel) panelIzquierdo.getComponent(1);
         panelBotonesInferiores.setBackground(coloresClaros[colorIndex]);
         
-        // Actualizar color del botón de guardar
+        
         Component[] components = panelBotonesInferiores.getComponents();
         for (Component c : components) {
             if (c instanceof JButton) {
                 JButton btn = (JButton) c;
-                if (btn.getText().equals("\uD83D\uDCBE")) { // Botón de guardar
+                if (btn.getText().equals("\uD83D\uDCBE")) {
                     btn.setBackground(coloresOscuros[colorIndex]);
                 }
             }

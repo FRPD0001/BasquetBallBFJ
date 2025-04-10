@@ -113,13 +113,13 @@ public class RegJugador extends JDialog {
 
     private void cargarEquipos() {
         ArrayList<Equipo> equipos = SerieNacional.getInstance().getMisEquipos();
-        cbxEquipos.addItem(null); // Opción vacía
+        cbxEquipos.addItem(null);
         
         for (Equipo equipo : equipos) {
             cbxEquipos.addItem(equipo);
         }
         
-        // Configurar el renderer personalizado para mostrar nombre e ID
+        
         cbxEquipos.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, 
@@ -158,7 +158,7 @@ public class RegJugador extends JDialog {
             float altura = Float.parseFloat(txtAltura.getText().trim());
             Equipo nuevoEquipo = (Equipo) cbxEquipos.getSelectedItem();
 
-            if (aux == null) { // Registrar nuevo jugador
+            if (aux == null) {
                 Jugador nuevoJugador = new Jugador(id, nombre, peso, altura, nuevoEquipo);
                 SerieNacional.getInstance().agregarJugador(nuevoJugador);
                 
@@ -171,19 +171,18 @@ public class RegJugador extends JDialog {
                     "ID: " + id + "\n" + 
                     "Nombre: " + nombre, 
                     "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else { // Modificar jugador existente
-                // 1. Remover de su equipo actual si tiene uno
+            } else { 
+                
                 if (aux.getEquipo() != null) {
                     aux.getEquipo().removerJugador(aux);
                 }
                 
-                // 2. Actualizar datos del jugador
+                
                 aux.setNombre(nombre);
                 aux.setPeso(peso);
                 aux.setAltura(altura);
                 aux.setEquipo(nuevoEquipo);
                 
-                // 3. Agregar al nuevo equipo si se seleccionó uno
                 if (nuevoEquipo != null) {
                     nuevoEquipo.reclutarJugador(aux);
                 }

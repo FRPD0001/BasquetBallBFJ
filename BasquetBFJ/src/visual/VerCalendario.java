@@ -32,17 +32,14 @@ public class VerCalendario extends JPanel {
         setLayout(new BorderLayout());
         setBackground(colorFondo);
 
-        // Configuración del calendario
         calendar = new JCalendar();
         calendar.setDecorationBackgroundColor(colorBoton);
         calendar.setDecorationBackgroundVisible(true);
         calendar.setWeekOfYearVisible(false);
 
-        // Permitir cambiar mes y año
         calendar.getMonthChooser().setEnabled(true);
         calendar.getYearChooser().setEnabled(true);
 
-        // Evitar que se pueda cambiar la fecha seleccionada
         calendar.addPropertyChangeListener("calendar", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -50,7 +47,6 @@ public class VerCalendario extends JPanel {
             }
         });
 
-        // Configuración de la tabla
         modeloTabla = new DefaultTableModel(new Object[]{"Fecha", "Local", "VS", "Visitante"}, 0) {
             @Override public boolean isCellEditable(int row, int column) { return false; }
         };
@@ -62,14 +58,12 @@ public class VerCalendario extends JPanel {
         tablaJuegos.getTableHeader().setBackground(colorBoton);
         tablaJuegos.getTableHeader().setForeground(Color.WHITE);
 
-        // Centrar contenido
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         for (int i = 0; i < tablaJuegos.getColumnCount(); i++) {
             tablaJuegos.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
-        // Organización de componentes
         JScrollPane scrollTabla = new JScrollPane(tablaJuegos);
         scrollTabla.setBorder(BorderFactory.createEmptyBorder());
 
