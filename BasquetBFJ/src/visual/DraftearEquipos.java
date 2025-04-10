@@ -20,6 +20,7 @@ public class DraftearEquipos extends JFrame {
     private Color colorBoton;
     private JLabel[] slotsLocal;
     private JLabel[] slotsVisitante;
+    private DragSource dragSource;
 
     public DraftearEquipos(Juego juego, Color colorFondo, Color colorBoton) {
         // Validaciones iniciales
@@ -35,6 +36,7 @@ public class DraftearEquipos extends JFrame {
         this.colorBoton = colorBoton;
         this.slotsLocal = new JLabel[5];
         this.slotsVisitante = new JLabel[5];
+        this.dragSource = new DragSource();
         initUI();
     }
 
@@ -123,7 +125,7 @@ public class DraftearEquipos extends JFrame {
                 // Buscar el jugador por el nombre mostrado y agregarlo a activosLocal
                 String nombreJugador = slotsLocal[i].getText();
                 for (Jugador j : juego.getLocal().getJugadores()) {
-                    if (formatearNombre(j).equals(nombreJugador)) {
+                    if (formatearNombreCompleto(j).equals(nombreJugador)) {
                         juego.agregarJugadorLocal(j);
                         break;
                     }
@@ -142,7 +144,7 @@ public class DraftearEquipos extends JFrame {
                 // Buscar el jugador por el nombre mostrado y agregarlo a activosVisitante
                 String nombreJugador = slotsVisitante[i].getText();
                 for (Jugador j : juego.getVisitante().getJugadores()) {
-                    if (formatearNombre(j).equals(nombreJugador)) {
+                    if (formatearNombreCompleto(j).equals(nombreJugador)) {
                         juego.agregarJugadorVisitante(j);
                         break;
                     }
@@ -204,17 +206,18 @@ public class DraftearEquipos extends JFrame {
 
     private JLabel crearSlotPosicion() {
         JLabel slot = new JLabel("", SwingConstants.CENTER);
-        slot.setSize(100, 35); // Tamaño aumentado para mejor visualización
+        slot.setSize(120, 40);
         slot.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         slot.setOpaque(true);
         slot.setBackground(new Color(255, 255, 255, 200));
-        slot.setFont(new Font("Arial", Font.BOLD, 11));
+        slot.setFont(new Font("Arial", Font.BOLD, 12));
         
         // Configurar para aceptar drops
         slot.setTransferHandler(new TransferHandler("text") {
             @Override
             public boolean canImport(TransferSupport support) {
-                return true;
+                // Solo permitir importar de jugadores a slots
+                return support.isDataFlavorSupported(DataFlavor.stringFlavor);
             }
             
             @Override
@@ -229,7 +232,7 @@ public class DraftearEquipos extends JFrame {
                     }
                     
                     target.setText(data);
-                    target.setBackground(new Color(200, 255, 200)); // Cambiar color al asignar
+                    target.setBackground(new Color(200, 255, 200, 200));
                     return true;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -256,7 +259,7 @@ public class DraftearEquipos extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(colorFondo);
-        panel.setPreferredSize(new Dimension(200, getHeight()));
+        panel.setPreferredSize(new Dimension(220, getHeight()));
         panel.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createEmptyBorder(20, 10, 20, 10), 
             esLocal ? "Jugadores Locales" : "Jugadores Visitantes"));
@@ -291,7 +294,7 @@ public class DraftearEquipos extends JFrame {
     }
 
     private JLabel crearLabelJugador(Jugador jugador, boolean esLocal) {
-        String nombre = formatearNombre(jugador);
+        String nombre = formatearNombreCompleto(jugador);
         JLabel label = new JLabel(nombre, SwingConstants.CENTER);
         
         label.setOpaque(true);
@@ -302,22 +305,59 @@ public class DraftearEquipos extends JFrame {
             BorderFactory.createLineBorder(Color.BLACK),
             BorderFactory.createEmptyBorder(5, 10, 5, 10)
         ));
-        label.setPreferredSize(new Dimension(180, 35));
-        label.setMaximumSize(new Dimension(180, 35));
+        label.setPreferredSize(new Dimension(200, 40));
+        label.setMaximumSize(new Dimension(200, 40));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         // Configurar drag and drop
         label.setTransferHandler(new TransferHandler("text"));
         
-        label.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                JLabel source = (JLabel)e.getSource();
-                TransferHandler handler = source.getTransferHandler();
-                handler.exportAsDrag(source, e, TransferHandler.COPY);
-            }
-        });
+        // Configurar el reconocimiento del gesto de arrastre
+        dragSource.createDefaultDragGestureRecognizer(label, 
+            DnDConstants.ACTION_COPY, new DragGestureListener() {
+                @Override
+                public void dragGestureRecognized(DragGestureEvent dge) {
+                    // Crear el objeto transferible
+                    Transferable transferable = new Transferable() {
+                        @Override
+                        public DataFlavor[] getTransferDataFlavors() {
+                            return new DataFlavor[]{DataFlavor.stringFlavor};
+                        }
+
+                        @Override
+                        public boolean isDataFlavorSupported(DataFlavor flavor) {
+                            return flavor.equals(DataFlavor.stringFlavor);
+                        }
+
+                        @Override
+                        public Object getTransferData(DataFlavor flavor) 
+                            throws UnsupportedFlavorException, IOException {
+                            if (isDataFlavorSupported(flavor)) {
+                                return label.getText();
+                            }
+                            throw new UnsupportedFlavorException(flavor);
+                        }
+                    };
+                    
+                    // Iniciar el arrastre
+                    dge.startDrag(null, transferable);
+                }
+            });
         
         return label;
+    }
+
+    private String formatearNombreCompleto(Jugador jugador) {
+        if (jugador == null || jugador.getNombre() == null) {
+            return "Jugador";
+        }
+        
+        String[] partes = jugador.getNombre().split(" ");
+        if (partes.length == 0) return jugador.getNombre();
+        
+        String nombre = partes[0];
+        String inicial = (partes.length > 1) ? partes[1].substring(0, 1) + "." : "";
+        return nombre + " " + inicial;
     }
 
     private String formatearNombre(Jugador jugador) {
