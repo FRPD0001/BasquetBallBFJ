@@ -8,6 +8,9 @@ import logico.Equipo;
 import logico.SerieNacional;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JColorChooser;  // Para el selector de color
+import javax.swing.BorderFactory;  // Para los bordes
+import javax.swing.ImageIcon;      // Para el icono de la ventana
 
 public class RegEquipo extends JDialog {
 
@@ -71,6 +74,7 @@ public class RegEquipo extends JDialog {
         JLabel lblColor = new JLabel("Color:");
         lblColor.setBounds(12, 100, 70, 16);
         contentPanel.add(lblColor);
+        
 
         JButton btnColor = new JButton("Seleccionar");
         btnColor.setBounds(105, 97, 116, 22);
@@ -134,17 +138,18 @@ public class RegEquipo extends JDialog {
     }
 
     private void mostrarSelectorColor() {
-        JColorChooser chooser = new JColorChooser(colorSeleccionado != null ? colorSeleccionado : Color.WHITE);
-
-        // Elimina todos los paneles excepto el de swatches
-        AbstractColorChooserPanel[] panels = chooser.getChooserPanels();
-        for (AbstractColorChooserPanel panel : panels) {
-            if (!panel.getDisplayName().equals("Swatches")) {
-                chooser.removeChooserPanel(panel);
-            }
+        // Inicializar colorSeleccionado si es null
+        if (colorSeleccionado == null) {
+            colorSeleccionado = Color.WHITE;
         }
+        
+        JColorChooser chooser = new JColorChooser(colorSeleccionado);
+        
+        // Configurar paneles (mantener solo Swatches)
 
-        // Crea el diálogo de selección
+
+        
+        // Crear diálogo
         JDialog dialog = JColorChooser.createDialog(
             this,
             "Seleccionar Color",
@@ -153,13 +158,13 @@ public class RegEquipo extends JDialog {
             e -> {
                 colorSeleccionado = chooser.getColor();
                 lblColorSeleccionado.setBackground(colorSeleccionado);
+                lblColorSeleccionado.repaint(); // Añadir esto para refrescar
             },
             null
         );
-
+        
         dialog.setVisible(true);
     }
-
 
     private void registrarEquipo() {
         if (!validarCampos()) return;
