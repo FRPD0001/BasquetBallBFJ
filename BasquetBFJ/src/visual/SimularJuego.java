@@ -25,6 +25,17 @@ public class SimularJuego extends JFrame {
     private JButton btnTerminarJuego;
     
     public SimularJuego(Juego juego, Color colorFondo, Color colorBoton) {
+        // Validaciones iniciales
+        if (juego == null) {
+            throw new IllegalArgumentException("El juego no puede ser null");
+        }
+        if (juego.getLocal() == null || juego.getVisitante() == null) {
+            throw new IllegalArgumentException("Los equipos no pueden ser null");
+        }
+        if (colorFondo == null || colorBoton == null) {
+            throw new IllegalArgumentException("Los colores no pueden ser null");
+        }
+
         this.juego = juego;
         this.colorFondo = colorFondo;
         this.colorBoton = colorBoton;
@@ -36,7 +47,14 @@ public class SimularJuego extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setBackground(colorFondo);
         
-        initUI();
+        try {
+            initUI();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, 
+                "Error al inicializar la interfaz: " + e.getMessage(), 
+                "Error", JOptionPane.ERROR_MESSAGE);
+            dispose();
+        }
     }
     
     private void initUI() {
@@ -46,20 +64,7 @@ public class SimularJuego extends JFrame {
         panelMarcador.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
         // Equipo local
-        JPanel panelLocal = new JPanel();
-        panelLocal.setBackground(colorFondo);
-        panelLocal.setLayout(new BoxLayout(panelLocal, BoxLayout.Y_AXIS));
-        
-        JLabel lblNombreLocal = new JLabel(juego.getLocal().getNombre(), SwingConstants.CENTER);
-        lblNombreLocal.setFont(new Font("Arial", Font.BOLD, 18));
-        lblNombreLocal.setForeground(colorBoton);
-        
-        lblPuntosLocal = new JLabel("0", SwingConstants.CENTER);
-        lblPuntosLocal.setFont(new Font("Arial", Font.BOLD, 36));
-        lblPuntosLocal.setForeground(Color.WHITE);
-        
-        panelLocal.add(lblNombreLocal);
-        panelLocal.add(lblPuntosLocal);
+        JPanel panelLocal = crearPanelEquipo(juego.getLocal(), true);
         
         // Tiempo
         JPanel panelTiempo = new JPanel();
@@ -80,45 +85,14 @@ public class SimularJuego extends JFrame {
         panelTiempo.add(btnSiguienteTiempo);
         
         // Equipo visitante
-        JPanel panelVisitante = new JPanel();
-        panelVisitante.setBackground(colorFondo);
-        panelVisitante.setLayout(new BoxLayout(panelVisitante, BoxLayout.Y_AXIS));
-        
-        JLabel lblNombreVisitante = new JLabel(juego.getVisitante().getNombre(), SwingConstants.CENTER);
-        lblNombreVisitante.setFont(new Font("Arial", Font.BOLD, 18));
-        lblNombreVisitante.setForeground(colorBoton);
-        
-        lblPuntosVisitante = new JLabel("0", SwingConstants.CENTER);
-        lblPuntosVisitante.setFont(new Font("Arial", Font.BOLD, 36));
-        lblPuntosVisitante.setForeground(Color.WHITE);
-        
-        panelVisitante.add(lblNombreVisitante);
-        panelVisitante.add(lblPuntosVisitante);
+        JPanel panelVisitante = crearPanelEquipo(juego.getVisitante(), false);
         
         panelMarcador.add(panelLocal);
         panelMarcador.add(panelTiempo);
         panelMarcador.add(panelVisitante);
         
         // Panel central con opciones de puntuación
-        JPanel panelOpciones = new JPanel(new GridLayout(2, 3, 10, 10));
-        panelOpciones.setBackground(colorFondo);
-        panelOpciones.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        
-        String[] tiposPuntos = {"Tiro Libre (1pt)", "Tiro de Campo (2pts)", "Triple (3pts)"};
-        for (String tipo : tiposPuntos) {
-            JButton btnLocal = new JButton("Local: " + tipo);
-            btnLocal.setBackground(juego.getLocal().getColor());
-            btnLocal.setForeground(Color.WHITE);
-            btnLocal.addActionListener(e -> agregarPuntos(true, tipo));
-            
-            JButton btnVisitante = new JButton("Visitante: " + tipo);
-            btnVisitante.setBackground(juego.getVisitante().getColor());
-            btnVisitante.setForeground(Color.WHITE);
-            btnVisitante.addActionListener(e -> agregarPuntos(false, tipo));
-            
-            panelOpciones.add(btnLocal);
-            panelOpciones.add(btnVisitante);
-        }
+        JPanel panelOpciones = crearPanelOpcionesPuntuacion();
         
         // Panel inferior con botón terminar
         JPanel panelInferior = new JPanel();
@@ -138,12 +112,81 @@ public class SimularJuego extends JFrame {
         add(panelInferior, BorderLayout.SOUTH);
     }
     
+    private JPanel crearPanelEquipo(Equipo equipo, boolean esLocal) {
+        JPanel panel = new JPanel();
+        panel.setBackground(colorFondo);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        
+        JLabel lblNombre = new JLabel(equipo.getNombre(), SwingConstants.CENTER);
+        lblNombre.setFont(new Font("Arial", Font.BOLD, 18));
+        lblNombre.setForeground(colorBoton);
+        
+        JLabel lblPuntos = new JLabel("0", SwingConstants.CENTER);
+        lblPuntos.setFont(new Font("Arial", Font.BOLD, 36));
+        lblPuntos.setForeground(Color.WHITE);
+        
+        if (esLocal) {
+            lblPuntosLocal = lblPuntos;
+        } else {
+            lblPuntosVisitante = lblPuntos;
+        }
+        
+        panel.add(lblNombre);
+        panel.add(lblPuntos);
+        
+        return panel;
+    }
+    
+    private JPanel crearPanelOpcionesPuntuacion() {
+        JPanel panelOpciones = new JPanel(new GridLayout(2, 3, 10, 10));
+        panelOpciones.setBackground(colorFondo);
+        panelOpciones.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        String[] tiposPuntos = {"Tiro Libre (1pt)", "Tiro de Campo (2pts)", "Triple (3pts)"};
+        
+        for (String tipo : tiposPuntos) {
+            // Botón para equipo local
+            JButton btnLocal = new JButton("Local: " + tipo);
+            btnLocal.setBackground(juego.getLocal().getColor());
+            btnLocal.setForeground(Color.WHITE);
+            btnLocal.addActionListener(e -> {
+                try {
+                    agregarPuntos(true, tipo);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Error al agregar puntos: " + ex.getMessage(), 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            
+            // Botón para equipo visitante
+            JButton btnVisitante = new JButton("Visitante: " + tipo);
+            btnVisitante.setBackground(juego.getVisitante().getColor());
+            btnVisitante.setForeground(Color.WHITE);
+            btnVisitante.addActionListener(e -> {
+                try {
+                    agregarPuntos(false, tipo);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, 
+                        "Error al agregar puntos: " + ex.getMessage(), 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            
+            panelOpciones.add(btnLocal);
+            panelOpciones.add(btnVisitante);
+        }
+        
+        return panelOpciones;
+    }
+    
     private void agregarPuntos(boolean esLocal, String tipoPunto) {
         int puntos = 0;
         switch(tipoPunto) {
             case "Tiro Libre (1pt)": puntos = 1; break;
             case "Tiro de Campo (2pts)": puntos = 2; break;
             case "Triple (3pts)": puntos = 3; break;
+            default: throw new IllegalArgumentException("Tipo de punto no válido");
         }
         
         if (esLocal) {
@@ -158,10 +201,15 @@ public class SimularJuego extends JFrame {
     }
     
     private void asignarAsistencias(Equipo equipo) {
+        if (equipo == null || equipo.getJugadores() == null) return;
+        
         for (Jugador jugador : equipo.getJugadores()) {
-            StatsJugador stats = jugador.getEstadistica();
-            if (stats != null) {
-                stats.setAsistenciasPorPartido(stats.getAsistenciasPorPartido() + 1);
+            if (jugador != null) {
+                StatsJugador stats = jugador.getEstadistica();
+                if (stats != null) {
+                    stats.setAsistenciasPorPartido(
+                        stats.getAsistenciasPorPartido() + 1);
+                }
             }
         }
     }
@@ -174,30 +222,51 @@ public class SimularJuego extends JFrame {
         } else if (tiempoTranscurrido == 2) {
             lblTiempo.setText("JUEGO TERMINADO");
             btnTerminarJuego.setEnabled(true);
+            
+            // Deshabilitar botones de puntuación
+            Component[] components = getContentPane().getComponents();
+            for (Component component : components) {
+                if (component instanceof JPanel) {
+                    disableButtons((JPanel) component);
+                }
+            }
+        }
+    }
+    
+    private void disableButtons(JPanel panel) {
+        for (Component component : panel.getComponents()) {
+            if (component instanceof JButton) {
+                component.setEnabled(false);
+            } else if (component instanceof JPanel) {
+                disableButtons((JPanel) component);
+            }
         }
     }
     
     private void terminarJuego() {
-        // Determinar ganador
-        if (puntosLocal > puntosVisitante) {
-            juego.actualizarResultado(puntosLocal, puntosVisitante);
-            JOptionPane.showMessageDialog(this, 
-                "¡" + juego.getLocal().getNombre() + " gana el juego!\n" +
-                "Resultado: " + puntosLocal + " - " + puntosVisitante,
+        try {
+            // Determinar ganador
+            String mensaje;
+            if (puntosLocal > puntosVisitante) {
+                juego.actualizarResultado(puntosLocal, puntosVisitante);
+                mensaje = "¡" + juego.getLocal().getNombre() + " gana el juego!\n" +
+                          "Resultado: " + puntosLocal + " - " + puntosVisitante;
+            } else if (puntosVisitante > puntosLocal) {
+                juego.actualizarResultado(puntosLocal, puntosVisitante);
+                mensaje = "¡" + juego.getVisitante().getNombre() + " gana el juego!\n" +
+                          "Resultado: " + puntosLocal + " - " + puntosVisitante;
+            } else {
+                mensaje = "¡Empate!\nResultado: " + puntosLocal + " - " + puntosVisitante;
+            }
+            
+            JOptionPane.showMessageDialog(this, mensaje, 
                 "Juego Terminado", JOptionPane.INFORMATION_MESSAGE);
-        } else if (puntosVisitante > puntosLocal) {
-            juego.actualizarResultado(puntosLocal, puntosVisitante);
+            
+            dispose();
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, 
-                "¡" + juego.getVisitante().getNombre() + " gana el juego!\n" +
-                "Resultado: " + puntosLocal + " - " + puntosVisitante,
-                "Juego Terminado", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, 
-                "¡Empate!\n" +
-                "Resultado: " + puntosLocal + " - " + puntosVisitante,
-                "Juego Terminado", JOptionPane.INFORMATION_MESSAGE);
+                "Error al terminar el juego: " + e.getMessage(), 
+                "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
-        dispose();
     }
 }
