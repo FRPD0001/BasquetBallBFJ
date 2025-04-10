@@ -9,11 +9,9 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -66,7 +64,6 @@ public class EmpezarJuegos {
         dialog.setLayout(new BorderLayout());
         dialog.getContentPane().setBackground(colorFondo);
         
-        // Establecer icono de la ventana
         try {
             ImageIcon icon = new ImageIcon("media/LogoProyecto.png");
             Image image = icon.getImage();
@@ -75,44 +72,15 @@ public class EmpezarJuegos {
             System.err.println("No se pudo cargar el icono: " + e.getMessage());
         }
         
-        // Panel superior con filtros
+        // Panel superior con filtros (eliminado el combo de jornadas)
         JPanel panelFiltros = new JPanel();
         panelFiltros.setBackground(colorFondo);
         panelFiltros.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        
-        JLabel lblJornada = new JLabel("Filtrar por Jornada:");
-        lblJornada.setFont(new Font("Arial", Font.BOLD, 12));
-        lblJornada.setForeground(colorBoton);
-        
-        comboJornadas = new JComboBox<>();
-        comboJornadas.setBackground(Color.WHITE);
-        comboJornadas.setFont(new Font("Arial", Font.PLAIN, 12));
-        comboJornadas.addItem("Todas las jornadas");
-        
-        // Obtener jornadas únicas
-        List<String> jornadas = new ArrayList<>();
-        for (Juego juego : juegosDisponibles) {
-            String jornada = juego.getId().substring(0, juego.getId().indexOf('-'));
-            if (!jornadas.contains(jornada)) {
-                jornadas.add(jornada);
-                comboJornadas.addItem(jornada);
-            }
-        }
-        
-        comboJornadas.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                filtrarJuegos();
-            }
-        });
-        
-        panelFiltros.add(lblJornada);
-        panelFiltros.add(comboJornadas);
         dialog.add(panelFiltros, BorderLayout.NORTH);
         
-        // Modelo y tabla de juegos
+        // Modelo y tabla de juegos (sin columna de jornada)
         modelJuegos = new DefaultTableModel(
-            new Object[]{"Jornada", "Local", "VS", "Visitante", "Fecha"}, 0) {
+            new Object[]{"Local", "VS", "Visitante", "Fecha"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -131,9 +99,16 @@ public class EmpezarJuegos {
         tablaJuegos.setFont(new Font("Arial", Font.PLAIN, 12));
         
         // Renderers personalizados
-        tablaJuegos.getColumnModel().getColumn(1).setCellRenderer(new EquipoColorRenderer());
-        tablaJuegos.getColumnModel().getColumn(2).setCellRenderer(new VSRenderer());
-        tablaJuegos.getColumnModel().getColumn(3).setCellRenderer(new EquipoColorRenderer());
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        
+        tablaJuegos.getColumnModel().getColumn(1).setCellRenderer(new VSRenderer());
+        tablaJuegos.getColumnModel().getColumn(3).setCellRenderer(centerRenderer); // Fecha centrada
+        
+        // Renderers para equipos
+        EquipoColorRenderer equipoRenderer = new EquipoColorRenderer();
+        tablaJuegos.getColumnModel().getColumn(0).setCellRenderer(equipoRenderer); // Local
+        tablaJuegos.getColumnModel().getColumn(2).setCellRenderer(equipoRenderer); // Visitante
         
         JScrollPane scrollPane = new JScrollPane(tablaJuegos);
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
@@ -171,51 +146,23 @@ public class EmpezarJuegos {
         panelBotones.add(btnCancelar);
         dialog.add(panelBotones, BorderLayout.SOUTH);
         
-        // Cargar todos los juegos inicialmente
         cargarJuegos(juegosDisponibles);
     }
     
     private void cargarJuegos(List<Juego> juegos) {
         modelJuegos.setRowCount(0);
         
-        // Formato de fecha deseado
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         
         for (Juego juego : juegos) {
-            String fechaFormateada;
-            try {
-                // Obtener la fecha como LocalDate y formatearla
-                LocalDate fecha = juego.getFechaJuego();
-                fechaFormateada = fecha.format(formatter);
-            } catch (Exception e) {
-                // Si hay algún error, usar la representación original
-                fechaFormateada = juego.getFechaJuego().toString();
-                System.err.println("Error al formatear la fecha: " + e.getMessage());
-            }
+            String fechaFormateada = juego.getFechaJuego().format(formatter);
             
             modelJuegos.addRow(new Object[]{
-                juego.getId().substring(0, juego.getId().indexOf('-')),
                 juego.getLocal(),
                 "VS",
                 juego.getVisitante(),
                 fechaFormateada
             });
-        }
-    }
-    
-    private void filtrarJuegos() {
-        String jornadaSeleccionada = (String) comboJornadas.getSelectedItem();
-        
-        if (jornadaSeleccionada.equals("Todas las jornadas")) {
-            cargarJuegos(juegosDisponibles);
-        } else {
-            List<Juego> juegosFiltrados = new ArrayList<>();
-            for (Juego juego : juegosDisponibles) {
-                if (juego.getId().startsWith(jornadaSeleccionada)) {
-                    juegosFiltrados.add(juego);
-                }
-            }
-            cargarJuegos(juegosFiltrados);
         }
     }
     
@@ -229,24 +176,22 @@ public class EmpezarJuegos {
             return;
         }
         
-        String codigoJornada = (String) modelJuegos.getValueAt(filaSeleccionada, 0);
-        Equipo local = (Equipo) modelJuegos.getValueAt(filaSeleccionada, 1);
-        Equipo visitante = (Equipo) modelJuegos.getValueAt(filaSeleccionada, 3);
+        Equipo local = (Equipo) modelJuegos.getValueAt(filaSeleccionada, 0);
+        Equipo visitante = (Equipo) modelJuegos.getValueAt(filaSeleccionada, 2);
         
         // Buscar el juego correspondiente
         Juego juegoSeleccionado = null;
         for (Juego juego : juegosDisponibles) {
-            if (juego.getLocal().equals(local) && juego.getVisitante().equals(visitante) &&
-                juego.getId().startsWith(codigoJornada)) {
+            if (juego.getLocal().equals(local) && juego.getVisitante().equals(visitante)) {
                 juegoSeleccionado = juego;
                 break;
             }
         }
         
         if (juegoSeleccionado != null) {
-        	dialog.dispose();
-        	DraftearEquipos ventanaDraft = new DraftearEquipos(juegoSeleccionado, colorFondo, colorBoton);
-        	ventanaDraft.setVisible(true);
+            dialog.dispose();
+            DraftearEquipos ventanaDraft = new DraftearEquipos(juegoSeleccionado, colorFondo, colorBoton);
+            ventanaDraft.setVisible(true);
         }
     }
     
@@ -255,7 +200,6 @@ public class EmpezarJuegos {
         dialog.setVisible(true);
     }
     
-    // Renderers para mostrar los equipos con sus colores
     private class EquipoColorRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, 
