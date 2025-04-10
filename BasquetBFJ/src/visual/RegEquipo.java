@@ -8,9 +8,9 @@ import logico.Equipo;
 import logico.SerieNacional;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JColorChooser;  // Para el selector de color
-import javax.swing.BorderFactory;  // Para los bordes
-import javax.swing.ImageIcon;      // Para el icono de la ventana
+import javax.swing.JColorChooser;  
+import javax.swing.BorderFactory;  
+import javax.swing.ImageIcon;  
 
 public class RegEquipo extends JDialog {
 
@@ -148,7 +148,7 @@ public class RegEquipo extends JDialog {
     }
 
     private void mostrarSelectorColor() {
-        // Inicializar colorSeleccionado si es null
+        
         if (colorSeleccionado == null) {
             colorSeleccionado = Color.WHITE;
         }
@@ -165,7 +165,7 @@ public class RegEquipo extends JDialog {
         	        public void actionPerformed(ActionEvent e) {
         	            colorSeleccionado = chooser.getColor();
         	            lblColorSeleccionado.setBackground(colorSeleccionado);
-        	            lblColorSeleccionado.repaint(); // Añadir esto para refrescar
+        	            lblColorSeleccionado.repaint(); 
         	        }
         	    },
         	    null

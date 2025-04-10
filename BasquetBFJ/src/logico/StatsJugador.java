@@ -87,8 +87,8 @@ public class StatsJugador implements Serializable {
     }
     
     public float calcularCoeficienteEfectividad() {
-        // Fórmula de eficiencia 
-        float efectividad = 
+
+    	float efectividad = 
         		 (puntosPorPartido * 1.0f) +
         		 (rebotesPorPartido * 0.7f) +
         	     (asistenciasPorPartido * 0.7f) +
@@ -96,9 +96,9 @@ public class StatsJugador implements Serializable {
      	         ((1 - (porcentajeTirosCampo / 100)) * puntosPorPartido * 0.7f) +
         	     ((porcentajeTriples / 100) * puntosPorPartido * 0.5f) +
                  ((porcentajeTirosLibres / 100) * puntosPorPartido * 0.3f) -
-        	     (rebotesPorPartido * 0.3f); // Ajuste por rebotes defensivos
+        	     (rebotesPorPartido * 0.3f); 
         efectividad = efectividad * 15 / 2;
         
-        return Math.max(efectividad/100.0f, 0); // Evitar valores negativos
+        return Math.max(efectividad/100.0f, 0);
     }
 }

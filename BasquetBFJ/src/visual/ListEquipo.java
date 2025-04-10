@@ -31,7 +31,6 @@ public class ListEquipo extends JDialog {
     private boolean esAnotador;
 
     public ListEquipo(Color colorOscuro, Color colorClaro) {
-        // Verificar tipo de usuario al inicio
         User usuarioActual = SerieNacional.getUsuarioActual();
         esAnotador = usuarioActual != null && usuarioActual.esAnotador();
         
@@ -47,7 +46,6 @@ public class ListEquipo extends JDialog {
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout());
 
-        // Columnas de la tabla, agregamos "Winrate"
         String[] columnNames = {"ID", "Nombre", "Color Principal", "Cant. Jugadores", "J. Ganados", "J. Perdidos", "Winrate"};
         tableModel = new DefaultTableModel(null, columnNames) {
             @Override
@@ -83,7 +81,6 @@ public class ListEquipo extends JDialog {
         });
         buttonPane.add(cbFiltro);
 
-        // Configuración del botón Modificar
         btnModificar = new JButton("Modificar");
         btnModificar.setFont(new Font("Arial", Font.BOLD, 12));
         btnModificar.setBackground(Color.LIGHT_GRAY);
@@ -137,7 +134,7 @@ public class ListEquipo extends JDialog {
                     lastSelectedRow = -1;
                 } else {
                     lastSelectedRow = selectedRow;
-                    btnModificar.setEnabled(!esAnotador); // Solo habilitar si no es anotador
+                    btnModificar.setEnabled(!esAnotador);
                     btnModificar.setBackground(!esAnotador ? new Color(30, 144, 255) : Color.LIGHT_GRAY);
                 }
             }
@@ -162,10 +159,8 @@ public class ListEquipo extends JDialog {
         });
 
         for (Equipo equipo : listaEquipos) {
-            // Calcula el winrate utilizando el método de SerieNacional
             double winrate = SerieNacional.getInstance().Winrate(equipo);
 
-            // Verifica si no se han jugado juegos
             String winrateStr = (equipo.getWin() + equipo.getLose() == 0) ? "N/A" : String.format("%.2f%%", winrate * 100);
 
             tableModel.addRow(new Object[]{
@@ -175,7 +170,7 @@ public class ListEquipo extends JDialog {
                 equipo.getJugadores().size(),
                 equipo.getWin(),
                 equipo.getLose(),
-                winrateStr  // Agregar el valor con '%' o 'N/A'
+                winrateStr  
             });
         }
     }

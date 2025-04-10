@@ -114,10 +114,8 @@ public class Equipo implements Serializable{
             return false;
         }
         
-        // Verificar si el jugador ya está en el equipo
         if (!jugadores.contains(jugador)) {
             jugadores.add(jugador);
-            // Actualizar la nómina del equipo
             this.nomina = CalcularNomina();
             return true;
         }

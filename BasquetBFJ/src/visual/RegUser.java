@@ -14,7 +14,7 @@ public class RegUser extends JDialog {
     private JComboBox<String> cbTipo;
     private Color[] coloresOscuros;
     private Color[] coloresClaros;
-    private int colorIndex; // Índice de color
+    private int colorIndex;
 
     public RegUser(Color[] coloresOscuros, Color[] coloresClaros, int colorIndex) {
         this.coloresOscuros = coloresOscuros;
@@ -30,15 +30,15 @@ public class RegUser extends JDialog {
         setModal(true);
         setResizable(false);
 
-        // Establecer icono
+       
         ImageIcon icon = new ImageIcon("media/LogoProyecto.png");
         setIconImage(icon.getImage());
 
-        // Panel principal
+        
         JPanel panel = new JPanel(new GridBagLayout());
         
-        // Usar colorIndex para seleccionar el color
-        panel.setBackground(coloresClaros[colorIndex]);  // Fondo con el color claro seleccionado
+        
+        panel.setBackground(coloresClaros[colorIndex]); 
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         
         GridBagConstraints gbc = new GridBagConstraints();
@@ -46,7 +46,7 @@ public class RegUser extends JDialog {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Componentes
+       
         JLabel lblTipo = new JLabel("Tipo de usuario:");
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -87,7 +87,7 @@ public class RegUser extends JDialog {
         gbc.gridy = 3;
         panel.add(txtConfirmar, gbc);
 
-        // Panel de botones
+        
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         JButton btnRegistrar = new JButton("Registrar");
@@ -108,7 +108,7 @@ public class RegUser extends JDialog {
         });
         panelBotones.add(btnCancelar);
 
-        // Configuración final
+        
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(panel, BorderLayout.CENTER);
         getContentPane().add(panelBotones, BorderLayout.SOUTH);
@@ -120,7 +120,6 @@ public class RegUser extends JDialog {
         String password = txtPassword.getText().trim();
         String confirmacion = txtConfirmar.getText().trim();
 
-        // Validaciones
         if (usuario.isEmpty() || password.isEmpty() || confirmacion.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                 "Todos los campos son obligatorios",
@@ -149,17 +148,16 @@ public class RegUser extends JDialog {
             return;
         }
 
-        // Crear y guardar usuario
         User nuevoUsuario = new User(tipo, usuario, password);
         SerieNacional.getInstance().agregarUsuario(nuevoUsuario);
-        SerieNacional.getInstance().guardarFileTest(); // Guardar cambios en disco
+        SerieNacional.getInstance().guardarFileTest();
 
         JOptionPane.showMessageDialog(this,
             "Usuario registrado exitosamente",
             "Éxito",
             JOptionPane.INFORMATION_MESSAGE);
 
-        dispose(); // Cerrar ventana
+        dispose(); 
     }
 }
 

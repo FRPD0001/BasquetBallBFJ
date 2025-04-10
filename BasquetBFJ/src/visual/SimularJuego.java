@@ -17,7 +17,7 @@ public class SimularJuego extends JFrame {
     
     private int puntosLocal = 0;
     private int puntosVisitante = 0;
-    private int tiempoTranscurrido = 0; // 0 = Primer tiempo, 1 = Segundo tiempo, 2 = Finalizado
+    private int tiempoTranscurrido = 0;
     
     private JLabel lblPuntosLocal;
     private JLabel lblPuntosVisitante;
@@ -30,7 +30,6 @@ public class SimularJuego extends JFrame {
         ImageIcon icon = new ImageIcon("media/LogoProyecto.png");
         setIconImage(icon.getImage());
         
-        // Validaciones iniciales
         if (juego == null) {
             throw new IllegalArgumentException("El juego no puede ser null");
         }
@@ -64,7 +63,6 @@ public class SimularJuego extends JFrame {
     
     
     private void initUI() {
-        // Panel superior con marcador
         JPanel panelMarcador = new JPanel(new GridLayout(1, 3));
         panelMarcador.setBackground(colorFondo);
         panelMarcador.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -79,10 +77,9 @@ public class SimularJuego extends JFrame {
             }
         });
         
-        // Equipo local
         JPanel panelLocal = crearPanelEquipo(juego.getLocal(), true);
         
-        // Tiempo
+        
         JPanel panelTiempo = new JPanel();
         panelTiempo.setBackground(colorFondo);
         panelTiempo.setLayout(new BoxLayout(panelTiempo, BoxLayout.Y_AXIS));
@@ -95,17 +92,14 @@ public class SimularJuego extends JFrame {
         panelTiempo.add(Box.createVerticalStrut(20));
         panelTiempo.add(btnSiguienteTiempo);
         
-        // Equipo visitante
         JPanel panelVisitante = crearPanelEquipo(juego.getVisitante(), false);
         
         panelMarcador.add(panelLocal);
         panelMarcador.add(panelTiempo);
         panelMarcador.add(panelVisitante);
         
-        // Panel central con opciones de puntuación
         JPanel panelOpciones = crearPanelOpcionesPuntuacion();
         
-        // Panel inferior con botón terminar
         JPanel panelInferior = new JPanel();
         panelInferior.setBackground(colorFondo);
         panelInferior.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
@@ -122,7 +116,7 @@ public class SimularJuego extends JFrame {
         });
 
         
-        panelInferior.setLayout(new FlowLayout(FlowLayout.CENTER));  // Centrado horizontal
+        panelInferior.setLayout(new FlowLayout(FlowLayout.CENTER));  
         panelInferior.add(btnTerminarJuego);
         
         add(panelMarcador, BorderLayout.NORTH);
@@ -137,9 +131,9 @@ public class SimularJuego extends JFrame {
         
         String nombreEquipo = equipo.getNombre();
         if (esLocal) {
-            nombreEquipo += " (L)";  // Local
+            nombreEquipo += " (L)";
         } else {
-            nombreEquipo += " (V)";  // Visitante
+            nombreEquipo += " (V)";
         }
         
         JLabel lblNombre = new JLabel(nombreEquipo, SwingConstants.CENTER);
@@ -165,19 +159,18 @@ public class SimularJuego extends JFrame {
 
     
     private JPanel crearPanelOpcionesPuntuacion() {
-        JPanel panelOpciones = new JPanel(new GridLayout(2, 3, 10, 10)); // Mantener las filas y columnas
+        JPanel panelOpciones = new JPanel(new GridLayout(2, 3, 10, 10)); 
 
         panelOpciones.setBackground(colorFondo);
         panelOpciones.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         String[] tiposPuntos = {"Tiro Libre (1pt)", "Tiro de Campo (2pts)", "Triple (3pts)"};
 
-        // Paneles para los botones de local y visitante
-        JPanel panelLocal = new JPanel(new GridLayout(1, 3)); // Un solo row, tres botones para el local
-        JPanel panelVisitante = new JPanel(new GridLayout(1, 3)); // Un solo row, tres botones para el visitante
+        JPanel panelLocal = new JPanel(new GridLayout(1, 3)); 
+        JPanel panelVisitante = new JPanel(new GridLayout(1, 3));
 
         for (String tipo : tiposPuntos) {
-            // Botón para equipo local
+        	
             JButton btnLocal = new JButton("Local: " + tipo);
             btnLocal.setBackground(juego.getLocal().getColor());
             btnLocal.setForeground(Color.WHITE);
@@ -194,7 +187,7 @@ public class SimularJuego extends JFrame {
                 }
             });
 
-            // Botón para equipo visitante
+
             JButton btnVisitante = new JButton("Visitante: " + tipo);
             btnVisitante.setBackground(juego.getVisitante().getColor());
             btnVisitante.setForeground(Color.WHITE);
@@ -211,12 +204,12 @@ public class SimularJuego extends JFrame {
                 }
             });
 
-            // Agregar los botones a sus paneles correspondientes
+
             panelLocal.add(btnLocal);
             panelVisitante.add(btnVisitante);
         }
 
-        // Agregar los paneles de local y visitante al panelOpciones
+
         panelOpciones.add(panelLocal);
         panelOpciones.add(panelVisitante);
 
@@ -264,7 +257,7 @@ public class SimularJuego extends JFrame {
         
         if (tiempoTranscurrido == 1) {
             lblTiempo.setText("SEGUNDO TIEMPO");
-        } else if (tiempoTranscurrido >= 2) {  // Cambiado a >= para mayor seguridad
+        } else if (tiempoTranscurrido >= 2) {
             lblTiempo.setText("ULTIMO TIEMPO");
             btnTerminarJuego.setEnabled(true);
             btnSiguienteTiempo.setEnabled(false);
@@ -279,7 +272,7 @@ public class SimularJuego extends JFrame {
                 disableButtons((JPanel) component);
             }
         }
-        // Asegurarse que el botón Terminar Juego queda habilitado
+
         btnTerminarJuego.setEnabled(true);
     }
 
@@ -295,8 +288,8 @@ public class SimularJuego extends JFrame {
     
     private void terminarJuego() {
         try {
-            // Determinar ganador
-            String mensaje;
+
+        	String mensaje;
             if (puntosLocal > puntosVisitante) {
                 juego.actualizarResultado(puntosLocal, puntosVisitante);
                 mensaje = "¡" + juego.getLocal().getNombre() + " gana el juego!\n" +

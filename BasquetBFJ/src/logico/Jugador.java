@@ -94,15 +94,15 @@ public class Jugador implements Serializable {
         this.setLesionado(false);
         this.misLesiones = new ArrayList<Lesion>(); 
         this.estadistica = new StatsJugador(
-            nombre,                // jugador
-            0.0f,                  // puntosPorPartido
-            0.0f,                  // rebotesPorPartido
-            0.0f,                  // asistenciasPorPartido
-            0.0f,                  // porcentajeTirosLibres
-            0.0f,                  // porcentajeTirosCampo
-            0.0f                   // porcentajeTriples
+            nombre,                
+            0.0f,                  
+            0.0f,                  
+            0.0f,                  
+            0.0f,                  
+            0.0f,                  
+            0.0f                   
         );
-        this.setSalario(salarioMin); // Calcula salario inicial basado en stats
+        this.setSalario(salarioMin);
     }
 
 	public boolean isLesionado() {

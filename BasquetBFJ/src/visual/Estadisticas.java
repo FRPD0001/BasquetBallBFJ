@@ -18,13 +18,13 @@ public class Estadisticas extends JDialog {
     private JButton btnModificar;
     private Jugador jugadorActual;
     private boolean modoEdicion = false;
-    private boolean esAnotador = false; // Nuevo campo para controlar el tipo de usuario
+    private boolean esAnotador = false; 
 
     public Estadisticas(Jugador jugador, Color colorClaro, Color colorOscuro, boolean esAnotador) {
         this.colorOscuro = colorOscuro;
         this.colorClaro = colorClaro;
         this.jugadorActual = jugador;
-        this.esAnotador = esAnotador; // Recibe el tipo de usuario
+        this.esAnotador = esAnotador; 
         initialize();
         cargarDatosJugador();
     }
@@ -78,7 +78,6 @@ public class Estadisticas extends JDialog {
             limpiarEstadisticas();
         }
         
-        // Deshabilitar el botón de modificar si es anotador
         btnModificar.setEnabled(!esAnotador);
     }
 
@@ -112,7 +111,6 @@ public class Estadisticas extends JDialog {
         panel.setLayout(new GridLayout(14, 2, 5, 3));
         panel.setBorder(BorderFactory.createEmptyBorder(15, 125, 15, 100));
 
-        // Todos los campos se crean como no editables
         txtNombre = crearCampoTexto(false);
         txtPeso = crearCampoTexto(false);
         txtAltura = crearCampoTexto(false);
@@ -127,7 +125,7 @@ public class Estadisticas extends JDialog {
         txtCoefEficiencia = crearCampoTexto(false);
 
         cbxEquipos = new JComboBox<>();
-        cbxEquipos.setEnabled(false); // Siempre deshabilitado inicialmente
+        cbxEquipos.setEnabled(false); 
         cbxEquipos.setFont(new Font("Arial", Font.PLAIN, 12));
         cbxEquipos.setForeground(Color.BLACK);
 
@@ -158,7 +156,6 @@ public class Estadisticas extends JDialog {
         btnModificar.setForeground(Color.WHITE);
         btnModificar.setFont(new Font("Arial", Font.BOLD, 14));
         
-        // Solo agregar el ActionListener si no es anotador
         if (!esAnotador) {
             btnModificar.addActionListener(new ActionListener() {
                 @Override
@@ -167,7 +164,7 @@ public class Estadisticas extends JDialog {
                 }
             });
         } else {
-            btnModificar.setEnabled(false); // Deshabilitar completamente para anotadores
+            btnModificar.setEnabled(false); 
             btnModificar.setToolTipText("Solo disponible para administradores");
         }
         panel.add(btnModificar);
@@ -247,7 +244,7 @@ public class Estadisticas extends JDialog {
         txtTirosLibres.setEditable(true);
         txtTirosCampo.setEditable(true);
         txtTriples.setEditable(true);
-        cbxEquipos.setEnabled(true); // Habilitar ComboBox
+        cbxEquipos.setEnabled(true); 
         
         Color verdeClaro = new Color(220, 255, 220);
         txtNombre.setBackground(verdeClaro);
@@ -265,7 +262,6 @@ public class Estadisticas extends JDialog {
     }
 
     private void deshabilitarEdicionCampos() {
-        // Deshabilitar todos los campos editables
         txtNombre.setEditable(false);
         txtPeso.setEditable(false);
         txtAltura.setEditable(false);
@@ -277,9 +273,8 @@ public class Estadisticas extends JDialog {
         txtTirosLibres.setEditable(false);
         txtTirosCampo.setEditable(false);
         txtTriples.setEditable(false);
-        cbxEquipos.setEnabled(false); // Deshabilitar ComboBox
+        cbxEquipos.setEnabled(false); 
         
-        // Restaurar color de fondo
         txtNombre.setBackground(Color.WHITE);
         txtPeso.setBackground(Color.WHITE);
         txtAltura.setBackground(Color.WHITE);
@@ -298,34 +293,28 @@ public class Estadisticas extends JDialog {
         if (jugadorActual == null) return;
         
         try {
-            // Guardar datos básicos
             jugadorActual.setNombre(txtNombre.getText());
             jugadorActual.setPeso(Float.parseFloat(txtPeso.getText()));
             jugadorActual.setAltura(Float.parseFloat(txtAltura.getText()));
             jugadorActual.setLesionado(txtLesionado.getText().equalsIgnoreCase("Lesionado"));
             jugadorActual.setSalario(Float.parseFloat(txtSalario.getText()));
             
-            // Manejar cambio de equipo
             Equipo nuevoEquipo = (Equipo) cbxEquipos.getSelectedItem();
             Equipo equipoActual = jugadorActual.getEquipo();
             
-            // Solo hacer cambios si el equipo es diferente
             if (nuevoEquipo != equipoActual && 
                 (nuevoEquipo == null || !nuevoEquipo.equals(equipoActual))) {
                 
-                // Remover del equipo actual si existe
                 if (equipoActual != null) {
                     equipoActual.removerJugador(jugadorActual);
                 }
                 
-                // Asignar nuevo equipo y agregar al jugador
                 jugadorActual.setEquipo(nuevoEquipo);
                 if (nuevoEquipo != null) {
                     nuevoEquipo.reclutarJugador(jugadorActual);
                 }
             }
             
-            // Guardar estadísticas
             if (jugadorActual.getEstadistica() != null) {
                 StatsJugador stats = jugadorActual.getEstadistica();
                 stats.setPuntosPorPartido(Float.parseFloat(txtPuntos.getText()));
@@ -338,7 +327,6 @@ public class Estadisticas extends JDialog {
             
             actualizarCoeficienteEficiencia();
             
-            // Guardar cambios en la serie nacional
             SerieNacional.getInstance().guardarFileTest();
             
             JOptionPane.showMessageDialog(this, 
