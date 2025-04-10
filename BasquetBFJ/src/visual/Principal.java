@@ -232,14 +232,6 @@ public class Principal extends JFrame {
             }
         });
         
-        btnLogout.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(Principal.this, 
-                    "Funcionalidad de logout no implementada aún", 
-                    "Logout", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
 
         JButton btnGuardar = new JButton("") {
             @Override
@@ -293,7 +285,7 @@ public class Principal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(Principal.this, 
-                    "Funcionalidad de guardar implementada aquí", 
+                    "Datos guardados exitosamente", 
                     "Guardar", JOptionPane.INFORMATION_MESSAGE);
                 SerieNacional.getInstance().guardarFileTest();
             }
